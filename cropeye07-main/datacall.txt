@@ -1,0 +1,80 @@
+    {
+      "type": "Feature",
+      "properties": {
+        "Representative": "Ajay Dhale",
+        "NDMI": -0.034913205,
+        "NDRE": 0.04586768,
+        "NDVI": 0.06408602,
+        "NDWI": -0.08247648,
+        "ROI": "Plot 1",
+        "date": "2025-02-22",
+        "images":"https://earthengine.googleapis.com/v1/projects/ee-saranggulve82/maps/9da9d548ba6eab5cd98af95274a058ea-38c7328d8d2eb6b453a396d8a9dc2656/tiles/{z}/{x}/{y}"
+        "soilAnalysis": {
+              "Phosphorus": {
+                "value": "40 / 40 ppm",
+                "organic": "Rock phosphate",
+                "chemical": "DAP (Di-Ammonium Phosphate)"
+              },
+              "pH": {
+                "value": "0.1 / 7",
+                "chemical": "Hydrochloric acid"
+              },
+              "Potassium": {
+                "value": "154.6 / 365 ppm",
+                "organic": "Banana peels",
+                "chemical": "Muriate of Potash (MOP)"
+              },
+              "Sulfur": {
+                "value": "15.9 / 20.3 ppm",
+                "organic": "Elemental sulfur",
+                "chemical": "Gypsum (25.6)"
+              },
+              "Zinc": {
+                "value": "1.79 / 2.24 ppm",
+                "organic": "Composted poultry manure",
+                "chemical": "Zinc sulfate (1.0)"
+              }
+            },
+        ".geo": {
+          "geodesic": false,
+          "type": "Point",
+          "coordinates": [
+            74.86202190231188,
+            17.27827616417765
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          [
+            [
+              75.0525707765539,
+              17.5783821686573,
+              0.0
+          ],
+          [
+              75.0530740693898,
+              17.5783928605371,
+              0.0
+          ],
+          [
+              75.0532196812896,
+              17.5800221949194,
+              0.0
+          ],
+          [
+              75.0527798247841,
+              17.580024133785,
+              0.0
+          ],
+          [
+              75.0525707765539,
+              17.5783821686573,
+              0.0
+          ]
+          ]
+        ]
+      },
+      "id": 438
+    },

@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Chatbot Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-in;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Mobile-friendly drawing controls for Add Farm map */
+@media (max-width: 640px) {
+  .mobile-draw-controls .leaflet-draw-toolbar {
+    margin-top: 10px !important;
+  }
+  
+  .mobile-draw-controls .leaflet-draw-toolbar a {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 18px !important;
+    margin: 2px !important;
+  }
+  
+  /* keep built-in sprite positioning so icons remain visible */
+  .mobile-draw-controls .leaflet-draw-toolbar .leaflet-draw-draw-polygon,
+  .mobile-draw-controls .leaflet-draw-toolbar .leaflet-draw-edit-remove,
+  .mobile-draw-controls .leaflet-draw-toolbar .leaflet-draw-edit-edit {
+    background-size: 300px 30px !important;
+  }
+
+  /* Make drawing controls more touch-friendly */
+  .mobile-draw-controls .leaflet-draw-toolbar a:hover {
+    background-color: #f4f4f4 !important;
+  }
+  
+  .mobile-draw-controls .leaflet-draw-toolbar a:active {
+    background-color: #e0e0e0 !important;
+  }
+}

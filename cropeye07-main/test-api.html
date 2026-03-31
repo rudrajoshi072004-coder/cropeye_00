@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Analysis API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Soil Analysis API Test</h1>
+    
+    <div class="test-section">
+        <h3>Test API Endpoint</h3>
+        <p>API URL: <code>http://192.168.41.120:1002/analyze</code></p>
+        
+        <div>
+            <label for="plotName">Plot Name:</label>
+            <input type="text" id="plotName" value="294724" placeholder="Enter plot name">
+            <button onclick="testAPI()">Test API</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Available Plot Names</h3>
+        <p>Based on the Map.tsx component, these plot names are available:</p>
+        <ul>
+            <li>294724</li>
+            <li>289138</li>
+            <li>294725</li>
+        </ul>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const plotName = document.getElementById('plotName').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!plotName) {
+                showResult('Please enter a plot name', 'error');
+                return;
+            }
+            
+            const url = `http://192.168.41.120:1002/analyze?plot_name=${plotName}`;
+            
+            try {
+                showResult('Testing API...', '');
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors',
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showResult(`Success! Received data for plot ${plotName}:`, 'success');
+                showResult(JSON.stringify(data, null, 2), 'success');
+                
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+                console.error('API Test Error:', error);
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<pre>${message}</pre>`;
+        }
+    </script>
+</body>
+</html> 

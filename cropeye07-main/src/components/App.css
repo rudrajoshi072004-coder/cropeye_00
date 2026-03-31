@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden w-full max-w-full min-w-0 min-h-[250px] p-2 sm:p-4;
+}
+
+.card-header {
+  @apply p-4 border-b border-gray-200 flex justify-between items-center;
+}
+
+.card-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.card-body {
+  @apply p-4;
+}
+
+.progress-bar {
+  @apply h-2 rounded-full overflow-hidden bg-gray-200;
+}
+
+.progress-bar-inner {
+  @apply h-full rounded-full transition-all duration-300;
+}
+
+.tab {
+  @apply px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-green-600 hover:border-green-600 cursor-pointer;
+}
+
+.tab.active {
+  @apply text-green-600 border-green-600;
+}
+
+.badge {
+  @apply px-2 py-1 text-xs font-medium rounded;
+}
+
+.badge-risk-low {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-risk-moderate {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-risk-high {
+  @apply bg-red-100 text-red-800;
+}
+
+.field-map-cell {
+  @apply border border-green-300 transition-all duration-300 hover:opacity-90 cursor-pointer;
+}
+
+.field-map-good {
+  @apply bg-green-400;
+}
+
+.field-map-needs-irrigation {
+  @apply bg-purple-300;
+}
+
+.field-map-issue {
+  @apply bg-red-300;
+}
+
+.weather-temp-line {
+  @apply stroke-green-500 stroke-2 fill-none;
+}
+
+.weather-humidity-line {
+  @apply stroke-blue-500 stroke-2 fill-none [stroke-dasharray:2];
+}
+
+.weather-rain-line {
+  @apply stroke-purple-500 stroke-2 fill-none [stroke-dasharray:4];
+}
+
+/* Enable scrolling for pest tab at 1024px in CropHealthAnalysis */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .pest-tab-scroll {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Override sm:overflow-x-hidden at 1024px */
+  .pest-tab-scroll.overflow-x-auto {
+    overflow-x: auto !important;
+  }
+  
+  /* Ensure the table inside can scroll */
+  .pest-tab-scroll table {
+    min-width: 100%;
+  }
+}
+
+/* Fertilizer Schedule table – fill card height so table expands into red area */
+.fertilizer-schedule-table {
+  height: 100%;
+  table-layout: fixed;
+}
+.fertilizer-schedule-table tbody {
+  height: 100%;
+}
+.fertilizer-schedule-table tbody tr {
+  height: 33.333%;
+}

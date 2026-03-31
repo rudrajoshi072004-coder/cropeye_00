@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Soil Analysis API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .plot-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .plot-button {
+            background-color: #28a745;
+        }
+        .plot-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Soil Analysis API</h1>
+    
+    <div class="test-section">
+        <h2>Test Specific Plots</h2>
+        <p>Testing soil analysis for plots: <strong>294724, 289138, 294725</strong></p>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testSoilAnalysis('294724')">Test Plot 294724</button>
+            <button class="plot-button" onclick="testSoilAnalysis('289138')">Test Plot 289138</button>
+            <button class="plot-button" onclick="testSoilAnalysis('294725')">Test Plot 294725</button>
+        </div>
+        <div id="soil-analysis-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test All Plots at Once</h2>
+        <button onclick="testAllPlots()">Test All Plots</button>
+        <div id="all-plots-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test API Endpoint</h2>
+        <p>Testing: <code>http://192.168.41.120:1002/1001/analyze?plot_name={plot}&end_date={today}&days_back=7</code></p>
+        <button onclick="testAPI()">Test API Connection</button>
+        <div id="api-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testSoilAnalysis(plotName) {
+            const resultDiv = document.getElementById('soil-analysis-result');
+            resultDiv.textContent = `Testing soil analysis for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&end_date=${today}&days_back=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Soil Analysis - ${plotName}:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+                // Analyze the response structure
+                analyzeSoilResponse(data, plotName);
+                
+            } catch (error) {
+                resultDiv.textContent = `Soil Analysis - ${plotName}:\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testAllPlots() {
+            const resultDiv = document.getElementById('all-plots-result');
+            resultDiv.textContent = 'Testing all plots...';
+            resultDiv.className = 'result';
+            
+            const plots = ['294724', '289138', '294725'];
+            const results = {};
+            
+            for (const plot of plots) {
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    const response = await fetch(`http://192.168.41.120:1002/1001/analyze?plot_name=${plot}&end_date=${today}&days_back=7`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results[plot] = { success: true, data: data };
+                    } else {
+                        results[plot] = { success: false, error: `HTTP ${response.status}` };
+                    }
+                } catch (error) {
+                    results[plot] = { success: false, error: error.message };
+                }
+            }
+            
+            resultDiv.textContent = `All Plots Results:\n${JSON.stringify(results, null, 2)}`;
+            resultDiv.className = 'result success';
+        }
+
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.textContent = 'Testing API connection...';
+            resultDiv.className = 'result';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://192.168.41.120:1002/1001/analyze?plot_name=294724&end_date=${today}&days_back=7`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `API Connection Successful!\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `API Connection Failed: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function analyzeSoilResponse(data, plotName) {
+            console.log(`Analyzing soil response for plot ${plotName}:`, data);
+            
+            if (Array.isArray(data)) {
+                console.log('Response is an array with', data.length, 'items');
+                if (data.length > 0) {
+                    console.log('First item structure:', data[0]);
+                    console.log('Available fields:', Object.keys(data[0]));
+                }
+            } else if (typeof data === 'object') {
+                console.log('Response is an object');
+                console.log('Available fields:', Object.keys(data));
+                
+                // Check for specific soil parameters
+                const specificParams = [
+                    'bulk_density', 'bdod_0-5cm_mean',
+                    'soil_organic_carbon', 'soc_0-5cm_mean',
+                    'total_nitrogen', 'nitrogen_0-5cm_mean',
+                    'cation_exchange_capacity', 'cec_0-5cm_mean',
+                    'organic_carbon_density', 'ocd_0-5cm_mean',
+                    'organic_carbon_stock', 'ocs_0-30cm_mean',
+                    'phh2o', 'phh2o_0-5cm_mean'
+                ];
+                
+                const foundParams = specificParams.filter(param => data.hasOwnProperty(param));
+                console.log('Found specific soil parameters:', foundParams);
+                
+                // Display specific parameter values
+                if (foundParams.length > 0) {
+                    console.log('Specific parameter values:');
+                    foundParams.forEach(param => {
+                        console.log(`${param}: ${data[param]}`);
+                    });
+                }
+            } else {
+                console.log('Response type:', typeof data);
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('Soil Analysis API test page loaded');
+            console.log('Available plots: 294724, 289138, 294725');
+        });
+    </script>
+</body>
+</html> 

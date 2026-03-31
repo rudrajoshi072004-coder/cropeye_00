@@ -1,0 +1,17 @@
+# Render Blueprint – Static Site (Vite + React SPA)
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: cropeye07
+    env: static
+
+    # Build
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+
+    # SPA fallback: serve index.html for all routes (fixes refresh / direct links)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Moisture API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .chart-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .data-point {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background: #e3f2fd;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Soil Moisture API Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Soil Moisture API Endpoint</h3>
+        <p>API URL: <code>http://192.168.41.120:1002/soil-moisture</code></p>
+        
+        <div>
+            <label for="plotName">Plot Name:</label>
+            <input type="text" id="plotName" value="294724" placeholder="Enter plot name">
+            <button onclick="testSoilMoistureAPI()">Test API</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Available Plot Names</h3>
+        <p>Based on the Map.tsx component, these plot names are available:</p>
+        <ul>
+            <li>294724</li>
+            <li>289138</li>
+            <li>294725</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>Expected API Response Format</h3>
+        <p>The API should return 7 days of soil moisture data in one of these formats:</p>
+        
+        <h4>Format 1: Array of data points</h4>
+        <pre>
+{
+  "data": [
+    {"date": "2024-01-01", "moisture": 65},
+    {"date": "2024-01-02", "moisture": 58},
+    {"date": "2024-01-03", "moisture": 50},
+    {"date": "2024-01-04", "moisture": 47},
+    {"date": "2024-01-05", "moisture": 55},
+    {"date": "2024-01-06", "moisture": 63},
+    {"date": "2024-01-07", "moisture": 68}
+  ]
+}
+        </pre>
+        
+        <h4>Format 2: Object with date keys</h4>
+        <pre>
+{
+  "soil_moisture_data": {
+    "2024-01-01": 65,
+    "2024-01-02": 58,
+    "2024-01-03": 50,
+    "2024-01-04": 47,
+    "2024-01-05": 55,
+    "2024-01-06": 63,
+    "2024-01-07": 68
+  }
+}
+        </pre>
+    </div>
+
+    <div id="chartPreview" class="chart-preview" style="display: none;">
+        <h3>Chart Data Preview</h3>
+        <div id="dataPoints"></div>
+    </div>
+
+    <script>
+        async function testSoilMoistureAPI() {
+            const plotName = document.getElementById('plotName').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!plotName) {
+                showResult('Please enter a plot name', 'error');
+                return;
+            }
+            
+            // Calculate date range for last 7 days
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 6);
+            
+            const url = `http://192.168.41.120:1002/soil-moisture?plot_name=${plotName}&start_date=${startDate.toISOString().split('T')[0]}&end_date=${endDate.toISOString().split('T')[0]}`;
+            
+            try {
+                showResult('Testing soil moisture API...', '');
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors',
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showResult(`Success! Received soil moisture data for plot ${plotName}:`, 'success');
+                showResult(JSON.stringify(data, null, 2), 'success');
+                
+                // Show chart preview
+                showChartPreview(data);
+                
+            } catch (error) {
+                showResult(`Error: ${error.message}`, 'error');
+                console.error('Soil Moisture API Test Error:', error);
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<pre>${message}</pre>`;
+        }
+        
+        function showChartPreview(apiData) {
+            const chartPreview = document.getElementById('chartPreview');
+            const dataPoints = document.getElementById('dataPoints');
+            
+            let transformedData = [];
+            
+            if (apiData.data && Array.isArray(apiData.data)) {
+                transformedData = apiData.data.map((item, index) => ({
+                    date: item.date || item.timestamp,
+                    value: item.moisture || item.value || item.soil_moisture || 50,
+                    day: new Date(item.date || item.timestamp).toLocaleDateString('en-US', { weekday: 'short' })
+                }));
+            } else if (apiData.soil_moisture_data) {
+                transformedData = Object.entries(apiData.soil_moisture_data).map(([date, value]) => ({
+                    date: date,
+                    value: typeof value === 'number' ? value : 50,
+                    day: new Date(date).toLocaleDateString('en-US', { weekday: 'short' })
+                }));
+            }
+            
+            if (transformedData.length > 0) {
+                dataPoints.innerHTML = transformedData.map(point => 
+                    `<div class="data-point">${point.day}: ${point.value}%</div>`
+                ).join('');
+                chartPreview.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html> 

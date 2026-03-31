@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ET API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Evapotranspiration API</h1>
+    
+    <div class="test-section">
+        <h2>Test ET API Endpoint</h2>
+        <p>Testing: <code>http://192.168.41.120:1002/1001/analyze?plot_name=Plot1&end_date=2024-01-15&days_back=7</code></p>
+        <button onclick="testETAPI()">Test ET API</button>
+        <div id="et-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test with Different Dates</h2>
+        <button onclick="testWithDate('2024-01-15')">Test 2024-01-15</button>
+        <button onclick="testWithDate('2024-01-16')">Test 2024-01-16</button>
+        <button onclick="testWithDate('2024-01-17')">Test 2024-01-17</button>
+        <div id="date-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testETAPI() {
+            const resultDiv = document.getElementById('et-result');
+            resultDiv.textContent = 'Testing...';
+            resultDiv.className = 'result';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://192.168.41.120:1002/1001/analyze?plot_name=Plot1&end_date=${today}&days_back=7`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Success! Response:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+                // Analyze the response structure
+                analyzeResponse(data);
+                
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testWithDate(date) {
+            const resultDiv = document.getElementById('date-result');
+            resultDiv.textContent = `Testing with date: ${date}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(`http://192.168.41.120:1002/1001/analyze?plot_name=Plot1&end_date=${date}&days_back=7`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Date: ${date}\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `Date: ${date}\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function analyzeResponse(data) {
+            console.log('Analyzing ET API response structure:', data);
+            
+            if (Array.isArray(data)) {
+                console.log('Response is an array with', data.length, 'items');
+                if (data.length > 0) {
+                    console.log('First item structure:', data[0]);
+                    console.log('Available fields:', Object.keys(data[0]));
+                }
+            } else if (typeof data === 'object') {
+                console.log('Response is an object');
+                console.log('Available fields:', Object.keys(data));
+            } else {
+                console.log('Response type:', typeof data);
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('Page loaded, ready to test ET API');
+        });
+    </script>
+</body>
+</html> 

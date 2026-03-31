@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Task Management System Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .endpoint { background-color: #e9ecef; padding: 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Complete Task Management System Test</h1>
+    <p>This test demonstrates the complete task management workflow with all fixes and enhancements.</p>
+
+    <div class="section info">
+        <h2>✅ Fixed Issues:</h2>
+        <ul>
+            <li><strong>Task Assignment Time Error:</strong> Fixed date/time handling in TaskCalendar</li>
+            <li><strong>Manager Task Assignment:</strong> Added manager role to assign tasks to field officers</li>
+            <li><strong>Field Officer Calendar:</strong> Enhanced with time display and role-based views</li>
+            <li><strong>Farmer Checklist:</strong> Added name-wise submission with completion notes</li>
+            <li><strong>Complete Workflow:</strong> Manager → Field Officer → Farmer task flow</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>1. Manager Assigns Task to Field Officer</h2>
+        <p>Manager creates a task and assigns it to a specific field officer.</p>
+        <button onclick="testManagerTaskAssignment()">Test Manager Task Assignment</button>
+        <div id="manager-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Field Officer Views Assigned Tasks</h2>
+        <p>Field officer can view tasks assigned by manager and update status.</p>
+        <button onclick="testFieldOfficerTasks()">Test Field Officer Task View</button>
+        <div id="fieldofficer-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Field Officer Assigns Task to Farmer</h2>
+        <p>Field officer assigns specific tasks to farmers (e.g., AjayDhale).</p>
+        <button onclick="testFarmerTaskAssignment()">Test Farmer Task Assignment</button>
+        <div id="farmer-assignment-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Farmer Views Task Checklist</h2>
+        <p>Farmer (AjayDhale) views assigned tasks and can mark them complete.</p>
+        <button onclick="testFarmerChecklist()">Test Farmer Checklist</button>
+        <div id="farmer-checklist-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. Task Status Updates</h2>
+        <p>Test status updates across all roles.</p>
+        <button onclick="testStatusUpdates()">Test Status Updates</button>
+        <div id="status-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>6. Complete Workflow Test</h2>
+        <p>Test the complete workflow from manager to farmer completion.</p>
+        <button onclick="testCompleteWorkflow()">Test Complete Workflow</button>
+        <div id="workflow-result"></div>
+    </div>
+
+    <div class="section info">
+        <h2>API Endpoints Used:</h2>
+        <ul>
+            <li><span class="endpoint">POST /managertasks</span> - Manager assigns tasks to field officers</li>
+            <li><span class="endpoint">GET /managertasks</span> - Get manager tasks</li>
+            <li><span class="endpoint">PATCH /managertasks/:id</span> - Update manager task status</li>
+            <li><span class="endpoint">POST /fieldofficertasks</span> - Field officer assigns tasks to farmers</li>
+            <li><span class="endpoint">GET /fieldofficertasks</span> - Get field officer tasks</li>
+            <li><span class="endpoint">PATCH /fieldofficertasks/:id</span> - Update field officer task status</li>
+            <li><span class="endpoint">POST /farmartasks</span> - Create farmer tasks</li>
+            <li><span class="endpoint">GET /farmartasks</span> - Get farmer tasks</li>
+            <li><span class="endpoint">PATCH /farmartasks/:id</span> - Update farmer task status</li>
+        </ul>
+    </div>
+
+    <div class="section info">
+        <h2>Component Features:</h2>
+        <ul>
+            <li><strong>TaskCalendar:</strong> Role-based calendar with time display, manager can assign to field officers</li>
+            <li><strong>Tasklist:</strong> Field officer task management with status updates and time tracking</li>
+            <li><strong>FarmerList:</strong> Field officer view of farmer tasks with status management</li>
+            <li><strong>ViewList:</strong> Farmer checklist with name-wise submission and completion notes</li>
+        </ul>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000';
+
+        async function testManagerTaskAssignment() {
+            const resultDiv = document.getElementById('manager-result');
+            resultDiv.innerHTML = '<p>Testing manager task assignment...</p>';
+
+            try {
+                const taskData = {
+                    selectedDate: '2025-01-15',
+                    itemName: 'Irrigation System Check',
+                    farmerName: 'AjayDhale',
+                    description: 'Check irrigation system for plot 294724 and ensure proper water distribution',
+                    assignedTime: '09:00',
+                    fieldOfficer: 'Officer1',
+                    assignedBy: 'Manager',
+                    status: 'Pending'
+                };
+
+                const response = await fetch(`${BASE_URL}/managertasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taskData)
+                });
+
+                const result = await response.json();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Manager Task Assignment Successful</h3>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Manager Task Assignment Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testFieldOfficerTasks() {
+            const resultDiv = document.getElementById('fieldofficer-result');
+            resultDiv.innerHTML = '<p>Testing field officer task view...</p>';
+
+            try {
+                const response = await fetch(`${BASE_URL}/fieldofficertasks`);
+                const tasks = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Field Officer Tasks Retrieved</h3>
+                        <p>Found ${tasks.length} tasks assigned to field officers</p>
+                        <pre>${JSON.stringify(tasks, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Field Officer Task Retrieval Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testFarmerTaskAssignment() {
+            const resultDiv = document.getElementById('farmer-assignment-result');
+            resultDiv.innerHTML = '<p>Testing farmer task assignment...</p>';
+
+            try {
+                const taskData = {
+                    date: '2025-01-15',
+                    itemName: 'Fertilizer Application',
+                    description: 'Apply nitrogen fertilizer to plot 289138',
+                    status: 'Pending',
+                    assignedTime: new Date().toISOString(),
+                    fieldOfficer: 'Officer1'
+                };
+
+                const response = await fetch(`${BASE_URL}/farmartasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taskData)
+                });
+
+                const result = await response.json();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Farmer Task Assignment Successful</h3>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Farmer Task Assignment Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testFarmerChecklist() {
+            const resultDiv = document.getElementById('farmer-checklist-result');
+            resultDiv.innerHTML = '<p>Testing farmer checklist...</p>';
+
+            try {
+                const response = await fetch(`${BASE_URL}/farmartasks`);
+                const tasks = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Farmer Checklist Retrieved</h3>
+                        <p>Found ${tasks.length} tasks for AjayDhale</p>
+                        <pre>${JSON.stringify(tasks, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Farmer Checklist Retrieval Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testStatusUpdates() {
+            const resultDiv = document.getElementById('status-result');
+            resultDiv.innerHTML = '<p>Testing status updates...</p>';
+
+            try {
+                // Get a task to update
+                const response = await fetch(`${BASE_URL}/farmartasks`);
+                const tasks = await response.json();
+
+                if (tasks.length > 0) {
+                    const taskId = tasks[0].id;
+                    const updateData = {
+                        status: 'InProcess',
+                        submittedBy: 'AjayDhale',
+                        submittedAt: new Date().toISOString()
+                    };
+
+                    const updateResponse = await fetch(`${BASE_URL}/farmartasks/${taskId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updateData)
+                    });
+
+                    const result = await updateResponse.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Status Update Successful</h3>
+                            <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="info">
+                            <h3>ℹ️ No tasks found to update</h3>
+                            <p>Create some tasks first to test status updates.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Status Update Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCompleteWorkflow() {
+            const resultDiv = document.getElementById('workflow-result');
+            resultDiv.innerHTML = '<p>Testing complete workflow...</p>';
+
+            try {
+                // Step 1: Manager assigns task to field officer
+                const managerTask = {
+                    selectedDate: '2025-01-20',
+                    itemName: 'Complete Field Inspection',
+                    farmerName: 'AjayDhale',
+                    description: 'Complete comprehensive field inspection and report',
+                    assignedTime: '10:00',
+                    fieldOfficer: 'Officer1',
+                    assignedBy: 'Manager',
+                    status: 'Pending'
+                };
+
+                const managerResponse = await fetch(`${BASE_URL}/managertasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(managerTask)
+                });
+
+                const managerResult = await managerResponse.json();
+
+                // Step 2: Field officer assigns to farmer
+                const farmerTask = {
+                    date: '2025-01-20',
+                    itemName: 'Complete Field Inspection',
+                    description: 'Complete comprehensive field inspection and report',
+                    status: 'Pending',
+                    assignedTime: new Date().toISOString(),
+                    fieldOfficer: 'Officer1'
+                };
+
+                const farmerResponse = await fetch(`${BASE_URL}/farmartasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(farmerTask)
+                });
+
+                const farmerResult = await farmerResponse.json();
+
+                // Step 3: Farmer completes task
+                const completionData = {
+                    status: 'Completed',
+                    submittedBy: 'AjayDhale',
+                    submittedAt: new Date().toISOString(),
+                    submissionNote: 'Field inspection completed successfully. All systems operational.'
+                };
+
+                const completionResponse = await fetch(`${BASE_URL}/farmartasks/${farmerResult.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(completionData)
+                });
+
+                const completionResult = await completionResponse.json();
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Complete Workflow Successful</h3>
+                        <h4>Step 1: Manager Assignment</h4>
+                        <pre>${JSON.stringify(managerResult, null, 2)}</pre>
+                        <h4>Step 2: Field Officer Assignment</h4>
+                        <pre>${JSON.stringify(farmerResult, null, 2)}</pre>
+                        <h4>Step 3: Farmer Completion</h4>
+                        <pre>${JSON.stringify(completionResult, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Complete Workflow Failed</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        const diseaseInfo = {
+            "Red rot": {
+                symptoms: [
+                    "Leaf changes colour from green to yellow, then drying from bottom to top.",
+                    "Red spots on the back side of the midrib if spores enter through the leaf.",
+                    "Visible symptoms 16-21 days after infection; cane dries up in 10 days.",
+                    "Inside cane: reddish with white streaks, sometimes blackish-brown liquid with alcohol smell."
+                ],
+                organic: "Trichoderma 5kg/acre with 100 kg farm yard manure",
+                chemical: "Carbendazim 500-1000gm/acre through drip"
+            },
+            "Smut": {
+                symptoms: [
+                    "Long whip-like structure (25–150 cm) from cane top, silvery layer, black powdery spores.",
+                    "Cane grows tall, then shortens."
+                ],
+                organic: "Trichoderma 5kg/acre with 100 kg farm yard manure",
+                chemical: "Dip seed setts in Carbendazim 0.1% or Tradimefon 0.005% for 30 min before planting"
+            },
+            "Grassy shoot": {
+                symptoms: [
+                    "Thin, white papery leaves at cane top in 3–4 month old crops.",
+                    "Many white/yellow shoots from below these leaves.",
+                    "Short cane, small gaps between nodes, side buds grow.",
+                    "Usually in isolated clumps."
+                ],
+                organic: "Dip setts in Trichoderma viride or Pseudomonas fluorescens before planting",
+                chemical: "Dip setts in Tetracycline hydrochloride (250ppm) for 3–4 hrs; Spray imidacloprid 17.8% at 0.5ml/litre"
+            },
+            "Wilt": {
+                symptoms: [
+                    "Appears at 4–5 months old.",
+                    "Leaves turn yellow and dry, canes weak and shrink.",
+                    "Inside cane: center turns purple/brown with holes, bad smell, white cotton-like fungus."
+                ],
+                organic: "Trichoderma 5kg/acre with 100 kg farm yard manure",
+                chemical: "Dip setts in carbendazim 0.1% at 1gm/litre for 30 min; apply carbendazim 1kg/acre with compost"
+            }
+        };
+
+        export function calculateDiseaseRisk(disease, weather, month) {
+            // Simple logic: always low for demo, or use your own logic
+            return {
+                pest: disease, // for compatibility with PestRisk type
+                riskLevel: "low"
+            };
+        }
+    </script>
+</body>
+</html> 

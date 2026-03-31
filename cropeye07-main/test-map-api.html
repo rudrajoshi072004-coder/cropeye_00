@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Map API Endpoints</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .plot-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .plot-button {
+            background-color: #28a745;
+        }
+        .plot-button:hover {
+            background-color: #218838;
+        }
+        .endpoint-info {
+            background-color: #e7f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Map Component API Endpoints</h1>
+    
+    <div class="test-section">
+        <h2>Test Plot Data API (fetchPlotData)</h2>
+        <div class="endpoint-info">
+            <strong>Endpoint:</strong> <code>http://192.168.41.120:1002/analyze?plot_name={plot}&end_date={today}&days_back=7</code><br>
+            <strong>Method:</strong> POST<br>
+            <strong>Purpose:</strong> Fetch boundary + classifications for vegetation indices
+        </div>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testPlotData('294724')">Test Plot 294724</button>
+            <button class="plot-button" onclick="testPlotData('289138')">Test Plot 289138</button>
+            <button class="plot-button" onclick="testPlotData('294725')">Test Plot 294725</button>
+        </div>
+        <div id="plot-data-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Soil Analysis API (fetchPlotAnalysis)</h2>
+        <div class="endpoint-info">
+            <strong>Endpoint:</strong> <code>http://192.168.41.120:1002/analyze?plot_name={plot}&end_date={today}&days_back=7</code><br>
+            <strong>Method:</strong> GET<br>
+            <strong>Purpose:</strong> Fetch soil analysis parameters (pH, nutrients, etc.)
+        </div>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testSoilAnalysis('294724')">Test Plot 294724</button>
+            <button class="plot-button" onclick="testSoilAnalysis('289138')">Test Plot 289138</button>
+            <button class="plot-button" onclick="testSoilAnalysis('294725')">Test Plot 294725</button>
+        </div>
+        <div id="soil-analysis-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Field Analysis API (fetchFieldAnalysis)</h2>
+        <div class="endpoint-info">
+            <strong>Endpoint:</strong> <code>http://192.168.41.120:1002/analyze?plot_name={plot}&start_date=2025-05-10&end_date=2025-06-20</code><br>
+            <strong>Method:</strong> GET<br>
+            <strong>Purpose:</strong> Fetch field health analysis data
+        </div>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testFieldAnalysis('294724')">Test Plot 294724</button>
+            <button class="plot-button" onclick="testFieldAnalysis('289138')">Test Plot 289138</button>
+            <button class="plot-button" onclick="testFieldAnalysis('294725')">Test Plot 294725</button>
+        </div>
+        <div id="field-analysis-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test All APIs for a Single Plot</h2>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testAllAPIs('294724')">Test All APIs - Plot 294724</button>
+            <button class="plot-button" onclick="testAllAPIs('289138')">Test All APIs - Plot 289138</button>
+            <button class="plot-button" onclick="testAllAPIs('294725')">Test All APIs - Plot 294725</button>
+        </div>
+        <div id="all-apis-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testPlotData(plotName) {
+            const resultDiv = document.getElementById('plot-data-result');
+            resultDiv.textContent = `Testing plot data for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&end_date=${today}&days_back=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Plot Data - ${plotName}:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `Plot Data - ${plotName}:\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testSoilAnalysis(plotName) {
+            const resultDiv = document.getElementById('soil-analysis-result');
+            resultDiv.textContent = `Testing soil analysis for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&end_date=${today}&days_back=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Soil Analysis - ${plotName}:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `Soil Analysis - ${plotName}:\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testFieldAnalysis(plotName) {
+            const resultDiv = document.getElementById('field-analysis-result');
+            resultDiv.textContent = `Testing field analysis for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&start_date=2025-05-10&end_date=2025-06-20`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Field Analysis - ${plotName}:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `Field Analysis - ${plotName}:\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testAllAPIs(plotName) {
+            const resultDiv = document.getElementById('all-apis-result');
+            resultDiv.textContent = `Testing all APIs for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            const results = {
+                plotData: null,
+                soilAnalysis: null,
+                fieldAnalysis: null
+            };
+            
+            try {
+                // Test Plot Data
+                const today = new Date().toISOString().split('T')[0];
+                const plotDataResponse = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&end_date=${today}&days_back=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (plotDataResponse.ok) {
+                    results.plotData = await plotDataResponse.json();
+                } else {
+                    results.plotData = { error: `HTTP ${plotDataResponse.status}` };
+                }
+            } catch (error) {
+                results.plotData = { error: error.message };
+            }
+            
+            try {
+                // Test Soil Analysis
+                const soilResponse = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&end_date=${today}&days_back=7`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (soilResponse.ok) {
+                    results.soilAnalysis = await soilResponse.json();
+                } else {
+                    results.soilAnalysis = { error: `HTTP ${soilResponse.status}` };
+                }
+            } catch (error) {
+                results.soilAnalysis = { error: error.message };
+            }
+            
+            try {
+                // Test Field Analysis
+                const fieldResponse = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&start_date=2025-05-10&end_date=2025-06-20`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (fieldResponse.ok) {
+                    results.fieldAnalysis = await fieldResponse.json();
+                } else {
+                    results.fieldAnalysis = { error: `HTTP ${fieldResponse.status}` };
+                }
+            } catch (error) {
+                results.fieldAnalysis = { error: error.message };
+            }
+            
+            resultDiv.textContent = `All APIs Results - ${plotName}:\n${JSON.stringify(results, null, 2)}`;
+            resultDiv.className = 'result success';
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('Map API test page loaded');
+            console.log('Available plots: 294724, 289138, 294725');
+            console.log('Testing endpoints with IP: 192.168.41.120:1002');
+        });
+    </script>
+</body>
+</html> 

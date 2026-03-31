@@ -1,0 +1,2566 @@
+
+
+[
+    {
+        "Duration (Days)":0,
+        "Stage":"land preperation",
+        "Nutrients ":" Farmyard Manure (FYM): 25-50 tons\/ha,Phosphorus (P2O5): 50-60 kg\/ha (SSP\/DAP),Potassium (K2O): 40-50 kg\/ha (MOP),Micronutrients: Zinc (ZnSO\u2084) \u2013 5-10 kg\/ha, Iron (FeSO\u2084) \u2013 5-10 kg\/ha, Boron (Borax) \u2013 1-2 kg\/ha",
+        "Recommended Dosage ":"DAP(46%),SSP(16%),MOP(60-62%),SOP(50\u201352%)",
+        "Chemical ":" 1st heavy irrigation before planting"
+    },
+    {
+        "Duration (Days)":1,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":2,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":3,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":4,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":5,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":6,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":7,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":8,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":9,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":10,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":11,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":12,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":13,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":14,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":15,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":16,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":17,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":18,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":19,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":20,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":21,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":22,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":23,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":24,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":25,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":26,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":27,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":28,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":29,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":30,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":31,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":32,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":33,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":34,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":35,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":36,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":37,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":38,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":39,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":40,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":41,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":42,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":43,
+        "Stage":"Germination & Early Growth",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":44,
+        "Stage":null,
+        "Nutrients ":"Phosphorus ",
+        "Recommended Dosage ":"50-60 kg\/ha ",
+        "Chemical ":"DAP(46%)\/SSP(16%)"
+    },
+    {
+        "Duration (Days)":45,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg \/ha",
+        "Chemical ":"MOP(60-62%)"
+    },
+    {
+        "Duration (Days)":46,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":47,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":48,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":49,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":50,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":51,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":52,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":53,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":54,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":55,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":56,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":57,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":58,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":59,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":60,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":61,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":62,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":63,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":64,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":65,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":66,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":67,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":68,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":69,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":70,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":71,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":72,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":73,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":74,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":75,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":76,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":77,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":78,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":79,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":80,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":81,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":82,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":83,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":84,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":85,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":86,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":87,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":88,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":89,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":90,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":91,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":92,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":93,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":94,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":95,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":96,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":97,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":98,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":99,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":100,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":101,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":102,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":103,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":104,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":105,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":106,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":107,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":108,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":109,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":110,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":111,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":112,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":113,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":"Nitrogen",
+        "Recommended Dosage ":"60-80 kg\/ha",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":114,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":115,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":116,
+        "Stage":null,
+        "Nutrients ":" Potassium",
+        "Recommended Dosage ":"20-25kg\/ha",
+        "Chemical ":"MOP(60-62%)\/SOP(50\u201352%)"
+    },
+    {
+        "Duration (Days)":117,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":118,
+        "Stage":null,
+        "Nutrients ":"Magnesium",
+        "Recommended Dosage ":"20-25 kg\/ha ",
+        "Chemical ":"Magnesium Sulfate(9.6%)"
+    },
+    {
+        "Duration (Days)":119,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":120,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":121,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":122,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":123,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":124,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":125,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":126,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":127,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":128,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":129,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":130,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":131,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":132,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":133,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":134,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":135,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":136,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":137,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":138,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":139,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":140,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":141,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":142,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":143,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":144,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":145,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":146,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":147,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":148,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":149,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":150,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":151,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":152,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":153,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":154,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":155,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":156,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":157,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":158,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":159,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":160,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":161,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":162,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":163,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":164,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":165,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":166,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":167,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":168,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":169,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":170,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":171,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":172,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":173,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":174,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":175,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":176,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":177,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":178,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":179,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":180,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":181,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":182,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":183,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":184,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":185,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":186,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":187,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":188,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":189,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":190,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":191,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":192,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":193,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":194,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":195,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":196,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":197,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":198,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":199,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":200,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":201,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":202,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":203,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":204,
+        "Stage":"Grand Growth Phase",
+        "Nutrients ":" Nitrogen",
+        "Recommended Dosage ":" 40-50 kg\/ha ",
+        "Chemical ":"UREA (46%)"
+    },
+    {
+        "Duration (Days)":205,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":206,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":207,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":208,
+        "Stage":null,
+        "Nutrients ":"Micronutrient Spray",
+        "Recommended Dosage ":"2% Urea + 2% Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":209,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":210,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":211,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":212,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":213,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":214,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":215,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":216,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":217,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":218,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":219,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":220,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":221,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":222,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":223,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":224,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":225,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":226,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":227,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":228,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":229,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":230,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":231,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":232,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":233,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":234,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":235,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":236,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":237,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":238,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":239,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":240,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":241,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":242,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":243,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":244,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":245,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":246,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":247,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":248,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":249,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":250,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":251,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":252,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":253,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":254,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":255,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":256,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":257,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":258,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":259,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":260,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":261,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":262,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":263,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":264,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":265,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":266,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":267,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":268,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":269,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":270,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":271,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":272,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":273,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":274,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":275,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":276,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":277,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":278,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":279,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":280,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":281,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":282,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":283,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":284,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":285,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":286,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":287,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":288,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":289,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":290,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":291,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":292,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":293,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":294,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":295,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":296,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":297,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":298,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":299,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":300,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":301,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":302,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":303,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":304,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":305,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":306,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":307,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":308,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":309,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":310,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":311,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":312,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":313,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":314,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":315,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":316,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":317,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":318,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":319,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":320,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":321,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":322,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":323,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":324,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":325,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":326,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":327,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":328,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":329,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":330,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":331,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":332,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":333,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":334,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":335,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":336,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":337,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":338,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":339,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":340,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":341,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":342,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":343,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":344,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":345,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":346,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":347,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":348,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":349,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":350,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":351,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":352,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":353,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":354,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":355,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":356,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":357,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":358,
+        "Stage":"Ripening & Maturity",
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    },
+    {
+        "Duration (Days)":359,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":360,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":361,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":362,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":363,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":364,
+        "Stage":null,
+        "Nutrients ":null,
+        "Recommended Dosage ":null,
+        "Chemical ":null
+    },
+    {
+        "Duration (Days)":365,
+        "Stage":null,
+        "Nutrients ":"Apllication not needed",
+        "Recommended Dosage ":"_",
+        "Chemical ":"_"
+    }
+]

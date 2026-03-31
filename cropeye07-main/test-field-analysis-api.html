@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Field Analysis API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Field Analysis API</h1>
+    
+    <div class="test-section">
+        <h2>Test Field Analysis API Endpoint</h2>
+        <div class="endpoint-info">
+            <strong>Endpoint:</strong> <code>http://192.168.41.120:1002/analyze?plot_name={plot}&start_date=2025-05-10&end_date=2025-06-20</code><br>
+            <strong>Method:</strong> GET<br>
+            <strong>Purpose:</strong> Fetch field health analysis data
+        </div>
+        <div class="plot-buttons">
+            <button class="plot-button" onclick="testFieldAnalysis('294724')">Test Plot 294724</button>
+            <button class="plot-button" onclick="testFieldAnalysis('289138')">Test Plot 289138</button>
+            <button class="plot-button" onclick="testFieldAnalysis('294725')">Test Plot 294725</button>
+        </div>
+        <div id="field-analysis-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Different Date Ranges</h2>
+        <button onclick="testWithDateRange('2025-01-01', '2025-01-31')">Test Jan 2025</button>
+        <button onclick="testWithDateRange('2025-02-01', '2025-02-28')">Test Feb 2025</button>
+        <button onclick="testWithDateRange('2025-03-01', '2025-03-31')">Test Mar 2025</button>
+        <div id="date-range-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testFieldAnalysis(plotName) {
+            const resultDiv = document.getElementById('field-analysis-result');
+            resultDiv.textContent = `Testing field analysis for: ${plotName}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=${plotName}&start_date=2025-05-10&end_date=2025-06-20`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Field Analysis - ${plotName}:\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+                // Analyze the response structure
+                analyzeFieldResponse(data, plotName);
+                
+            } catch (error) {
+                resultDiv.textContent = `Field Analysis - ${plotName}:\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testWithDateRange(startDate, endDate) {
+            const resultDiv = document.getElementById('date-range-result');
+            resultDiv.textContent = `Testing with date range: ${startDate} to ${endDate}...`;
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(`http://192.168.41.120:1002/analyze?plot_name=294724&start_date=${startDate}&end_date=${endDate}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.textContent = `Date Range Test (${startDate} to ${endDate}):\n${JSON.stringify(data, null, 2)}`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                resultDiv.textContent = `Date Range Test (${startDate} to ${endDate}):\nError: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function analyzeFieldResponse(data, plotName) {
+            console.log('Analyzing field analysis response structure:', data);
+            
+            // Check for expected fields
+            const expectedFields = ['plot_name', 'overall_health', 'health_status', 'statistics'];
+            const missingFields = expectedFields.filter(field => !(field in data));
+            
+            if (missingFields.length > 0) {
+                console.warn('Missing expected fields:', missingFields);
+            }
+            
+            // Check statistics structure
+            if (data.statistics && typeof data.statistics === 'object') {
+                console.log('Statistics object:', data.statistics);
+                if (!('mean' in data.statistics)) {
+                    console.warn('Statistics object missing "mean" field');
+                }
+            } else {
+                console.warn('Statistics field is missing or not an object');
+            }
+            
+            // Log the actual values
+            console.log('Field Analysis Data for', plotName, ':', {
+                plot_name: data.plot_name,
+                overall_health: data.overall_health,
+                health_status: data.health_status,
+                statistics_mean: data.statistics?.mean
+            });
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('Field Analysis API test page loaded');
+            console.log('Available plots: 294724, 289138, 294725');
+            console.log('Testing endpoint with IP: 192.168.41.120:1002');
+        });
+    </script>
+</body>
+</html> 

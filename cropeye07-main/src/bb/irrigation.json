@@ -1,0 +1,2930 @@
+[
+    {
+        "Duration (Days)":0,
+        "Stage":"land preperation",
+        "Fertilizer Application":" Farmyard Manure (FYM): 25-50 tons\/ha,Phosphorus (P2O5): 50-60 kg\/ha (SSP\/DAP),Potassium (K2O): 40-50 kg\/ha (MOP),Micronutrients: Zinc (ZnSO\u2084) \u2013 5-10 kg\/ha, Iron (FeSO\u2084) \u2013 5-10 kg\/ha, Boron (Borax) \u2013 1-2 kg\/ha",
+        "Chemical Solution":"DAP(46%),SSP(16%),MOP(60-62%),SOP(50\u201352%)",
+        "Flood Irrigation":" 1st heavy irrigation before planting",
+        "Irrigation ":1
+    },
+    {
+        "Duration (Days)":1,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":2,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":3,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":4,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":5,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":6,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":7,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":8,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":9,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":10,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":11,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":12,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":13,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":14,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":15,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":16,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":17,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":18,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":19,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":20,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":21,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":22,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":23,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":24,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":25,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":26,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":27,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":28,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":29,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":30,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":31,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":32,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":33,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":34,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":35,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":36,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":37,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":38,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":39,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":40,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":41,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":42,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":43,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":44,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":45,
+        "Stage":"Germination & Early Growth",
+        "Fertilizer Application":"Nitrogen (N): 40-50 kg\/ha (Urea),                          Phosphorus (P2O5): Full dose (from land prep), Potassium (K2O): 50% dose (40-50 kg\/ha)",
+        "Chemical Solution":"UREA (46%),DAP(46%),SSP(16%),MOP(60-62%)",
+        "Flood Irrigation":"Irrigate every 7-10 days",
+        "Irrigation ":"5 to 6"
+    },
+    {
+        "Duration (Days)":46,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":47,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":48,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":49,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":50,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":51,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":52,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":53,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":54,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":55,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":56,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":57,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":58,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":59,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":60,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":61,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":62,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":63,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":64,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":65,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":66,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":67,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":68,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":69,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":70,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":71,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":72,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":73,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":74,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":75,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":76,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":77,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":78,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":79,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":80,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":81,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":82,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":83,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":84,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":85,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":86,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":87,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":88,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":89,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":90,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":91,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":92,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":93,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":94,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":95,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":96,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":97,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":98,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":99,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":100,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":101,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":102,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":103,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":104,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":105,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":106,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":107,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":108,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":109,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":110,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":111,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":112,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":113,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":114,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":115,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":116,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":117,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":118,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":119,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":120,
+        "Stage":"Tillering & Early Stem Elongation",
+        "Fertilizer Application":"Nitrogen (N): 60-80 kg\/ha (Split at 60 & 90 days),                                      Potassium (K2O): Remaining 50% (40-50 kg\/ha),                                 Magnesium (MgSO\u2084): 20-25 kg\/ha (if needed)",
+        "Chemical Solution":"UREA (46%),MOP(60-62%),SOP(50\u201352%),Magnesium Sulfate(9.6%)",
+        "Flood Irrigation":" Irrigate every 10-12 days",
+        "Irrigation ":"6 to 7"
+    },
+    {
+        "Duration (Days)":121,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":122,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":123,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":124,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":125,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":126,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":127,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":128,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":129,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":130,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":131,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":132,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":133,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":134,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":135,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":136,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":137,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":138,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":139,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":140,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":141,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":142,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":143,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":144,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":145,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":146,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":147,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":148,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":149,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":150,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":151,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":152,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":153,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":154,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":155,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":156,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":157,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":158,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":159,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":160,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":161,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":162,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":163,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":164,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":165,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":166,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":167,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":168,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":169,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":170,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":171,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":172,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":173,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":174,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":175,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":176,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":177,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":178,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":179,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":180,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":181,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":182,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":183,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":184,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":185,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":186,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":187,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":188,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":189,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":190,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":191,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":192,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":193,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":194,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":195,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":196,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":197,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":198,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":199,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":200,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":201,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":202,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":203,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":204,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":205,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":206,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":207,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":208,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":209,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":210,
+        "Stage":"Grand Growth Phase",
+        "Fertilizer Application":" Nitrogen (N): Remaining 40-50 kg\/ha (Apply at 150 days),                                                                             Micronutrient Spray: 2% Urea + 2%                                                       Potassium Nitrate, Zinc & Iron Foliar Spray (if deficiency observed)",
+        "Chemical Solution":"UREA (46%)",
+        "Flood Irrigation":" Irrigate every 12-15 days",
+        "Irrigation ":"5 to 7"
+    },
+    {
+        "Duration (Days)":211,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":212,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":213,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":214,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":215,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":216,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":217,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":218,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":219,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":220,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":221,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":222,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":223,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":224,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":225,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":226,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":227,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":228,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":229,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":230,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":231,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":232,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":233,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":234,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":235,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":236,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":237,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":238,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":239,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":240,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":241,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":242,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":243,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":244,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":245,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":246,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":247,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":248,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":249,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":250,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":251,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":252,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":253,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":254,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":255,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":256,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":257,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":258,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":259,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":260,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":261,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":262,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":263,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":264,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":265,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":266,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":267,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":268,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":269,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":270,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":271,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":272,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":273,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":274,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":275,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":276,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":277,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":278,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":279,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":280,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":281,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":282,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":283,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":284,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":285,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":286,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":287,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":288,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":289,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":290,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":291,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":292,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":293,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":294,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":295,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":296,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":297,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":298,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":299,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":300,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":301,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":302,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":303,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":304,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":305,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":306,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":307,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":308,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":309,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":310,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":311,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":312,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":313,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":314,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":315,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":316,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":317,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":318,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":319,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":320,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":321,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":322,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":323,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":324,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":325,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":326,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":327,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":328,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":329,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":330,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":331,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":332,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":333,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":334,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":335,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":336,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":337,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":338,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":339,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":340,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":341,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":342,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":343,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":344,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":345,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":346,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":347,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":348,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":349,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":350,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":351,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":352,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":353,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":354,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":355,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":356,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":357,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":358,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":359,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":360,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":361,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":362,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":363,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":364,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    },
+    {
+        "Duration (Days)":365,
+        "Stage":"Ripening & Maturity",
+        "Fertilizer Application":"Apllication not needed",
+        "Chemical Solution":"_",
+        "Flood Irrigation":" Reduce irrigation gradually,                                     Stop irrigation 15-20 days before harvesting",
+        "Irrigation ":"7 to 8"
+    }
+]

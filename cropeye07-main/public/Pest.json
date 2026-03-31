@@ -1,0 +1,161 @@
+
+{
+  "pests": [
+    {
+      "name": "Early shoot borer",
+      "stage": "Germination to early tillering (1–3 months)",
+      "months": ["May", "June"],
+      "temperature": "28-32",
+      "humidity": "70-80"
+    },
+    {
+      "name": "Top shoot borer",
+      "stage": "Tillering to grand growth (3–6 months)",
+      "months": ["January", "February", "March", "April"],
+      "temperature": "27-30",
+      "humidity": "75-85"
+    },
+    {
+      "name": "Internode borer",
+      "stage": "Grand growth to maturity (4–9 months)",
+      "months": ["October", "November", "December"],
+      "temperature": "30-35",
+      "humidity": "70-85"
+    },
+    {
+      "name": "Root borer",
+      "stage": "Germination stage (0–2 months)",
+      "months": ["April", "May", "June", "July", "August", "September", "October"],
+      "temperature": "25-30",
+      "humidity": "75-90"
+    },
+    {
+      "name": "Wireworms",
+      "stage": "Germination stage (0–2 months)",
+      "months": ["May", "June", "July", "August", "September"],
+      "temperature": "26-30",
+      "humidity": "70-85"
+    },
+    {
+      "name": "White grub",
+      "stage": "Tillering to maturity (4–10 months)",
+      "months": ["May", "June", "July", "August", "September"],
+      "temperature": "25-32",
+      "humidity": "80-90"
+    },
+    {
+      "name": "Termites",
+      "stage": "Germination to maturity (any stage)",
+      "months": ["September", "October", "November", "December", "January", "February", "March", "April"],
+      "temperature": "30-38",
+      "humidity": "20-40"
+    },
+    {
+      "name": "Rats",
+      "stage": "Maturity stage (8–12 months)",
+      "months": ["January", "February", "March", "April", "May", "November", "December"],
+      "temperature": "25-35",
+      "humidity": "40-60"
+    },
+    {
+      "name": "Whitefly",
+      "stage": "Grand growth stage (4–7 months)",
+      "months": ["May", "June", "July", "August", "September", "October"],
+      "temperature": "30-35",
+      "humidity": "30-50"
+    },
+    {
+      "name": "Sugarcane woolly aphids",
+      "stage": "Grand growth to maturity (5–10 months)",
+      "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      "temperature": "25-30",
+      "humidity": "75-85"
+    },
+    {
+      "name": "Sugarcane pyrilla",
+      "stage": "Grand growth to maturity (5–10 months)",
+      "months": ["February", "March"],
+      "temperature": "25-30",
+      "humidity": "70-80"
+    },
+    {
+      "name": "Mealy bug",
+      "stage": "Grand growth to maturity (4–10 months)",
+      "months": ["March", "April", "May", "June", "July", "August", "September", "October"],
+      "temperature": "30-38",
+      "humidity": "30-50"
+    },
+    {
+      "name": "Sugarcane scale insect",
+      "stage": "Tillering to maturity (3–10 months)",
+      "months": ["March", "April", "May", "June", "July", "August", "September", "October"],
+      "temperature": "28-32",
+      "humidity": "75-85"
+    },
+    {
+      "name": "Army worm",
+      "stage": "Early growth and tillering (2–4 months)",
+      "months": ["January", "February", "March", "April"],
+      "temperature": "27-32",
+      "humidity": "70-85"
+    }
+  ],
+  "diseases": [
+    {
+      "name": "Red Rot",
+      "stage": "Grand Growth to Maturity (4–10 mo)",
+      "monthsActive": ["July", "August", "September", "October", "November"],
+      "temperature": "25-30",
+      "humidity": "80-90"
+    },
+    {
+      "name": "Smut",
+      "stage": "Germination to Tillering (0–4 mo)",
+      "monthsActive": ["February", "March", "April", "May", "June"],
+      "temperature": "28-34",
+      "humidity": "50-65"
+    },
+    {
+      "name": "Grassy Shoot",
+      "stage": "Germination to Tillering (0–4 mo)",
+      "monthsActive": ["February", "March", "April", "May"],
+      "temperature": "25-30",
+      "humidity": "75-85"
+    },
+    {
+      "name": "Wilt",
+      "stage": "Grand Growth to Maturity (4–9 mo)",
+      "monthsActive": ["July", "August", "September", "October"],
+      "temperature": "30-35",
+      "humidity": "65-75"
+    },
+    {
+      "name": "Ratoon Stunting Disease (RSD)",
+      "stage": "Germination to Maturity (all stages)",
+      "monthsActive": ["February", "March", "April", "May", "June", "July", "August", "September", "October", "November"],
+      "temperature": "30-38",
+      "humidity": "60-70"
+    },
+    {
+      "name": "Leaf Scald",
+      "stage": "Germination to Grand Growth (0–6 mo)",
+      "monthsActive": ["March", "April", "May", "June", "July", "August"],
+      "temperature": "30-35",
+      "humidity": "70-80"
+    },
+    {
+      "name": "Rust",
+      "stage": "Tillering to Maturity (3–10 mo)",
+      "monthsActive": ["August", "September", "October", "November", "December"],
+      "temperature": "20-25",
+      "humidity": "85-95"
+    },
+    {
+      "name": "Downy Mildew",
+      "stage": "Seedling stage",
+      "monthsActive": ["June", "July", "August"],
+      "temperature": "20-25",
+      "humidity": "85-90"
+    }
+  ]
+}

@@ -20,8 +20,8 @@ function LandingRedirect() {
     }
   }, []);
 
-  // If not redirecting out, show the login page route
-  return <Navigate to="/" replace />;
+  // If not redirecting out, render the login page
+  return <LoginPage />;
 }
 
 export default function App() {

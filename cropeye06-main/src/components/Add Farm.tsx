@@ -483,7 +483,7 @@ function AddFarm() {
   useEffect(() => {
     const loadLocationData = async () => {
       try {
-        const response = await fetch("/location-data-part1.json");
+        const response = await fetch(`${import.meta.env.BASE_URL}location-data-part1.json`);
         const data = await response.json();
         locationData = data;
         states = Object.keys(data);

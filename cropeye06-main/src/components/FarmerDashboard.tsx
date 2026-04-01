@@ -212,7 +212,7 @@ const OPTIMAL_BIOMASS = 150;
 async function getBrixTimeSeries(plotName: string, pruningDate: string) {
   const url = `${BASE_URL}/grapes/brix-time-series?plot_name=${encodeURIComponent(plotName)}&pruning_date=${encodeURIComponent(pruningDate)}`;
 
-  // Swagger marks this as POST; try POST first, then GET as fallback.
+  // Swagger marks this as POST. Do not fall back to GET (it returns 405 and breaks hosted flow).
   try {
     const postResponse = await fetch(url, {
       method: "POST",
@@ -228,14 +228,9 @@ async function getBrixTimeSeries(plotName: string, pruningDate: string) {
       return postResponse.json();
     }
 
-    // Fallback: some environments may allow GET
-    const getResponse = await fetch(url, { method: "GET", headers: { Accept: "application/json" } });
-    if (getResponse.ok) {
-      return getResponse.json();
-    }
-
+    const errorText = await postResponse.text().catch(() => "");
     throw new Error(
-      `Failed to fetch brix time series: ${postResponse.status} ${postResponse.statusText}`
+      `Failed to fetch brix time series: ${postResponse.status} ${postResponse.statusText}${errorText ? ` - ${errorText}` : ""}`,
     );
   } catch (error: any) {
     throw new Error(error?.message || 'Failed to fetch brix time series');

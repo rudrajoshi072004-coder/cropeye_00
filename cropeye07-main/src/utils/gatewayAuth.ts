@@ -14,19 +14,27 @@ const getGatewayOrigin = () => {
   }
 };
 
+const isOnGatewayPath = () => {
+  try {
+    return window.location.pathname.startsWith("/login");
+  } catch {
+    return false;
+  }
+};
+
 export function requireGatewayAuth(): void {
   const token = getAuthToken();
   if (!token) {
-    if (window.location.origin !== getGatewayOrigin()) {
-      window.location.assign(`${GATEWAY_URL}/login`);
+    // In prod we serve all apps under same origin, so use pathname check.
+    if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
+      window.location.assign(`${GATEWAY_URL}/login?logout=1`);
     }
   }
 }
 
 export function gatewayLogout(): void {
   clearAllLocalStorage();
-  if (window.location.origin !== getGatewayOrigin()) {
-    window.location.assign(`${GATEWAY_URL}/login?logout=1`);
-  }
+  // Always redirect unless we're already on gateway login.
+  if (!isOnGatewayPath()) window.location.assign(`${GATEWAY_URL}/login?logout=1`);
 }
 

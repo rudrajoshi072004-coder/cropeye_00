@@ -32,6 +32,14 @@ const getGatewayOrigin = () => {
   }
 };
 
+const isOnGatewayPath = () => {
+  try {
+    return window.location.pathname.startsWith("/login");
+  } catch {
+    return false;
+  }
+};
+
 const bootstrapTokensFromUrl = () => {
   try {
     const url = new URL(window.location.href);
@@ -74,7 +82,7 @@ const AppRoutesContent: React.FC = () => {
 
     // Gateway enforcement: internal login disabled
     if (window.location.pathname === "/login") {
-      if (window.location.origin !== getGatewayOrigin()) {
+      if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
         window.location.assign(`${GATEWAY_URL}/login?logout=1`);
       }
       return;
@@ -82,7 +90,7 @@ const AppRoutesContent: React.FC = () => {
 
     if (!token) {
       setLoading(false);
-      if (window.location.origin !== getGatewayOrigin()) {
+      if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
         window.location.assign(`${GATEWAY_URL}/login?logout=1`);
       }
       return;
@@ -274,7 +282,7 @@ const AppRoutesContent: React.FC = () => {
 
     setUserRole(null);
     setIsAuthenticated(false);
-    if (window.location.origin !== getGatewayOrigin()) {
+    if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
       window.location.assign(`${GATEWAY_URL}/login?logout=1`);
     }
   };

@@ -31,6 +31,14 @@ const getGatewayOrigin = () => {
   }
 };
 
+const isOnGatewayPath = () => {
+  try {
+    return window.location.pathname.startsWith("/login");
+  } catch {
+    return false;
+  }
+};
+
 const bootstrapTokensFromUrl = () => {
   try {
     const url = new URL(window.location.href);
@@ -96,7 +104,7 @@ const AppRoutesContent: React.FC = () => {
         if (!token) {
           if (isMounted) setLoading(false);
           // Always route unauthenticated users to gateway (no internal login)
-          if (window.location.origin !== getGatewayOrigin()) {
+          if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
             window.location.assign(`${GATEWAY_URL}/login?logout=1`);
           }
           checkInProgress = false;
@@ -106,7 +114,7 @@ const AppRoutesContent: React.FC = () => {
         // If on login page and no token, skip validation
         if (window.location.pathname === "/login") {
           // Internal login disabled -> send to gateway
-          if (window.location.origin !== getGatewayOrigin()) {
+          if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
             window.location.assign(`${GATEWAY_URL}/login?logout=1`);
           }
           checkInProgress = false;
@@ -160,7 +168,7 @@ const AppRoutesContent: React.FC = () => {
   const validateToken = async (token: string, role: UserRole) => {
     const currentPath = window.location.pathname;
     if (currentPath === "/login") {
-      if (window.location.origin !== getGatewayOrigin()) {
+      if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
         window.location.assign(`${GATEWAY_URL}/login?logout=1`);
       }
       setLoading(false);
@@ -328,7 +336,7 @@ const AppRoutesContent: React.FC = () => {
     setIsAuthenticated(false);
     
     // Redirect to centralized login
-    if (window.location.origin !== getGatewayOrigin()) {
+    if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
       window.location.assign(`${GATEWAY_URL}/login?logout=1`);
     }
   };

@@ -2,6 +2,8 @@ server {
   listen ${PORT};
   server_name _;
 
+  root /usr/share/nginx/html;
+
   # Make root go to /login/
   location = / {
     return 302 /login/;
@@ -18,21 +20,27 @@ server {
     return 301 /sugarcane/;
   }
 
+  # Static assets referenced with absolute paths in code (fix 404s):
+  # Many components use /icons/... and /Image/... directly.
+  location /icons/ {
+    try_files $uri /login$uri /grapes$uri /sugarcane$uri =404;
+  }
+  location /Image/ {
+    try_files $uri /grapes$uri /sugarcane$uri =404;
+  }
+
   # --- Gateway SPA (served at /login/) ---
   location /login/ {
-    alias /usr/share/nginx/html/login/;
     try_files $uri $uri/ /login/index.html;
   }
 
   # --- Grapes SPA (served at /grapes/) ---
   location /grapes/ {
-    alias /usr/share/nginx/html/grapes/;
     try_files $uri $uri/ /grapes/index.html;
   }
 
   # --- Sugarcane SPA (served at /sugarcane/) ---
   location /sugarcane/ {
-    alias /usr/share/nginx/html/sugarcane/;
     try_files $uri $uri/ /sugarcane/index.html;
   }
 }

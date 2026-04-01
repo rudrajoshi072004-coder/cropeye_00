@@ -393,7 +393,7 @@ const AppRoutesContent: React.FC = () => {
 
 const AppRoutes: React.FC = () => {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <AppRoutesContent />
     </Router>
   );

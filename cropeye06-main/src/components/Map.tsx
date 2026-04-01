@@ -16,6 +16,7 @@ import WeatherForecast from "./WeatherForecast";
 import FertilizerTable from "./FertilizerTable";
 import { useAppContext } from "../context/AppContext";
 import { getCache, setCache } from "./utils/cache";
+import { getEventsBaseUrl } from "../utils/serviceUrls";
 
 // Add custom styles for the enhanced tooltip
 const tooltipStyles = `
@@ -824,9 +825,7 @@ const Map: React.FC<MapProps> = ({
       return cachedData;
     }
 
-    // Use direct API URL - CORS is handled on the backend
-    const baseUrl = 'https://cropeye-grapes-events-production.up.railway.app/plots/agroStats';
-    const url = `${baseUrl}?end_date=${currentEndDate}`;
+    const url = `${getEventsBaseUrl()}/plots/agroStats?end_date=${currentEndDate}`;
 
     console.log(`📊 Fetching agroStats data from: ${url}`);
 

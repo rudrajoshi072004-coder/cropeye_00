@@ -48,11 +48,12 @@ import {
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { getCache, setCache } from "../utils/cache";
+import { getEventsBaseUrl } from "../utils/serviceUrls";
 import api from "../api"; // Import the authenticated api instance
 import CommonSpinner from "./CommanSpinner";
 
 // Constants (same as FarmerDashboard)
-const BASE_URL = "https://cropeye-grapes-events-production.up.railway.app";
+const BASE_URL = getEventsBaseUrl();
 const OPTIMAL_BIOMASS = 150;
 const SOIL_API_URL = "https://cropeye-grapes-main-production.up.railway.app";
 const SOIL_DATE = "2025-10-03";

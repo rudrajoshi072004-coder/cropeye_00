@@ -46,6 +46,7 @@ import { getCache, setCache } from "../utils/cache";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { useAppContext } from "../context/AppContext";
 import CommonSpinner from "./CommanSpinner";
+import { getEventsBaseUrl } from "../utils/serviceUrls";
 
 // Register Chart.js components
 ChartJS.register(
@@ -204,12 +205,7 @@ const PieChartWithNeedle: React.FC<PieChartWithNeedleProps> = ({
   );
 };
 
-// In production we call same-origin "/events" (nginx proxies to Railway) to avoid CORS.
-const BASE_URL =
-  (import.meta.env.VITE_GRAPES_EVENTS_BASE_URL as string | undefined) ||
-  (typeof window !== "undefined" && !import.meta.env.DEV
-    ? `${window.location.origin}/events`
-    : "https://cropeye-grapes-events-production.up.railway.app");
+const BASE_URL = getEventsBaseUrl();
 const OPTIMAL_BIOMASS = 150;
 
 // API function to fetch Brix Time Series

@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import CommonSpinner from "./CommanSpinner";
 import axios from "axios";
 import { getCache, setCache } from "../utils/cache";
+import { getEventsBaseUrl } from "../utils/serviceUrls";
 import {
   MapPin,
   ChevronDown,
@@ -41,7 +42,7 @@ import "leaflet/dist/leaflet.css";
 import { useMap } from "react-leaflet";
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")}/users/my-field-officers/`;
-const BASE_URL = "https://cropeye-grapes-events-production.up.railway.app";
+const BASE_URL = getEventsBaseUrl();
 
 // Chart Types
 const CHART_TYPES = {

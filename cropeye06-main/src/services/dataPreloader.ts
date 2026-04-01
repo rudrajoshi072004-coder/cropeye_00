@@ -299,7 +299,8 @@ const fetchFarmerDashboardData = async (
   plotName: string,
   context?: AppContextType
 ): Promise<void> => {
-  const BASE_URL = "https://cropeye-grapes-events-production.up.railway.app";
+  const { getEventsBaseUrl } = await import("../utils/serviceUrls");
+  const BASE_URL = getEventsBaseUrl();
   
   try {
     // Fetch indices

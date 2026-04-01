@@ -50,13 +50,14 @@ import {
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { getCache, setCache } from "../utils/cache";
+import { getEventsBaseUrl } from "../utils/serviceUrls";
 import { getRecentFarmers } from "../api";
 import { getUserRole } from "../utils/auth";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import CommonSpinner from "./CommanSpinner";
 
 // Constants (same as FarmerDashboard)
-const BASE_URL = "https://cropeye-grapes-events-production.up.railway.app";
+const BASE_URL = getEventsBaseUrl();
 const OPTIMAL_BIOMASS = 150;
 const SOIL_API_URL = "https://cropeye-grapes-admin-production.up.railway.app";
 const SOIL_DATE = "2025-10-03";

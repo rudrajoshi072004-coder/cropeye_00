@@ -14,7 +14,19 @@ import { navigateToLogin } from "./utils/navigation";
 // API Base URL: https://cropeye-server-flyio.onrender.com/
 const getBaseURL = () => {
   const raw = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
-  const base = raw && raw.length ? raw : "https://cropeye-server-flyio.onrender.com";
+  // In production we must call the backend API host (NOT the Render frontend host),
+  // otherwise you'll get CORS / 404 issues.
+  const fallbackHost = "https://cropeye-server-flyio.onrender.com";
+
+  // If someone accidentally sets VITE_API_BASE_URL to the frontend host (onrender),
+  // ignore it in production.
+  const isBadProdValue =
+    !!raw &&
+    raw.length > 0 &&
+    !import.meta.env.DEV &&
+    /onrender\.com/i.test(raw);
+
+  const base = raw && raw.length && !isBadProdValue ? raw : fallbackHost;
 
   // Allow providing either "...host" or "...host/api"
   // Always normalize to ".../api/" (single trailing slash)
@@ -1224,7 +1236,8 @@ export const registerFarmerAllInOne = async (data: {
     }
 
     // Use authenticated API for registration
-    const response = await api.post("farms/register-farmer/grapes/", data);
+    // MUST hit: /api/farms/register-farmer/grapes/ on https://cropeye-server-flyio.onrender.com
+    const response = await api.post("/farms/register-farmer/grapes/", data);
     return response;
   } catch (error: any) {
     // Provide better error messages

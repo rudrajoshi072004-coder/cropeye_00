@@ -2,39 +2,38 @@ server {
   listen ${PORT};
   server_name _;
 
-  # --- Gateway (/login) ---
-  location /login {
-    proxy_pass http://127.0.0.1:5173;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-
-  # Make root go to /login
+  # Make root go to /login/
   location = / {
-    return 302 /login;
+    return 302 /login/;
   }
 
-  # --- Grapes app (/grapes) -> cropeye06 preview on 3001 ---
+  # Normalize missing trailing slashes
+  location = /login {
+    return 301 /login/;
+  }
+  location = /grapes {
+    return 301 /grapes/;
+  }
+  location = /sugarcane {
+    return 301 /sugarcane/;
+  }
+
+  # --- Gateway SPA (served at /login/) ---
+  location /login/ {
+    alias /usr/share/nginx/html/login/;
+    try_files $uri $uri/ /login/index.html;
+  }
+
+  # --- Grapes SPA (served at /grapes/) ---
   location /grapes/ {
-    proxy_pass http://127.0.0.1:3001/;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    alias /usr/share/nginx/html/grapes/;
+    try_files $uri $uri/ /grapes/index.html;
   }
 
-  # --- Sugarcane app (/sugarcane) -> cropeye07 preview on 3002 ---
+  # --- Sugarcane SPA (served at /sugarcane/) ---
   location /sugarcane/ {
-    proxy_pass http://127.0.0.1:3002/;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    alias /usr/share/nginx/html/sugarcane/;
+    try_files $uri $uri/ /sugarcane/index.html;
   }
 }
 

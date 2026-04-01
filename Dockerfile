@@ -1,4 +1,8 @@
-### Root Dockerfile (Render): gateway + cropeye06 + cropeye07 in ONE container
+### Root Dockerfile (Render): gateway + cropeye06 + cropeye07 behind ONE port
+### Served as static SPAs via Nginx:
+###   /login/     -> gateway
+###   /grapes/    -> cropeye06
+###   /sugarcane/ -> cropeye07
 
 FROM node:20-alpine AS build
 WORKDIR /build
@@ -21,25 +25,21 @@ RUN cd cropeye07-main && npm ci
 COPY cropeye07-main ./cropeye07-main
 RUN cd cropeye07-main && npm run build
 
-# Runtime: run 3 preview servers + nginx reverse proxy (single public port)
-FROM node:20-alpine
-WORKDIR /apps
+FROM nginx:1.27-alpine
+RUN apk add --no-cache gettext
 
-RUN apk add --no-cache nginx supervisor gettext
+# Copy built SPAs into path-based folders
+COPY --from=build /build/gateway/dist /usr/share/nginx/html/login
+COPY --from=build /build/cropeye06-main/dist /usr/share/nginx/html/grapes
+COPY --from=build /build/cropeye07-main/dist /usr/share/nginx/html/sugarcane
 
-# Copy built apps + minimal runtime deps to run `vite preview`
-COPY --from=build /build/gateway /apps/gateway
-COPY --from=build /build/cropeye06-main /apps/cropeye06-main
-COPY --from=build /build/cropeye07-main /apps/cropeye07-main
-
-# Nginx + supervisor config
+# Nginx template (Render $PORT) + entrypoint
 COPY nginx.render.conf.template /etc/nginx/templates/nginx.render.conf.template
-COPY supervisord.conf /etc/supervisord.conf
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-# Render provides $PORT (single external port)
 ENV PORT=10000
-
 EXPOSE 10000
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 

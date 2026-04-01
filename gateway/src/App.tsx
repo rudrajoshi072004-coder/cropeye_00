@@ -20,15 +20,18 @@ function LandingRedirect() {
     }
   }, []);
 
-  return <Navigate to="/login" replace />;
+  // If not redirecting out, show the login page route
+  return <Navigate to="/" replace />;
 }
 
 export default function App() {
   return (
     <Routes>
+      {/* In production, this app is mounted under /login/ (basename). */}
       <Route path="/" element={<LandingRedirect />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Backward compatibility */}
+      <Route path="/login" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

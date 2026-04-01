@@ -29,6 +29,17 @@ server {
     try_files $uri /grapes$uri /sugarcane$uri =404;
   }
 
+  # Proxy grapes "events" service to avoid browser CORS issues.
+  # Frontend calls /events/... in production (same-origin).
+  location /events/ {
+    proxy_http_version 1.1;
+    proxy_set_header Host cropeye-grapes-events-production.up.railway.app;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass https://cropeye-grapes-events-production.up.railway.app/;
+  }
+
   # --- Gateway SPA (served at /login/) ---
   location /login/ {
     try_files $uri $uri/ /login/index.html;

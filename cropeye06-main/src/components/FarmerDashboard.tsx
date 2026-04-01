@@ -204,7 +204,12 @@ const PieChartWithNeedle: React.FC<PieChartWithNeedleProps> = ({
   );
 };
 
-const BASE_URL = "https://cropeye-grapes-events-production.up.railway.app";
+// In production we call same-origin "/events" (nginx proxies to Railway) to avoid CORS.
+const BASE_URL =
+  (import.meta.env.VITE_GRAPES_EVENTS_BASE_URL as string | undefined) ||
+  (typeof window !== "undefined" && !import.meta.env.DEV
+    ? `${window.location.origin}/events`
+    : "https://cropeye-grapes-events-production.up.railway.app");
 const OPTIMAL_BIOMASS = 150;
 
 // API function to fetch Brix Time Series

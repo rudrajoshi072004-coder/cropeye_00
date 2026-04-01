@@ -7,20 +7,15 @@
  *   change backend base URL logic in `src/api.ts`.
  */
 export function getEventsBaseUrl(): string {
-  const devUrl = (import.meta.env.VITE_DEV_EVENTS_API_URL as string | undefined)?.trim();
-
-  // Local dev: use env override if present, otherwise fall back to known Railway URL.
-  if (import.meta.env.DEV) {
-    return devUrl && devUrl.length > 0
-      ? devUrl.replace(/\/+$/, "")
-      : "https://cropeye-grapes-events-production.up.railway.app";
-  }
-
-  // Production: use explicit override if provided; otherwise use same-origin proxy.
+  // Explicit override wins in any environment.
   const prodOverride = (import.meta.env.VITE_GRAPES_EVENTS_BASE_URL as string | undefined)?.trim();
   if (prodOverride && prodOverride.length > 0) return prodOverride.replace(/\/+$/, "");
 
-  if (typeof window !== "undefined") return `${window.location.origin}/events`;
-  return "/events";
+  // Prefer the same Events URL in local + production (backend connections unchanged).
+  const devUrl = (import.meta.env.VITE_DEV_EVENTS_API_URL as string | undefined)?.trim();
+  if (devUrl && devUrl.length > 0) return devUrl.replace(/\/+$/, "");
+
+  // Default (unchanged backend)
+  return "https://cropeye-grapes-events-production.up.railway.app";
 }
 

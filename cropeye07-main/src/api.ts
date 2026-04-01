@@ -9,6 +9,7 @@ import {
   getUserRole,
 } from "./utils/auth";
 import { checkAndRefreshToken, isTokenExpired } from "./utils/tokenManager";
+import { gatewayLogout } from "./utils/gatewayAuth";
 
 // Set base URL for backend (use .env VITE_API_BASE_URL or new Render backend)
 const API_BASE_URL =
@@ -154,10 +155,8 @@ api.interceptors.response.use(
             isRefreshing = false;
             clearAllLocalStorage();
 
-            // Redirect to login page
-            if (window.location.pathname !== "/login") {
-              window.location.href = "/login";
-            }
+            // Redirect to centralized login
+            gatewayLogout();
 
             return Promise.reject(refreshError);
           }
@@ -167,9 +166,8 @@ api.interceptors.response.use(
           isRefreshing = false;
           clearAllLocalStorage();
 
-          if (window.location.pathname !== "/login") {
-            window.location.href = "/login";
-          }
+          // Redirect to centralized login
+          gatewayLogout();
         }
       }
     }

@@ -8,6 +8,7 @@ import {
   clearAllLocalStorage,
 } from "./auth";
 import axios from "axios";
+import { gatewayLogout } from "./gatewayAuth";
 
 // Get API base URL from environment or use default
 const API_BASE_URL =
@@ -118,10 +119,8 @@ export const refreshAccessToken = async (): Promise<string | null> => {
       console.warn("Refresh token is invalid, clearing all storage");
       clearAllLocalStorage();
 
-      // Redirect to login if not already there
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      // Redirect to centralized login
+      gatewayLogout();
     }
 
     return null;

@@ -2,7 +2,9 @@ import { clearAllLocalStorage, getAuthToken } from "./auth";
 
 export const GATEWAY_URL =
   (import.meta.env.VITE_GATEWAY_URL as string | undefined) ||
-  (typeof window !== "undefined" ? window.location.origin : "http://localhost:5173");
+  (typeof window !== "undefined"
+    ? (import.meta.env.DEV ? "http://localhost:5173" : window.location.origin)
+    : "http://localhost:5173");
 
 const getGatewayOrigin = () => {
   try {

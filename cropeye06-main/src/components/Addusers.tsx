@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { addUser } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { gatewayLogout } from '../utils/gatewayAuth';
 
 interface User {
   id: number;
@@ -116,7 +117,7 @@ export const Addusers: React.FC<AddusersProps> = ({ setUsers, users }) => {
           setError('Your session has expired. Please login again to continue.');
           // Redirect to login after 3 seconds
           setTimeout(() => {
-            window.location.href = '/login';
+            gatewayLogout();
           }, 3000);
           return;
         }

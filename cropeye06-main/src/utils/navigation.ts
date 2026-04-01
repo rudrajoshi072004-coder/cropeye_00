@@ -66,7 +66,14 @@ export const navigateToLogin = () => {
         } catch (e) {
           console.warn('Could not clear auth data:', e);
         }
-        window.location.href = '/login';
+        // Redirect to centralized gateway login (prevents blank internal /login screens)
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const { gatewayLogout } = require('./gatewayAuth');
+          gatewayLogout();
+        } catch {
+          window.location.href = '/login';
+        }
       }
       redirectInProgress = false;
     }, 100);

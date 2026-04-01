@@ -36,7 +36,9 @@ export default function LoginPage() {
     return u.toString();
   };
 
-  // Auto redirect (IMPORTANT)
+  // Handle logout=1 (clear storage and stay on login).
+  // IMPORTANT: Do NOT auto-redirect from /login/ in production, otherwise users
+  // cannot reach the login page when tokens exist in same-origin storage.
   useEffect(() => {
     // If coming from any app logout, clear gateway storage and stay on login
     try {
@@ -51,22 +53,6 @@ export default function LoginPage() {
     } catch {
       // ignore
     }
-
-    const token = getToken();
-    if (!token) return;
-    const industry = getIndustry();
-    const dest = getRedirectURL(industry);
-    if (dest) {
-      const refresh = localStorage.getItem("refresh_token");
-      if (refresh && industry) {
-        window.location.assign(buildRedirectWithTokens(dest, token, refresh, industry));
-      } else {
-        // If missing pieces, force manual login
-        setError("");
-      }
-      return;
-    }
-    setError("Invalid industry received from server");
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {

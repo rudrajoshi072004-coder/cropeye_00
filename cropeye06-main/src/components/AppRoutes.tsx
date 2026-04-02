@@ -39,6 +39,12 @@ const isOnGatewayPath = () => {
   }
 };
 
+const getGatewayLoginUrl = (logout = false) => {
+  const base = getGatewayOrigin().replace(/\/+$/, "");
+  const url = `${base}/login/`;
+  return logout ? `${url}?logout=1` : url;
+};
+
 const bootstrapTokensFromUrl = () => {
   try {
     const url = new URL(window.location.href);
@@ -105,7 +111,7 @@ const AppRoutesContent: React.FC = () => {
           if (isMounted) setLoading(false);
           // Always route unauthenticated users to gateway (no internal login)
           if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-            window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+            window.location.assign(getGatewayLoginUrl(true));
           }
           checkInProgress = false;
           return;
@@ -115,7 +121,7 @@ const AppRoutesContent: React.FC = () => {
         if (window.location.pathname === "/login") {
           // Internal login disabled -> send to gateway
           if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-            window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+            window.location.assign(getGatewayLoginUrl(true));
           }
           checkInProgress = false;
           return;
@@ -337,7 +343,7 @@ const AppRoutesContent: React.FC = () => {
     
     // Redirect to centralized login
     if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-      window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+      window.location.assign(getGatewayLoginUrl(true));
     }
   };
 

@@ -40,6 +40,12 @@ const isOnGatewayPath = () => {
   }
 };
 
+const getGatewayLoginUrl = (logout = false) => {
+  const base = getGatewayOrigin().replace(/\/+$/, "");
+  const url = `${base}/login/`;
+  return logout ? `${url}?logout=1` : url;
+};
+
 const bootstrapTokensFromUrl = () => {
   try {
     const url = new URL(window.location.href);
@@ -83,7 +89,7 @@ const AppRoutesContent: React.FC = () => {
     // Gateway enforcement: internal login disabled
     if (window.location.pathname === "/login") {
       if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-        window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+        window.location.assign(getGatewayLoginUrl(true));
       }
       return;
     }
@@ -91,7 +97,7 @@ const AppRoutesContent: React.FC = () => {
     if (!token) {
       setLoading(false);
       if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-        window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+        window.location.assign(getGatewayLoginUrl(true));
       }
       return;
     }
@@ -283,7 +289,7 @@ const AppRoutesContent: React.FC = () => {
     setUserRole(null);
     setIsAuthenticated(false);
     if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-      window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+      window.location.assign(getGatewayLoginUrl(true));
     }
   };
 

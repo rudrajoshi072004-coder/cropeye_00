@@ -14,6 +14,12 @@ const getGatewayOrigin = () => {
   }
 };
 
+const getGatewayLoginUrl = (logout = false) => {
+  const base = getGatewayOrigin().replace(/\/+$/, "");
+  const url = `${base}/login/`;
+  return logout ? `${url}?logout=1` : url;
+};
+
 const isOnGatewayPath = () => {
   try {
     return window.location.pathname.startsWith("/login");
@@ -26,13 +32,13 @@ export function requireGatewayAuth(): void {
   const token = getAuthToken();
   if (!token) {
     if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
-      window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+      window.location.assign(getGatewayLoginUrl(true));
     }
   }
 }
 
 export function gatewayLogout(): void {
   clearAllLocalStorage();
-  if (!isOnGatewayPath()) window.location.assign(`${GATEWAY_URL}/login?logout=1`);
+  if (!isOnGatewayPath()) window.location.assign(getGatewayLoginUrl(true));
 }
 

@@ -1761,7 +1761,7 @@ const FarmerDashboard: React.FC = () => {
                       }
                       tickFormatter={(tick: string) => {
                         if (timePeriod === "monthly") return tick;
-                        if (timePeriod === "daily") {
+                        if (timePeriod === "daily" || timePeriod === "weekly") {
                           const d = new Date(tick);
                           return d.toLocaleDateString("en-US", {
                             month: "short",
@@ -1786,7 +1786,7 @@ const FarmerDashboard: React.FC = () => {
                       }
                       tickFormatter={(tick: string) => {
                         if (timePeriod === "monthly") return tick;
-                        if (timePeriod === "daily") {
+                        if (timePeriod === "daily" || timePeriod === "weekly") {
                           const d = new Date(tick);
                           return d.toLocaleDateString("en-US", {
                             month: "short",

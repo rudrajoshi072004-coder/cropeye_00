@@ -207,7 +207,7 @@ const OwnerFarmDash: React.FC = () => {
   const [combinedChartData, setCombinedChartData] = useState<LineChartData[]>(
     [],
   );
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>("weekly");
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>("yearly");
   const [aggregatedData, setAggregatedData] = useState<LineChartData[]>([]);
 
   // Mobile layout flag for charts
@@ -844,20 +844,42 @@ const OwnerFarmDash: React.FC = () => {
       return filteredData;
     }
 
-    // Filter to last 15 days for weekly period
-    let filteredData = data;
+    // Weekly = show last 7 days trend (no week-bucketing; avoids collapsing into 1 point)
     if (period === "weekly") {
       const now = new Date();
-      now.setHours(0, 0, 0, 0); // Set to midnight for accurate date comparison
-      const fifteenDaysAgo = new Date(now);
-      fifteenDaysAgo.setDate(now.getDate() - 15);
-      
-      filteredData = data.filter((item) => {
-        const itemDate = new Date(item.date);
-        itemDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
-        return itemDate >= fifteenDaysAgo;
-      });
+      now.setHours(0, 0, 0, 0);
+      const sevenDaysAgo = new Date(now);
+      sevenDaysAgo.setDate(now.getDate() - 6); // include today = 7 days total
+
+      const weeklyData = data
+        .filter((item) => {
+          const itemDate = new Date(item.date);
+          itemDate.setHours(0, 0, 0, 0);
+          return itemDate >= sevenDaysAgo && itemDate <= now;
+        })
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
+
+      // If only one data point, duplicate it to create a line representation
+      if (weeklyData.length === 1) {
+        return [weeklyData[0], { ...weeklyData[0] }];
+      }
+
+      // If nothing in last 7 days, fall back to most recent 7 points
+      if (weeklyData.length === 0) {
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        );
+        const recent = sorted.slice(0, 7).reverse();
+        if (recent.length === 1) return [recent[0], { ...recent[0] }];
+        return recent;
+      }
+
+      return weeklyData;
     }
+
+    let filteredData = data;
 
     const groupedData: { [key: string]: LineChartData[] } = {};
     filteredData.forEach((item) => {

@@ -712,16 +712,22 @@ const FarmerDashboard: React.FC = () => {
 
     // Weekly = show last 7 days trend (no week-bucketing; avoids collapsing into 1 point)
     if (period === "weekly") {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      const sevenDaysAgo = new Date(now);
-      sevenDaysAgo.setDate(now.getDate() - 6); // include today = 7 days total
+      // IMPORTANT: Weekly window should be based on the latest available data point
+      // (not "today"), otherwise the range can be wrong when backend data is delayed.
+      const sortedDesc = [...data].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      const end = sortedDesc.length ? new Date(sortedDesc[0].date) : new Date();
+      end.setHours(0, 0, 0, 0);
+
+      const start = new Date(end);
+      start.setDate(end.getDate() - 6); // include end day = 7 days total
 
       const weeklyData = data
         .filter((item) => {
           const itemDate = new Date(item.date);
           itemDate.setHours(0, 0, 0, 0);
-          return itemDate >= sevenDaysAgo && itemDate <= now;
+          return itemDate >= start && itemDate <= end;
         })
         .sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()

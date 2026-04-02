@@ -102,6 +102,7 @@ interface FarmerData {
   confirm_password: string;
   email: string;
   phone_number: string;
+  aadhar_card: string;
   address: string;
   taluka: string;
   crop_type: string;
@@ -277,6 +278,7 @@ function AddFarm() {
     confirm_password: "",
     email: "",
     phone_number: "",
+    aadhar_card: "",
     address: "",
     taluka: "",
     crop_type: "Grapes",
@@ -317,6 +319,14 @@ function AddFarm() {
     documents: null,
   });
 
+  const [graftedVarietySelection, setGraftedVarietySelection] = useState<string>(
+    formData.grafted_variety || ""
+  );
+
+  const [varietySelection, setVarietySelection] = useState<string>(
+    formData.variety || ""
+  );
+
   const [showIcons, setShowIcons] = useState<IconVisibility>({
     first_name: true,
     last_name: true,
@@ -325,6 +335,7 @@ function AddFarm() {
     confirm_password: true,
     email: true,
     phone_number: true,
+    aadhar_card: true,
     address: true,
     taluka: true,
     PlantAge: true,
@@ -1019,7 +1030,7 @@ function AddFarm() {
 
       layers.eachLayer((layer: L.Layer) => {
         try {
-          const geoJson = layer.toGeoJSON();
+          const geoJson = (layer as any)?.toGeoJSON?.();
           
           if (!geoJson || !geoJson.geometry || geoJson.geometry.type !== "Polygon") {
             return;
@@ -1630,6 +1641,7 @@ The farmer can now login with Email credentials to access the dashboard and moni
         confirm_password: "",
         email: "",
         phone_number: "",
+        aadhar_card: "",
         address: "",
         taluka: "",
         crop_type: "Grapes",
@@ -1658,6 +1670,7 @@ The farmer can now login with Email credentials to access the dashboard and moni
         district: "",
         documents: null,
       });
+      setGraftedVarietySelection("");
 
       // Clear plots and map
       setPlots([]);
@@ -2014,23 +2027,63 @@ The farmer can now login with Email credentials to access the dashboard and moni
         case "dogridge_rootstock_type":
           return ["dogridge", "banglore", "polson", "polso"];
         case "grafted_variety":
-          return ["thompson", "tas_a_ganesh", "sonaka", "manik_chaman", "flame_seedless", "crimson_seedless", "red_globe", "sudhakar_seedless", "allison", "timco", "ard_35", "ard_36"];
+          return [
+            "Thompson seedless",
+            "super sonaka",
+            "Manik chaman",
+            "Crimson ",
+            "sudhakar seedless",
+            "SSN",
+            "sharad seedless",
+            "mama jambo",
+            "Tas-A-Ganesh",
+            "Flame seedless",
+            "Crimson seedless",
+            "Red Globe",
+            "RK",
+            "Allison",
+            "Timco",
+            "Arra-35",
+            "Arra-36",
+            "1530",
+            "1557",
+            "clone ",
+            "Timson",
+            "Raigad purple",
+            "Anushka",
+            "nanasaheb purple",
+            "other",
+          ];
         case "soil_type":
           return ["clay", "loam", "sandy_loam", "sandy"];
         case "variety":
           return [
-            "thompson",
-            "tas_a_ganesh",
-            "sonaka",
-            "manik_chaman",
-            "flame_seedless",
-            "crimson_seedless",
-            "red_globe",
-            "sudhakar_seedless",
-            "allison",
-            "timco",
-            "ard_35",
-            "ard_36"
+            "Thompson seedless",
+            "super sonaka",
+            "Manik chaman",
+            "Crimson ", 
+            "sudhakar seedless",
+            "SSN",
+            "sharad seedless",
+            "mama jambo",
+            "Tas-A-Ganesh", 
+            "Flame seedless",
+            "Crimson seedless",
+            "Red Globe",
+            "RK",
+            "Allison",
+            "Timco",
+            "Arra-35",    
+            "Arra-36",  
+            "1530",
+            "1557",
+            "clone ",
+            "Timson",
+            "Raigad purple",
+            "Anushka",
+            "nanasaheb purple",
+            "other",
+
           ];
         case "intercropping":
           return ["yes", "no"];
@@ -2065,89 +2118,167 @@ The farmer can now login with Email credentials to access the dashboard and moni
             {key.replace("_", " ").replace("number", "Number")}{" "}
             <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
-            {isSelectField ? (
-              <select
-                name={key}
-                value={value}
-                onChange={handleInputChange}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
-              >
-                <option value="">Select {key.replace("_", " ")}</option>
-                {options.filter(opt => opt != null && opt !== "").map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type={
-                  key === "email"
-                    ? "email"
-                    : key.includes("date") || key.includes("Date")
-                      ? "date"
-                      : key === "password" || key === "confirm_password"
-                        ? "password"
-                        : key === "phone_number"
-                          ? "tel"
-                          : "text"
-                }
-                name={key}
-                placeholder={`Enter ${key.replace("_", " ")}`}
-                value={value}
-                onChange={
-                  key === "phone_number"
-                    ? handlePhoneChange
-                    : key === "email"
-                      ? handleEmailChange
-                      : handleInputChange
-                }
-                onClick={
-                  (key.includes("date") || key.includes("Date"))
-                    ? (e) => {
-                        const input = e.target as HTMLInputElement;
-                        // Only open calendar on click, not on focus
-                        if (input && typeof input.showPicker === 'function') {
-                          input.showPicker();
-                        }
+          <div>
+            <div className="relative">
+              {isSelectField ? (
+                <select
+                  name={key}
+                  value={
+                    key === "grafted_variety"
+                      ? graftedVarietySelection
+                      : key === "variety"
+                        ? varietySelection
+                        : value
+                  }
+                  onChange={(e) => {
+                    if (key === "grafted_variety") {
+                      const selected = e.target.value;
+                      setGraftedVarietySelection(selected);
+                      if (selected !== "other") {
+                        setFormData((prev) => ({ ...prev, grafted_variety: selected }));
+                        setShowIcons((prev) => ({ ...prev, grafted_variety: selected === "" }));
+                      } else {
+                        setFormData((prev) => ({ ...prev, grafted_variety: "" }));
+                        setShowIcons((prev) => ({ ...prev, grafted_variety: true }));
                       }
-                    : undefined
-                }
-                onFocus={
-                  key === "phone_number"
-                    ? () => setShowPhoneTooltip(true)
-                    : key === "email"
-                      ? () => setShowEmailTooltip(true)
+                      return;
+                    }
+                    if (key === "variety") {
+                      const selected = e.target.value;
+                      setVarietySelection(selected);
+                      if (selected !== "other") {
+                        setFormData((prev) => ({ ...prev, variety: selected }));
+                        setShowIcons((prev) => ({ ...prev, variety: selected === "" }));
+                      } else {
+                        setFormData((prev) => ({ ...prev, variety: "" }));
+                        setShowIcons((prev) => ({ ...prev, variety: true }));
+                      }
+                      return;
+                    }
+                    handleInputChange(e);
+                  }}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                >
+                  <option value="">Select {key.replace("_", " ")}</option>
+                  {options.filter(opt => opt != null && opt !== "").map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={
+                    key === "email"
+                      ? "email"
+                      : key.includes("date") || key.includes("Date")
+                        ? "date"
+                        : key === "password" || key === "confirm_password"
+                          ? "password"
+                          : key === "phone_number"
+                            ? "tel"
+                            : "text"
+                  }
+                  name={key}
+                  placeholder={`Enter ${key.replace("_", " ")}`}
+                  value={value}
+                  onChange={
+                    key === "phone_number"
+                      ? handlePhoneChange
+                      : key === "email"
+                        ? handleEmailChange
+                        : handleInputChange
+                  }
+                  onClick={
+                    (key.includes("date") || key.includes("Date"))
+                      ? (e) => {
+                          const input = e.target as HTMLInputElement;
+                          // Only open calendar on click, not on focus
+                          if (input && typeof input.showPicker === 'function') {
+                            input.showPicker();
+                          }
+                        }
                       : undefined
-                }
-                onBlur={
-                  key === "phone_number"
-                    ? () => setTimeout(() => setShowPhoneTooltip(false), 300)
-                    : key === "email"
-                      ? () => setTimeout(() => setShowEmailTooltip(false), 300)
-                      : undefined
-                }
-                maxLength={key === "phone_number" ? 10 : undefined}
-                className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors ${(key === "phone_number" && phoneError) ||
-                  (key === "email" && emailError)
-                  ? "border-red-500 bg-red-50"
-                  : (key === "phone_number" &&
-                    value.length === 10 &&
-                    !phoneError) ||
-                    (key === "email" &&
-                      value.length > 0 &&
-                      !emailError &&
-                      emailPattern.test(value))
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-300"
-                  }`}
-              />
+                  }
+                  onFocus={
+                    key === "phone_number"
+                      ? () => setShowPhoneTooltip(true)
+                      : key === "email"
+                        ? () => setShowEmailTooltip(true)
+                        : undefined
+                  }
+                  onBlur={
+                    key === "phone_number"
+                      ? () => setTimeout(() => setShowPhoneTooltip(false), 300)
+                      : key === "email"
+                        ? () => setTimeout(() => setShowEmailTooltip(false), 300)
+                        : undefined
+                  }
+                  maxLength={key === "phone_number" ? 10 : undefined}
+                  className={`block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm transition-colors ${(key === "phone_number" && phoneError) ||
+                    (key === "email" && emailError)
+                    ? "border-red-500 bg-red-50"
+                    : (key === "phone_number" &&
+                      value.length === 10 &&
+                      !phoneError) ||
+                      (key === "email" &&
+                        value.length > 0 &&
+                        !emailError &&
+                        emailPattern.test(value))
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300"
+                    }`}
+                />
+              )}
+              {showIcons[key] && (
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  {getFieldIcon(key)}
+                </span>
+              )}
+            </div>
+
+            {key === "grafted_variety" && graftedVarietySelection === "other" && (
+              <div className="mt-3 relative">
+                <input
+                  type="text"
+                  name="grafted_variety"
+                  placeholder="Enter grafted variety"
+                  value={formData.grafted_variety || ""}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFormData((prev) => ({ ...prev, grafted_variety: v }));
+                    setShowIcons((prev) => ({ ...prev, grafted_variety: v === "" }));
+                  }}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                />
+                {showIcons.grafted_variety && (
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    {getFieldIcon("grafted_variety")}
+                  </span>
+                )}
+              </div>
             )}
-            {showIcons[key] && (
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                {getFieldIcon(key)}
-              </span>
+
+            {key === "variety" && varietySelection === "other" && (
+              <div className="mt-3 relative">
+                <input
+                  type="text"
+                  name="variety"
+                  placeholder="Enter variety"
+                  value={formData.variety || ""}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFormData((prev) => ({ ...prev, variety: v }));
+                    setShowIcons((prev) => ({ ...prev, variety: v === "" }));
+                  }}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                />
+                {showIcons.variety && (
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    {getFieldIcon("variety")}
+                  </span>
+                )}
+              </div>
             )}
 
             {/* Phone number validation indicators */}
@@ -2645,6 +2776,7 @@ The farmer can now login with Email credentials to access the dashboard and moni
     "confirm_password",
     "email",
     "phone_number",
+    "aadhar_card",
     "address",
     "state",
     "district",

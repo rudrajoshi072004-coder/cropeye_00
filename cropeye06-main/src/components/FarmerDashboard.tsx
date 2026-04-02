@@ -504,7 +504,7 @@ const FarmerDashboard: React.FC = () => {
   const [combinedChartData, setCombinedChartData] = useState<LineChartData[]>(
     []
   );
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>("weekly");
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>("yearly");
   const [aggregatedData, setAggregatedData] = useState<LineChartData[]>([]);
 
   const lineStyles: LineStyles = {
@@ -710,20 +710,40 @@ const FarmerDashboard: React.FC = () => {
       return filteredData;
     }
 
-    // Filter to last 15 days for weekly period
-    let filteredData = data;
+    // Weekly = show last 7 days trend (no week-bucketing; avoids collapsing into 1 point)
     if (period === "weekly") {
       const now = new Date();
-      now.setHours(0, 0, 0, 0); // Set to midnight for accurate date comparison
-      const fifteenDaysAgo = new Date(now);
-      fifteenDaysAgo.setDate(now.getDate() - 15);
+      now.setHours(0, 0, 0, 0);
+      const sevenDaysAgo = new Date(now);
+      sevenDaysAgo.setDate(now.getDate() - 6); // include today = 7 days total
 
-      filteredData = data.filter((item) => {
-        const itemDate = new Date(item.date);
-        itemDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
-        return itemDate >= fifteenDaysAgo;
-      });
+      const weeklyData = data
+        .filter((item) => {
+          const itemDate = new Date(item.date);
+          itemDate.setHours(0, 0, 0, 0);
+          return itemDate >= sevenDaysAgo && itemDate <= now;
+        })
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+
+      if (weeklyData.length === 1) {
+        return [weeklyData[0], { ...weeklyData[0] }];
+      }
+
+      if (weeklyData.length === 0) {
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        const recent = sorted.slice(0, 7).reverse();
+        if (recent.length === 1) return [recent[0], { ...recent[0] }];
+        return recent;
+      }
+
+      return weeklyData;
     }
+
+    let filteredData = data;
 
     const groupedData: { [key: string]: LineChartData[] } = {};
 
@@ -735,7 +755,10 @@ const FarmerDashboard: React.FC = () => {
         case "weekly":
           const weekStart = new Date(date);
           weekStart.setDate(date.getDate() - date.getDay());
-          key = weekStart.toISOString().split("T")[0];
+          // Use local date parts (avoid `toISOString()` UTC shifting by timezone)
+          key = `${weekStart.getFullYear()}-${String(
+            weekStart.getMonth() + 1
+          ).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
           break;
         case "monthly":
           key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -793,21 +816,6 @@ const FarmerDashboard: React.FC = () => {
         };
       })
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    // For weekly period, ensure we only show weeks within the last 15 days
-    if (period === "weekly") {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      const fifteenDaysAgo = new Date(now);
-      fifteenDaysAgo.setDate(now.getDate() - 15);
-
-      return result.filter((item) => {
-        const weekStartDate = new Date(item.date);
-        weekStartDate.setHours(0, 0, 0, 0);
-        // Include week if its start date is within the last 15 days
-        return weekStartDate >= fifteenDaysAgo;
-      });
-    }
 
     return result;
   };

@@ -891,7 +891,11 @@ const ManagerFarmDash: React.FC = () => {
         case "weekly":
           const weekStart = new Date(date);
           weekStart.setDate(date.getDate() - date.getDay());
-          key = weekStart.toISOString().split("T")[0];
+          // Use local date parts (avoid `toISOString()` UTC shifting by timezone)
+          key = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(
+            2,
+            "0",
+          )}-${String(weekStart.getDate()).padStart(2, "0")}`;
           break;
         case "monthly":
           key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -944,21 +948,6 @@ const ManagerFarmDash: React.FC = () => {
         };
       })
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    // For weekly period, ensure we only show weeks within the last 15 days
-    if (period === "weekly") {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      const fifteenDaysAgo = new Date(now);
-      fifteenDaysAgo.setDate(now.getDate() - 15);
-      
-      return result.filter((item) => {
-        const weekStartDate = new Date(item.date);
-        weekStartDate.setHours(0, 0, 0, 0);
-        // Include week if its start date is within the last 15 days
-        return weekStartDate >= fifteenDaysAgo;
-      });
-    }
 
     return result;
   };

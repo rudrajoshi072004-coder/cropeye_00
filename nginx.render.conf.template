@@ -4,6 +4,9 @@ server {
 
   root /usr/share/nginx/html;
 
+  # Legacy deploy path: /sugarcane/... -> /sugarcan/... (301)
+  rewrite ^/sugarcane/?(.*)$ /sugarcan/$1 permanent;
+
   # Make root go to /login/
   location = / {
     return 302 /login/;
@@ -16,17 +19,17 @@ server {
   location = /grapes {
     return 301 /grapes/;
   }
-  location = /sugarcane {
-    return 301 /sugarcane/;
+  location = /sugarcan {
+    return 301 /sugarcan/;
   }
 
   # Static assets referenced with absolute paths in code (fix 404s):
   # Many components use /icons/... and /Image/... directly.
   location /icons/ {
-    try_files $uri /login$uri /grapes$uri /sugarcane$uri =404;
+    try_files $uri /login$uri /grapes$uri /sugarcan$uri =404;
   }
   location /Image/ {
-    try_files $uri /grapes$uri /sugarcane$uri =404;
+    try_files $uri /grapes$uri /sugarcan$uri =404;
   }
 
   # Proxy grapes "events" service to avoid browser CORS issues.
@@ -52,9 +55,8 @@ server {
     try_files $uri $uri/ /grapes/index.html;
   }
 
-  # --- Sugarcane SPA (served at /sugarcane/) ---
-  location /sugarcane/ {
-    try_files $uri $uri/ /sugarcane/index.html;
+  # --- Sugarcane SPA (cropeye07, served at /sugarcan/) ---
+  location /sugarcan/ {
+    try_files $uri $uri/ /sugarcan/index.html;
   }
 }
-

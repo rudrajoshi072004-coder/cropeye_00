@@ -286,7 +286,22 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
           const finalDisplayedDose = npkAnalysis.final_displayed_dose || {};
 
           // Extract soil_statistics data
-          const soilStats = data.soil_statistics || {};
+          const soilStats: any = data.soil_statistics || {};
+
+          // Normalize hyphenated soil grid keys into underscore versions (if present)
+          // e.g. `bdod_0-5cm_mean` / `soc_0-5cm_mean` from some soil datasets
+          const normalizedExtra: Partial<ApiSoilData> = {
+            bdod_0_5cm_mean:
+              (data as any)?.bdod_0_5cm_mean ??
+              (data as any)?.["bdod_0-5cm_mean"] ??
+              soilStats?.bdod_0_5cm_mean ??
+              soilStats?.["bdod_0-5cm_mean"],
+            soc_0_5cm_mean:
+              (data as any)?.soc_0_5cm_mean ??
+              (data as any)?.["soc_0-5cm_mean"] ??
+              soilStats?.soc_0_5cm_mean ??
+              soilStats?.["soc_0-5cm_mean"],
+          };
 
           // Build soilDataToSet with proper field mapping
           soilDataToSet = {
@@ -318,6 +333,13 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
             organic_carbon: soilStats.soil_organic_carbon || data.organic_carbon || 0,
             // Bulk density from soil_statistics
             soil_density: soilStats.bulk_density || data.soil_density || data.bulk_density || 0,
+            // IMPORTANT: Cards use these exact keys
+            bulk_density: soilStats.bulk_density || data.bulk_density || data.soil_density || 0,
+            soil_organic_carbon:
+              soilStats.soil_organic_carbon ||
+              data.soil_organic_carbon ||
+              data.organic_carbon ||
+              0,
             // Total nitrogen from soil_statistics
             total_nitrogen: soilStats.total_nitrogen || data.total_nitrogen || 0,
             // Organic carbon stock from soil_statistics
@@ -333,6 +355,8 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
             vv_backscatter_db: soilStats.vv_backscatter_db || data.vv_backscatter_db || 0,
             vh_backscatter_db: soilStats.vh_backscatter_db || data.vh_backscatter_db || 0,
           };
+
+          soilDataToSet = { ...soilDataToSet, ...normalizedExtra };
         }
 
         // 🔥 CRITICAL: Merge data from required-n API (this takes priority for soil NPK values)

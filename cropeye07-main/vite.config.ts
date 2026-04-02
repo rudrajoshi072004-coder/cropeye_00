@@ -5,8 +5,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
   assetsInclude: ["**/*.geojson"],
-  // When deployed behind one domain (Render + nginx), sugarcane app is served under /sugarcane/
-  base: mode === "production" ? "/sugarcane/" : "/",
+  // When deployed behind one domain (Render + nginx), sugarcane app is served under /sugarcan/
+  base: mode === "production" ? "/sugarcan/" : "/",
 
   // Ensure single React instance (fixes "isElement" undefined errors with chunking)
   resolve: {

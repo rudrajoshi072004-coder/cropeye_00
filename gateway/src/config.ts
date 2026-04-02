@@ -26,7 +26,7 @@ export function getRedirectURL(industryName: string | null | undefined): string 
   );
   const sugarcaneUrl = toAbsoluteAppUrl(
     (import.meta.env.VITE_SUGARCANE_APP_URL as string | undefined) ||
-      (typeof window !== "undefined" && !import.meta.env.DEV ? "/sugarcane/" : "http://localhost:3002"),
+      (typeof window !== "undefined" && !import.meta.env.DEV ? "/sugarcan/" : "http://localhost:3002"),
   );
 
   // Accept "grapes", "grapse", "grape", "grap..." (common typo variants)
@@ -35,7 +35,7 @@ export function getRedirectURL(industryName: string | null | undefined): string 
   }
 
   if (name.includes("sugarcane")) {
-    return sugarcaneUrl; // cropeye07 (or /sugarcane behind a reverse proxy)
+    return sugarcaneUrl; // cropeye07 (deployed at /sugarcan/ behind nginx)
   }
 
   return null;

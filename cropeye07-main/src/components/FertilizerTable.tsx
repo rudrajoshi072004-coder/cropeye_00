@@ -190,12 +190,32 @@ const FertilizerTable: React.FC = () => {
         availableMethods: budData.fertilizer_schedule.map((s) => s.method),
       });
 
-      // Throw error instead of using fallback schedule
-      throw new Error(
-        `No fertilizer schedule found for planting method "${plantingMethod}" (normalized: "${normalizedMethod}"). Available methods: ${budData.fertilizer_schedule
-          .map((s) => s.method)
-          .join(", ")}`
-      );
+      // Non-breaking fallback: pick a reasonable default schedule so the table still renders.
+      // Backend farm data sometimes misses `planting_method` or uses a non-standard label.
+      const defaultSchedule =
+        budData.fertilizer_schedule.find(
+          (s: any) =>
+            String(s?.method || "")
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "-")
+              .replace(/_/g, "-")
+              .replace(/[^a-z0-9-]/g, "")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "") === "2-bud"
+        ) || budData.fertilizer_schedule[0];
+
+      if (!defaultSchedule) {
+        throw new Error("No fertilizer schedules available in bud.json");
+      }
+
+      console.warn("FertilizerTable: Falling back to default schedule", {
+        chosenMethod: defaultSchedule.method,
+        normalizedMethod,
+        originalMethod: plantingMethod,
+      });
+
+      return generateSevenDaysDataWithSchedule(plantationDate, defaultSchedule);
     }
 
     console.log(
@@ -468,33 +488,26 @@ const FertilizerTable: React.FC = () => {
         firstFarm.crop_type?.planting_method || // Primary: farms[].crop_type.planting_method (e.g., "2_bud")
         firstFarm.crop_type?.planting_method_display; // Alternative: farms[].crop_type.planting_method_display (e.g., "2 Bud Method")
 
+      const plantingMethodToUse = plantingMethod || "2-bud";
       if (!plantingMethod) {
-        console.error(
-          "FertilizerTable: Planting method not found in API response",
-          {
-            fastapi_plot_id: selectedPlot.fastapi_plot_id,
-            farm_id: firstFarm.id,
-            farm_uid: firstFarm.farm_uid,
-            crop_type: firstFarm.crop_type,
-            availableFields: Object.keys(firstFarm),
-          }
-        );
-        throw new Error(
-          `Planting method not found in farm data for plot "${plotToUse}". Please ensure planting method is set for this farm in the backend.`
-        );
+        console.warn("FertilizerTable: Planting method missing; using default", {
+          fastapi_plot_id: selectedPlot.fastapi_plot_id,
+          plotToUse,
+          defaultMethod: plantingMethodToUse,
+        });
       }
 
       console.log("FertilizerTable: Extracted planting method", {
         planting_method: firstFarm.crop_type?.planting_method,
         planting_method_display: firstFarm.crop_type?.planting_method_display,
-        extractedMethod: plantingMethod,
+        extractedMethod: plantingMethodToUse,
       });
 
       console.log("FertilizerTable: Generating fertilizer schedule", {
         fastapi_plot_id: selectedPlot.fastapi_plot_id,
         plotToUse,
         plantationDate,
-        plantingMethod,
+        plantingMethod: plantingMethodToUse,
         plantationType: plantationTypeValue,
         monthsCompleted: monthsSincePlantation,
         farmData: {
@@ -509,7 +522,7 @@ const FertilizerTable: React.FC = () => {
       try {
         const fertilizerData = generateSevenDaysData(
           plantationDate,
-          plantingMethod
+          plantingMethodToUse
         );
         setData(fertilizerData);
         console.log(

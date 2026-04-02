@@ -2104,7 +2104,7 @@ const FarmerDashboard: React.FC = () => {
                   {metrics.organicCarbonDensity !== null && metrics.organicCarbonDensity !== undefined
                     ? metrics.organicCarbonDensity === 0
                       ? "0"
-                      : metrics.organicCarbonDensity
+                      : Number(metrics.organicCarbonDensity).toFixed(2)
                     : "-"}
                 </div>
                 <div className="text-xs font-semibold text-emerald-600">

@@ -82,6 +82,39 @@ export default defineConfig(({ mode }) => ({
     },
     // Proxy API requests to avoid CORS issues in development
     proxy: {
+      // All cropeye-grapes-events-production routes (indices, stress, grapes/*, plots/*)
+      '/api/events': {
+        target: 'https://cropeye-grapes-events-production.up.railway.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/events/, ''),
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, _req, _res) => {
+            proxyReq.setHeader('Origin', 'https://cropeye-grapes-events-production.up.railway.app');
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+            proxyRes.headers['Access-Control-Allow-Methods'] =
+              'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD';
+            proxyRes.headers['Access-Control-Allow-Headers'] =
+              'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Requested-With, X-CSRFToken, Cache-Control, Pragma';
+            proxyRes.headers['Access-Control-Allow-Credentials'] = 'false';
+            proxyRes.headers['Access-Control-Max-Age'] = '86400';
+            if (req.method === 'OPTIONS') {
+              proxyRes.statusCode = 200;
+            }
+          });
+          proxy.on('error', (err, _req, res) => {
+            console.log('Events API proxy error:', err);
+            if (res && !res.headersSent) {
+              res.writeHead(500, {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'text/plain',
+              });
+              res.end('Proxy error');
+            }
+          });
+        },
+      },
       '/api/dev-plot': {
         target: 'https://cropeye-grapes-admin-production.up.railway.app',
         changeOrigin: true,

@@ -379,34 +379,20 @@ const fetchFarmerDashboardData = async (
       }
     }
 
-    // Fetch agroStats - store full response (all plots) for compatibility
+    // Grapes Events API: GET /plots/agroStats is not available — preload POST bundle (yield + ripening + brix).
     const endDate = getCurrentEndDate();
-    const agroStatsCacheKey = `agroStats_${plotName}_${endDate}`;
-    const agroStatsCacheKeyV3 = `agroStats_v3_${plotName}_${endDate}`;
-    // Check both cache formats
-    if (!getCache(agroStatsCacheKey) && !getCache(agroStatsCacheKeyV3)) {
+    const grapesBundleCacheKey = `farmerDashGrapes_v1_${plotName}_${endDate}`;
+    if (!getCache(grapesBundleCacheKey)) {
       try {
-        const response = await fetch(`${BASE_URL}/plots/agroStats?end_date=${endDate}`, {
-          method: 'GET',
-          mode: 'cors',
-          cache: 'default',
-          credentials: 'omit',
-          headers: { 'Accept': 'application/json' },
-        });
-        if (response.ok) {
-          const allPlotsData = await response.json();
-          // Store the full response (all plots data) in cache for compatibility with FarmerDashboard
-          // This allows the extraction logic to work correctly
-          cacheData(agroStatsCacheKey, allPlotsData);
-          cacheData(agroStatsCacheKeyV3, allPlotsData);
-          // Store full response in context so extraction logic can find the plot data
-          if (context) {
-            context.setApiData('agroStats', plotName, allPlotsData);
-          }
-          console.log(`✅ Preloaded agroStats for ${plotName}, found ${Object.keys(allPlotsData || {}).length} plot(s) in response`);
+        const { fetchGrapesEventsBundle } = await import('../utils/grapesEventsBundle');
+        const bundle = await fetchGrapesEventsBundle(BASE_URL, plotName);
+        cacheData(grapesBundleCacheKey, bundle);
+        if (context) {
+          context.setApiData('agroStats', plotName, bundle);
         }
+        console.log(`✅ Preloaded grapes bundle for ${plotName}`);
       } catch (err) {
-        console.warn(`Failed to preload agroStats for ${plotName}:`, err);
+        console.warn(`Failed to preload grapes bundle for ${plotName}:`, err);
       }
     }
   } catch (error) {

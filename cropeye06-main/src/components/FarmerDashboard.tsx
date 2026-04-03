@@ -47,6 +47,12 @@ import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { useAppContext } from "../context/AppContext";
 import CommonSpinner from "./CommanSpinner";
 import { getEventsBaseUrl } from "../utils/serviceUrls";
+import {
+  fetchGrapesEventsBundle,
+  getPlotAreaAcresFromProfile,
+  isGrapesBundlePayload,
+  metricsFromGrapesBundle,
+} from "../utils/grapesEventsBundle";
 
 // Register Chart.js components
 ChartJS.register(
@@ -208,33 +214,178 @@ const PieChartWithNeedle: React.FC<PieChartWithNeedleProps> = ({
 const BASE_URL = getEventsBaseUrl();
 const OPTIMAL_BIOMASS = 150;
 
-// API function to fetch Brix Time Series
-async function getBrixTimeSeries(plotName: string, pruningDate: string) {
-  const url = `${BASE_URL}/grapes/brix-time-series?plot_name=${encodeURIComponent(plotName)}&pruning_date=${encodeURIComponent(pruningDate)}`;
+type ProfilePlotLite = {
+  fastapi_plot_id?: string;
+  gat_number?: string;
+  plot_number?: string;
+  plot_name?: string;
+};
 
-  // Swagger marks this as POST. Do not fall back to GET (it returns 405 and breaks hosted flow).
-  try {
-    const postResponse = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      // Some backends require a JSON body even when params are in querystring
-      body: JSON.stringify({}),
-    });
+/** Resolve one plot's object from agroStats (keys may be fastapi id, gat_plot, quoted, or nested). */
+function extractPlotDataFromAgroStats(
+  allPlotsData: any,
+  currentPlotId: string,
+  profilePlots?: ProfilePlotLite[]
+): any {
+  if (allPlotsData == null) return null;
 
-    if (postResponse.ok) {
-      return postResponse.json();
+  const looksLikePlotRow = (o: any) =>
+    o &&
+    typeof o === "object" &&
+    !Array.isArray(o) &&
+    (o.brix_sugar != null ||
+      o.soil != null ||
+      o.area_acres != null ||
+      o.days_to_harvest != null);
+
+  if (Array.isArray(allPlotsData)) {
+    return (
+      allPlotsData.find(
+        (plot: any) =>
+          plot.plot_id === currentPlotId ||
+          plot.fastapi_plot_id === currentPlotId ||
+          plot.id === currentPlotId ||
+          plot.plot_name === currentPlotId
+      ) || null
+    );
+  }
+
+  if (typeof allPlotsData !== "object") return null;
+
+  const reserved = new Set(["data", "plots", "results", "metadata"]);
+
+  const tryMap = (obj: Record<string, any>): any => {
+    const candidates = new Set<string>();
+    candidates.add(currentPlotId);
+    candidates.add(`"${currentPlotId}"`);
+
+    const plotRow = profilePlots?.find((p) => p.fastapi_plot_id === currentPlotId);
+    if (plotRow) {
+      if (plotRow.gat_number && plotRow.plot_number) {
+        const g = `${plotRow.gat_number}_${plotRow.plot_number}`;
+        candidates.add(g);
+        candidates.add(`"${g}"`);
+      }
+      if (plotRow.plot_name) {
+        candidates.add(plotRow.plot_name);
+        candidates.add(`"${plotRow.plot_name}"`);
+      }
     }
 
-    const errorText = await postResponse.text().catch(() => "");
-    throw new Error(
-      `Failed to fetch brix time series: ${postResponse.status} ${postResponse.statusText}${errorText ? ` - ${errorText}` : ""}`,
-    );
-  } catch (error: any) {
-    throw new Error(error?.message || 'Failed to fetch brix time series');
+    for (const k of candidates) {
+      const v = obj[k];
+      if (v != null && typeof v === "object" && !Array.isArray(v)) return v;
+    }
+
+    const keys = Object.keys(obj).filter((k) => !reserved.has(k));
+    const norm = (s: string) => s.replace(/"/g, "").replace(/\s/g, "").toLowerCase();
+    const target = norm(currentPlotId);
+    for (const k of keys) {
+      const v = obj[k];
+      if (norm(k) === target && v != null && typeof v === "object" && !Array.isArray(v)) {
+        return v;
+      }
+    }
+
+    if (keys.length === 1) {
+      const only = obj[keys[0]];
+      if (looksLikePlotRow(only)) return only;
+    }
+
+    return null;
+  };
+
+  let found = tryMap(allPlotsData as Record<string, any>);
+  if (found) return found;
+
+  if (
+    looksLikePlotRow(allPlotsData) &&
+    allPlotsData[currentPlotId] == null &&
+    allPlotsData[`"${currentPlotId}"`] == null
+  ) {
+    return allPlotsData;
   }
+
+  const dataProperty =
+    (allPlotsData as any).data ||
+    (allPlotsData as any).plots ||
+    (allPlotsData as any).results;
+  if (dataProperty && typeof dataProperty === "object") {
+    if (Array.isArray(dataProperty)) {
+      return (
+        dataProperty.find(
+          (plot: any) =>
+            plot.plot_id === currentPlotId ||
+            plot.fastapi_plot_id === currentPlotId ||
+            plot.id === currentPlotId ||
+            plot.plot_name === currentPlotId
+        ) || null
+      );
+    }
+    found = tryMap(dataProperty as Record<string, any>);
+    if (found) return found;
+  }
+
+  return null;
+}
+
+/** POST /grapes/brix-time-series — OpenAPI: only `plot_name` query param, empty body. */
+async function getBrixTimeSeries(plotName: string) {
+  const url = `${BASE_URL}/grapes/brix-time-series?plot_name=${encodeURIComponent(plotName)}`;
+  const res = await axios.post(url, null, {
+    timeout: 300000,
+    headers: { Accept: "application/json" },
+  });
+  return res.data;
+}
+
+function metricsFromLegacyAgroPlot(
+  currentPlotData: any,
+  stressData: any,
+  irrigationData: any
+): Metrics {
+  const sugarYieldMeanValue = currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null;
+  let calculatedBiomass = null;
+  let totalBiomassForMetric = null;
+  if (sugarYieldMeanValue !== null) {
+    const totalBiomass = sugarYieldMeanValue * 1.27;
+    const underGroundBiomassInTons = totalBiomass * 0.12;
+    calculatedBiomass = underGroundBiomassInTons;
+    totalBiomassForMetric = totalBiomass;
+  }
+  return {
+    brix: currentPlotData?.brix_sugar?.brix?.mean ?? null,
+    brixMin: currentPlotData?.brix_sugar?.brix?.min ?? null,
+    brixMax: currentPlotData?.brix_sugar?.brix?.max ?? null,
+    recovery: currentPlotData?.brix_sugar?.recovery?.mean ?? null,
+    area: currentPlotData?.area_acres ?? null,
+    biomass: calculatedBiomass,
+    totalBiomass: totalBiomassForMetric,
+    daysToHarvest: currentPlotData?.days_to_harvest ?? null,
+    growthStage:
+      currentPlotData?.harvest_status ||
+      currentPlotData?.Sugarcane_Status ||
+      currentPlotData?.growth_stage ||
+      currentPlotData?.crop_status ||
+      null,
+    soilPH: currentPlotData?.soil?.phh2o ?? null,
+    organicCarbonDensity:
+      currentPlotData?.soil?.organic_carbon_stock ??
+      currentPlotData?.organic_carbon_stock ??
+      null,
+    actualYield: currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null,
+    stressCount:
+      currentPlotData?.stress_events ?? currentPlotData?.stress_count ?? stressData?.total_events ?? 0,
+    irrigationEvents:
+      currentPlotData?.irrigation_events ??
+      currentPlotData?.irrigation_count ??
+      irrigationData?.total_events ??
+      null,
+    sugarYieldMean: sugarYieldMeanValue,
+    cnRatio: null,
+    sugarYieldMax: currentPlotData?.brix_sugar?.sugar_yield?.max ?? null,
+    sugarYieldMin: currentPlotData?.brix_sugar?.sugar_yield?.min ?? null,
+  };
 }
 
 // Overlay Component for chart states
@@ -452,11 +603,24 @@ const FarmerDashboard: React.FC = () => {
   } = useFarmerProfile();
   const { selectedPlotName, setSelectedPlotName, getApiData, setApiData, hasApiData } = useAppContext();
 
+  // Refs avoid effect dependency loops: getApiData/hasApiData change whenever ANY cached API
+  // data updates (AppContext), which retriggered fetchAllData + stress/brix in a tight loop.
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
+  const getApiDataRef = useRef(getApiData);
+  getApiDataRef.current = getApiData;
+  const setApiDataRef = useRef(setApiData);
+  setApiDataRef.current = setApiData;
+  const hasApiDataRef = useRef(hasApiData);
+  hasApiDataRef.current = hasApiData;
+  const dashboardLoadInFlightRef = useRef<string | null>(null);
+
   const [currentPlotId, setCurrentPlotId] = useState<string | null>(null);
   const [showDebugInfo, setShowDebugInfo] = useState(false);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
   // Track if data has already been loaded for current plot to prevent re-fetching
   const dataLoadedRef = useRef<{ [plotId: string]: boolean }>({});
+  const prevPlotIdRef = useRef<string | null>(null);
   const [visibleLines, setVisibleLines] = useState<VisibleLines>({
     growth: true,
     stress: true,
@@ -514,148 +678,137 @@ const FarmerDashboard: React.FC = () => {
     moisture: { color: "#f59e0b", label: "Moisture Index" },
   };
 
+  // Keep API/cache plot id aligned with global plot selection (dropdown + map + localStorage).
+  // Previously currentPlotId was always the first plot while the UI showed selectedPlotName — metrics stayed "-".
   useEffect(() => {
-    if (!profile || profileLoading) {
+    if (!profile || profileLoading) return;
+
+    const plotNames = (profile.plots?.map((p) => p.fastapi_plot_id).filter(Boolean) ||
+      []) as string[];
+    if (plotNames.length === 0) {
+      setCurrentPlotId(null);
       return;
     }
 
-    const plotNames = profile.plots?.map((plot) => plot.fastapi_plot_id) || [];
-    const defaultPlot = plotNames.length > 0 ? plotNames[0] : null;
+    const effective =
+      selectedPlotName && plotNames.includes(selectedPlotName)
+        ? selectedPlotName
+        : plotNames[0];
 
-    console.log("📊 FarmerDashboard: Available plots:", plotNames);
-    console.log("📊 FarmerDashboard: Selected plot:", defaultPlot);
-
-    if (defaultPlot) {
-      setCurrentPlotId(defaultPlot);
-      localStorage.setItem("selectedPlot", defaultPlot);
-      console.log("✅ FarmerDashboard: Using plot ID:", defaultPlot);
+    setCurrentPlotId(effective);
+    if (selectedPlotName !== effective) {
+      setSelectedPlotName(effective);
     }
-  }, [profile, profileLoading]);
+  }, [profile, profileLoading, selectedPlotName, setSelectedPlotName]);
 
   useEffect(() => {
-    if (currentPlotId && !profileLoading) {
-      // Check if data already exists in component state (already loaded)
-      if (lineChartData.length > 0 && metrics.area !== null) {
-        console.log('✅ Data already exists in component state for plot:', currentPlotId, '- skipping fetch');
-        return;
-      }
-
-      // Check if data has already been loaded for this plot (prevent re-fetch on remount)
-      if (dataLoadedRef.current[currentPlotId]) {
-        console.log('✅ Data already loaded for plot:', currentPlotId, '- skipping fetch');
-        return;
-      }
-
-      // Check if data is already in context (preloaded)
-      const preloadedAgroStats = getApiData('agroStats', currentPlotId);
-      const preloadedIndices = getApiData('indices', currentPlotId);
-
-      // Also check cache as fallback - use consistent cache key format
-      const tzOffsetMs = new Date().getTimezoneOffset() * 60000;
-      const endDate = new Date(Date.now() - tzOffsetMs).toISOString().slice(0, 10);
-      const indicesCacheKey = `indices_${currentPlotId}`;
-      const cachedIndices = getCache(indicesCacheKey);
-      // Try both cache key formats for compatibility
-      const agroStatsCacheKeyV3 = `agroStats_v3_${currentPlotId}_${endDate}`;
-      const agroStatsCacheKey = `agroStats_${currentPlotId}_${endDate}`;
-      const cachedAgroStats = getCache(agroStatsCacheKeyV3) || getCache(agroStatsCacheKey);
-
-      const hasData = (preloadedAgroStats || cachedAgroStats) && (preloadedIndices || cachedIndices);
-
-      if (hasData) {
-        console.log('✅ Using preloaded/cached data from context for plot:', currentPlotId);
-        // Use preloaded data directly
-        const indicesToUse = preloadedIndices || cachedIndices || [];
-        setLineChartData(indicesToUse);
-
-        // Extract metrics from preloaded agroStats
-        // agroStats response is an object where keys are plot IDs and values are plot data
-        // e.g., { "13D_13": { brix_sugar: {...}, soil: {...}, ... }, ... }
-        let currentPlotData = null;
-        if (preloadedAgroStats) {
-          // Check if preloadedAgroStats is the full response (object with plot IDs as keys) or plot-specific data
-          if (typeof preloadedAgroStats === 'object' && !Array.isArray(preloadedAgroStats)) {
-            // If it has the current plot ID as a key, it's the full response
-            if (preloadedAgroStats[currentPlotId] || preloadedAgroStats[`"${currentPlotId}"`]) {
-              currentPlotData = preloadedAgroStats[currentPlotId] || preloadedAgroStats[`"${currentPlotId}"`];
-            } else {
-              // Otherwise, it might be plot-specific data already
-              currentPlotData = preloadedAgroStats;
-            }
-          } else {
-            currentPlotData = preloadedAgroStats;
-          }
-        } else if (cachedAgroStats) {
-          // Cache might contain full response (object with plot IDs) or plot-specific data
-          if (typeof cachedAgroStats === 'object' && !Array.isArray(cachedAgroStats)) {
-            // Try to extract plot-specific data from full response
-            currentPlotData = cachedAgroStats[currentPlotId] ||
-              cachedAgroStats[`"${currentPlotId}"`] ||
-              null;
-            // If not found, check if it's already plot-specific data (has brix_sugar, soil, etc.)
-            if (!currentPlotData && (cachedAgroStats.brix_sugar || cachedAgroStats.soil || cachedAgroStats.area_acres)) {
-              currentPlotData = cachedAgroStats;
-            }
-          }
-        }
-
-        if (currentPlotData) {
-          const sugarYieldMeanValue = currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null;
-          let calculatedBiomass = null;
-          let totalBiomassForMetric = null;
-          if (sugarYieldMeanValue !== null) {
-            const totalBiomass = sugarYieldMeanValue * 1.27;
-            const underGroundBiomassInTons = totalBiomass * 0.12;
-            calculatedBiomass = underGroundBiomassInTons;
-            totalBiomassForMetric = totalBiomass;
-          }
-          const newMetrics = {
-            brix: currentPlotData?.brix_sugar?.brix?.mean ?? null,
-            brixMin: currentPlotData?.brix_sugar?.brix?.min ?? null,
-            brixMax: currentPlotData?.brix_sugar?.brix?.max ?? null,
-            recovery: currentPlotData?.brix_sugar?.recovery?.mean ?? null,
-            area: currentPlotData?.area_acres ?? null,
-            biomass: calculatedBiomass,
-            totalBiomass: totalBiomassForMetric,
-            daysToHarvest: currentPlotData?.days_to_harvest ?? null,
-            growthStage: currentPlotData?.harvest_status ||
-              currentPlotData?.Sugarcane_Status ||
-              currentPlotData?.growth_stage ||
-              currentPlotData?.crop_status ||
-              null,
-            soilPH: currentPlotData?.soil?.phh2o ?? null,
-            organicCarbonDensity:
-              currentPlotData?.soil?.organic_carbon_stock ??
-              currentPlotData?.organic_carbon_stock ??
-              null,
-            actualYield: currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null,
-            stressCount: currentPlotData?.stress_events ??
-              currentPlotData?.stress_count ??
-              0,
-            irrigationEvents: currentPlotData?.irrigation_events ??
-              currentPlotData?.irrigation_count ??
-              null,
-            sugarYieldMean: sugarYieldMeanValue,
-            cnRatio: null,
-            sugarYieldMax: currentPlotData?.brix_sugar?.sugar_yield?.max ?? null,
-            sugarYieldMin: currentPlotData?.brix_sugar?.sugar_yield?.min ?? null,
-          };
-          setMetrics(newMetrics);
-        }
-        // Mark as loaded to prevent re-fetching
-        dataLoadedRef.current[currentPlotId] = true;
-      } else {
-        // Data not preloaded, fetch it
-        console.log('📡 Data not in context/cache, fetching for plot:', currentPlotId);
-        fetchAllData().then(() => {
-          // Mark as loaded after successful fetch
-          dataLoadedRef.current[currentPlotId] = true;
-        }).catch(() => {
-          // Don't mark as loaded if fetch failed, so it can retry
-        });
-      }
+    if (!currentPlotId) return;
+    if (prevPlotIdRef.current !== null && prevPlotIdRef.current !== currentPlotId) {
+      dataLoadedRef.current = {};
+      dashboardLoadInFlightRef.current = null;
+      setLineChartData([]);
+      setAggregatedData([]);
+      setCombinedChartData([]);
+      setMetrics({
+        brix: null,
+        brixMin: null,
+        brixMax: null,
+        recovery: null,
+        area: null,
+        biomass: null,
+        totalBiomass: null,
+        stressCount: null,
+        irrigationEvents: null,
+        sugarYieldMean: null,
+        daysToHarvest: null,
+        growthStage: null,
+        soilPH: null,
+        organicCarbonDensity: null,
+        actualYield: null,
+        cnRatio: null,
+        sugarYieldMax: null,
+        sugarYieldMin: null,
+      });
     }
-  }, [currentPlotId, profileLoading, getApiData, lineChartData.length, metrics.area]);
+    prevPlotIdRef.current = currentPlotId;
+  }, [currentPlotId]);
+
+  useEffect(() => {
+    if (!currentPlotId || profileLoading) return;
+    if (!profileRef.current?.plots?.length) return;
+
+    if (dataLoadedRef.current[currentPlotId]) {
+      return;
+    }
+
+    if (dashboardLoadInFlightRef.current === currentPlotId) {
+      return;
+    }
+
+    const preloadedAgroStats = getApiDataRef.current("agroStats", currentPlotId);
+    const preloadedIndices = getApiDataRef.current("indices", currentPlotId);
+
+    const tzOffsetMs = new Date().getTimezoneOffset() * 60000;
+    const endDate = new Date(Date.now() - tzOffsetMs).toISOString().slice(0, 10);
+    const indicesCacheKey = `indices_${currentPlotId}`;
+    const cachedIndices = getCache(indicesCacheKey);
+    const grapesBundleCacheKey = `farmerDashGrapes_v1_${currentPlotId}_${endDate}`;
+    const agroStatsCacheKeyV3 = `agroStats_v3_${currentPlotId}_${endDate}`;
+    const agroStatsCacheKey = `agroStats_${currentPlotId}_${endDate}`;
+    const cachedGrapesBundle =
+      getCache(grapesBundleCacheKey) ||
+      (isGrapesBundlePayload(preloadedAgroStats) ? preloadedAgroStats : null);
+    const cachedLegacyAgro =
+      !cachedGrapesBundle && (getCache(agroStatsCacheKeyV3) || getCache(agroStatsCacheKey));
+
+    const rawPlotPayload = cachedGrapesBundle || preloadedAgroStats || cachedLegacyAgro;
+    const stressCacheKeyPre = `stress_${currentPlotId}_NDMI_0.15`;
+    const irrigationCacheKeyPre = `irrigation_${currentPlotId}`;
+
+    const hasData = rawPlotPayload && (preloadedIndices || cachedIndices);
+
+    if (hasData) {
+      const indicesToUse = preloadedIndices || cachedIndices || [];
+      setLineChartData(indicesToUse);
+
+      const stressCached = getCache(stressCacheKeyPre);
+      const irrigationCached = getCache(irrigationCacheKeyPre);
+      const p = profileRef.current;
+
+      if (isGrapesBundlePayload(rawPlotPayload)) {
+        setMetrics(
+          metricsFromGrapesBundle(
+            rawPlotPayload,
+            p,
+            currentPlotId,
+            stressCached || { total_events: 0 },
+            irrigationCached || {}
+          )
+        );
+      } else {
+        const currentPlotData = extractPlotDataFromAgroStats(
+          rawPlotPayload,
+          currentPlotId,
+          p?.plots
+        );
+        if (currentPlotData) {
+          setMetrics(metricsFromLegacyAgroPlot(currentPlotData, stressCached, irrigationCached));
+        }
+      }
+      dataLoadedRef.current[currentPlotId] = true;
+      return;
+    }
+
+    dashboardLoadInFlightRef.current = currentPlotId;
+    fetchAllData()
+      .catch(() => {})
+      .finally(() => {
+        if (dashboardLoadInFlightRef.current === currentPlotId) {
+          dashboardLoadInFlightRef.current = null;
+        }
+      });
+    // Re-run when plot list appears (profile can hydrate after profileLoading is already false).
+  }, [currentPlotId, profileLoading, profile?.plots?.length]);
 
   useEffect(() => {
     if (lineChartData.length > 0) {
@@ -840,70 +993,49 @@ const FarmerDashboard: React.FC = () => {
       .toISOString()
       .slice(0, 10);
     const indicesCacheKey = `indices_${currentPlotId}`;
-    const agroStatsCacheKey = `agroStats_v3_${currentPlotId}_${endDate}`;
+    const grapesBundleCacheKey = `farmerDashGrapes_v1_${currentPlotId}_${endDate}`;
+    const legacyAgroKeyV3 = `agroStats_v3_${currentPlotId}_${endDate}`;
+    const legacyAgroKey = `agroStats_${currentPlotId}_${endDate}`;
 
-    const hasAgroStats = hasApiData('agroStats', currentPlotId);
-    const hasIndices = hasApiData('indices', currentPlotId);
+    const hasIndices = hasApiDataRef.current("indices", currentPlotId);
     const cachedIndices = getCache(indicesCacheKey);
-    const cachedAgroStats = getCache(agroStatsCacheKey);
+    const preloadedPlotPayload =
+      getApiDataRef.current("agroStats", currentPlotId) ||
+      getCache(grapesBundleCacheKey) ||
+      getCache(legacyAgroKeyV3) ||
+      getCache(legacyAgroKey);
+    const stressCacheKeyFast = `stress_${currentPlotId}_NDMI_0.15`;
+    const irrigationCacheKeyFast = `irrigation_${currentPlotId}`;
 
-    // If both data exist in cache, skip fetching
-    if ((hasAgroStats || cachedAgroStats) && (hasIndices || cachedIndices)) {
+    // If both plot metrics + indices exist in cache, skip fetching
+    if (preloadedPlotPayload && (hasIndices || cachedIndices)) {
       console.log('✅ FarmerDashboard: Data already exists in cache, loading from cache');
-      // Load cached data into state
-      const indicesToUse = getApiData('indices', currentPlotId) || cachedIndices || [];
+      const indicesToUse = getApiDataRef.current("indices", currentPlotId) || cachedIndices || [];
       setLineChartData(indicesToUse);
 
-      const agroStatsToUse = getApiData('agroStats', currentPlotId) || cachedAgroStats;
-      let currentPlotData = null;
-      if (agroStatsToUse) {
-        currentPlotData = agroStatsToUse[currentPlotId] ||
-          agroStatsToUse[`"${currentPlotId}"`] ||
-          (typeof agroStatsToUse === 'object' && !Array.isArray(agroStatsToUse) && !agroStatsToUse[currentPlotId] ? agroStatsToUse : null);
-      }
+      const stressCached = getCache(stressCacheKeyFast);
+      const irrigationCached = getCache(irrigationCacheKeyFast);
+      const p = profileRef.current;
 
-      if (currentPlotData) {
-        const sugarYieldMeanValue = currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null;
-        let calculatedBiomass = null;
-        let totalBiomassForMetric = null;
-        if (sugarYieldMeanValue !== null) {
-          const totalBiomass = sugarYieldMeanValue * 1.27;
-          const underGroundBiomassInTons = totalBiomass * 0.12;
-          calculatedBiomass = underGroundBiomassInTons;
-          totalBiomassForMetric = totalBiomass;
+      if (isGrapesBundlePayload(preloadedPlotPayload)) {
+        setMetrics(
+          metricsFromGrapesBundle(
+            preloadedPlotPayload,
+            p,
+            currentPlotId,
+            stressCached || { total_events: 0 },
+            irrigationCached || {}
+          )
+        );
+      } else {
+        const currentPlotData = extractPlotDataFromAgroStats(
+          preloadedPlotPayload,
+          currentPlotId,
+          p?.plots
+        );
+        if (currentPlotData) {
+          setMetrics(metricsFromLegacyAgroPlot(currentPlotData, stressCached, irrigationCached));
         }
-        const newMetrics = {
-          brix: currentPlotData?.brix_sugar?.brix?.mean ?? null,
-          brixMin: currentPlotData?.brix_sugar?.brix?.min ?? null,
-          brixMax: currentPlotData?.brix_sugar?.brix?.max ?? null,
-          recovery: currentPlotData?.brix_sugar?.recovery?.mean ?? null,
-          area: currentPlotData?.area_acres ?? null,
-          biomass: calculatedBiomass,
-          totalBiomass: totalBiomassForMetric,
-          daysToHarvest: currentPlotData?.days_to_harvest ?? null,
-          growthStage: currentPlotData?.harvest_status ||
-            currentPlotData?.Sugarcane_Status ||
-            currentPlotData?.growth_stage ||
-            currentPlotData?.crop_status ||
-            null,
-          soilPH: currentPlotData?.soil?.phh2o ?? null,
-          organicCarbonDensity:
-            currentPlotData?.soil?.organic_carbon_stock ??
-            currentPlotData?.organic_carbon_stock ??
-            null,
-          actualYield: currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null,
-          stressCount: currentPlotData?.stress_events ??
-            currentPlotData?.stress_count ??
-            0,
-          irrigationEvents: currentPlotData?.irrigation_events ??
-            currentPlotData?.irrigation_count ??
-            null,
-          sugarYieldMean: sugarYieldMeanValue,
-          cnRatio: null,
-          sugarYieldMax: currentPlotData?.brix_sugar?.sugar_yield?.max ?? null,
-          sugarYieldMin: currentPlotData?.brix_sugar?.sugar_yield?.min ?? null,
-        };
-        setMetrics(newMetrics);
       }
       dataLoadedRef.current[currentPlotId] = true;
       return; // Exit early, don't fetch
@@ -938,7 +1070,7 @@ const FarmerDashboard: React.FC = () => {
       setLineChartData(rawIndices);
 
       // Store in context for future use
-      setApiData('indices', currentPlotId, rawIndices);
+      setApiDataRef.current("indices", currentPlotId, rawIndices);
 
       // Stress data - try to get from cache, but all data should come from agroStats
       const stressCacheKey = `stress_${currentPlotId}_NDMI_0.15`;
@@ -977,203 +1109,59 @@ const FarmerDashboard: React.FC = () => {
         }
       }
 
-      // All data comes from agroStats - no need for separate harvest endpoint
-      // Use end_date for fetching agroStats data
+      // Events API: GET /plots/agroStats is not deployed (404). Use POST grapes bundle instead.
       const yieldDataDate = endDate;
-      // Use versioned cache key to ensure fresh data structure
-      const agroStatsCacheKey = `agroStats_v3_${currentPlotId}_${yieldDataDate}`;
-      // API endpoint: /plots/agroStats with end_date query parameter
-      const agroStatsUrl = `${BASE_URL}/plots/agroStats?end_date=${yieldDataDate}`;
+      const grapesBundleCacheKey = `farmerDashGrapes_v1_${currentPlotId}_${yieldDataDate}`;
 
-      console.log(`🔍 Checking agroStats cache for key: ${agroStatsCacheKey}`);
-      console.log(`🌐 BASE_URL: ${BASE_URL}`);
-      console.log(`🌐 AgroStats URL: ${agroStatsUrl}`);
-      console.log(`📅 Using date: ${yieldDataDate}`);
-      console.log(`📋 Plot ID: ${currentPlotId}`);
+      let grapesBundle = getCache(grapesBundleCacheKey);
 
-      let allPlotsData = getCache(agroStatsCacheKey);
-
-      if (!allPlotsData) {
+      if (!grapesBundle) {
         try {
-          console.log(`📊 Fetching agroStats from: ${agroStatsUrl}`);
-          console.log(`⏳ Making GET request to agroStats endpoint...`);
-
-          const agroStatsRes = await axios.get(agroStatsUrl, {
-            timeout: 300000, // 5 minutes timeout to prevent session timeout
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            }
-          });
-
-          console.log(`✅ AgroStats API Response Status: ${agroStatsRes.status}`);
-          console.log(`✅ AgroStats API Response Headers:`, agroStatsRes.headers);
-          console.log(`✅ AgroStats API Response Data Type:`, typeof agroStatsRes.data);
-          console.log(`✅ AgroStats API Response Data:`, agroStatsRes.data);
-
-          // Handle different response formats
-          if (agroStatsRes.data) {
-            allPlotsData = agroStatsRes.data;
-            // Cache the full response (all plots data)
-            setCache(agroStatsCacheKey, allPlotsData);
-            // Also cache with v3 format for compatibility
-            setCache(`agroStats_v3_${currentPlotId}_${yieldDataDate}`, allPlotsData);
-            // Store full response in context for future use (so extraction logic can work)
-            setApiData('agroStats', currentPlotId, allPlotsData);
-            console.log(`✅ Successfully fetched and cached agroStats for plot: ${currentPlotId}`);
-            console.log(`📦 Response contains ${Object.keys(allPlotsData || {}).length} plot(s)`);
-            console.log(`📋 Available plot IDs in response:`, Object.keys(allPlotsData || {}).slice(0, 10));
-          } else {
-            console.warn(`⚠️ AgroStats API returned empty response`);
-            allPlotsData = null;
-          }
+          console.log(`📊 Fetching grapes metrics bundle for plot ${currentPlotId} (POST yield + ripening + brix)`);
+          grapesBundle = await fetchGrapesEventsBundle(BASE_URL, currentPlotId);
+          setCache(grapesBundleCacheKey, grapesBundle);
+          setApiDataRef.current("agroStats", currentPlotId, grapesBundle);
         } catch (err) {
-          console.error("❌ Error fetching agroStats:", err);
-          if (axios.isAxiosError(err)) {
-            console.error("❌ Error Response Status:", err.response?.status);
-            console.error("❌ Error Response Status Text:", err.response?.statusText);
-            console.error("❌ Error Response Data:", err.response?.data);
-            console.error("❌ Error Request URL:", err.config?.url);
-            console.error("❌ Error Request Method:", err.config?.method?.toUpperCase());
-            console.error("❌ Error Request Headers:", err.config?.headers);
-            console.error("❌ Error Message:", err.message);
-            console.error("❌ Error Code:", err.code);
-          } else {
-            console.error("❌ Unknown error:", err);
-          }
-          allPlotsData = null;
+          console.error("❌ Error fetching grapes events bundle:", err);
+          grapesBundle = null;
         }
       } else {
-        console.log(`✅ Using cached agroStats for plot: ${currentPlotId}`);
-        console.log(`📦 Cached data keys:`, Object.keys(allPlotsData || {}));
+        console.log(`✅ Using cached grapes bundle for plot: ${currentPlotId}`);
       }
 
-      // Extract plot data from response - agroStats returns object with plot IDs as keys
-      // Response format: { "13D_13": { brix_sugar: {...}, soil: {...}, area_acres: ... }, ... }
-      let currentPlotData = null;
+      const newMetrics = grapesBundle
+        ? metricsFromGrapesBundle(
+            grapesBundle,
+            profileRef.current,
+            currentPlotId,
+            stressData,
+            irrigationData
+          )
+        : {
+            brix: null,
+            brixMin: null,
+            brixMax: null,
+            recovery: null,
+            area: getPlotAreaAcresFromProfile(profileRef.current, currentPlotId),
+            biomass: null,
+            totalBiomass: null,
+            daysToHarvest: null,
+            growthStage: null,
+            soilPH: null,
+            organicCarbonDensity: null,
+            actualYield: null,
+            stressCount: stressData?.total_events ?? 0,
+            irrigationEvents: irrigationData?.total_events ?? null,
+            sugarYieldMean: null,
+            cnRatio: null,
+            sugarYieldMax: null,
+            sugarYieldMin: null,
+          };
 
-      if (allPlotsData) {
-        // The response is an object where keys are plot IDs (may be quoted or unquoted)
-        // Try direct access with plot ID (unquoted)
-        currentPlotData = allPlotsData[currentPlotId] || null;
-
-        // Try with quoted plot ID (some APIs return keys as quoted strings)
-        if (!currentPlotData) {
-          const quotedPlotId = `"${currentPlotId}"`;
-          currentPlotData = allPlotsData[quotedPlotId] || null;
-        }
-
-        // Try with underscore replaced (in case plot ID format differs)
-        if (!currentPlotData && currentPlotId.includes('_')) {
-          const altPlotId = currentPlotId.replace('_', '"_"');
-          currentPlotData = allPlotsData[altPlotId] || null;
-        }
-
-        // Try if response is an array (unlikely but handle it)
-        if (!currentPlotData && Array.isArray(allPlotsData)) {
-          currentPlotData = allPlotsData.find((plot: any) =>
-            plot.plot_id === currentPlotId ||
-            plot.fastapi_plot_id === currentPlotId ||
-            plot.id === currentPlotId ||
-            plot.plot_name === currentPlotId
-          ) || null;
-        }
-
-        // Try if response has a 'data' or 'plots' property (nested response)
-        if (!currentPlotData && typeof allPlotsData === 'object' && !Array.isArray(allPlotsData)) {
-          const dataProperty = allPlotsData.data || allPlotsData.plots || allPlotsData.results;
-          if (dataProperty) {
-            if (Array.isArray(dataProperty)) {
-              currentPlotData = dataProperty.find((plot: any) =>
-                plot.plot_id === currentPlotId ||
-                plot.fastapi_plot_id === currentPlotId ||
-                plot.id === currentPlotId ||
-                plot.plot_name === currentPlotId
-              ) || null;
-            } else if (typeof dataProperty === 'object') {
-              currentPlotData = dataProperty[currentPlotId] ||
-                dataProperty[`"${currentPlotId}"`] ||
-                null;
-            }
-          }
-        }
-      }
-
-      // Log data extraction results
-      if (!currentPlotData && allPlotsData) {
-        console.warn(`⚠️ Plot data not found for ${currentPlotId} in agroStats response`);
-        console.log(`📦 Response structure:`, {
-          type: Array.isArray(allPlotsData) ? 'array' : typeof allPlotsData,
-          keys: Array.isArray(allPlotsData) ? `Array with ${allPlotsData.length} items` : Object.keys(allPlotsData || {}),
-          sample: Array.isArray(allPlotsData) ? allPlotsData[0] : Object.keys(allPlotsData || {}).slice(0, 5)
-        });
-      } else if (!allPlotsData) {
-        console.error(`❌ No agroStats data available for plot: ${currentPlotId}`);
-      } else {
-        console.log(`✅ Found plot data for: ${currentPlotId}`);
-        console.log(`📊 Plot data structure:`, {
-          hasBrixSugar: !!currentPlotData?.brix_sugar,
-          hasSoil: !!currentPlotData?.soil,
-          hasArea: currentPlotData?.area_acres !== undefined,
-          keys: Object.keys(currentPlotData || {})
-        });
-      }
-
-      // All data now comes from agroStats, no need for separate soil analyze endpoint
-      const sugarYieldMeanValue =
-        currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null;
-
-      let calculatedBiomass = null;
-      let totalBiomassForMetric = null;
-
-      if (sugarYieldMeanValue !== null) {
-        const totalBiomass = sugarYieldMeanValue * 1.27;
-        const underGroundBiomassInTons = totalBiomass * 0.12;
-        calculatedBiomass = underGroundBiomassInTons;
-        totalBiomassForMetric = totalBiomass;
-      }
-
-      // Extract all metrics from agroStats data only
-      // All data comes from agroStats endpoint - no separate API calls needed
-      const newMetrics = {
-        brix: currentPlotData?.brix_sugar?.brix?.mean ?? null,
-        brixMin: currentPlotData?.brix_sugar?.brix?.min ?? null,
-        brixMax: currentPlotData?.brix_sugar?.brix?.max ?? null,
-        recovery: currentPlotData?.brix_sugar?.recovery?.mean ?? null,
-        area: currentPlotData?.area_acres ?? null,
-        biomass: calculatedBiomass,
-        totalBiomass: totalBiomassForMetric,
-        daysToHarvest: currentPlotData?.days_to_harvest ?? null,
-        growthStage: currentPlotData?.harvest_status ||
-          currentPlotData?.Sugarcane_Status ||
-          currentPlotData?.growth_stage ||
-          currentPlotData?.crop_status ||
-          null,
-        soilPH: currentPlotData?.soil?.phh2o ?? null,
-        // Organic carbon stock from agroStats response (keep the exact value from backend)
-        organicCarbonDensity:
-          currentPlotData?.soil?.organic_carbon_stock ??
-          currentPlotData?.organic_carbon_stock ??
-          null,
-        actualYield: currentPlotData?.brix_sugar?.sugar_yield?.mean ?? null,
-        stressCount: currentPlotData?.stress_events ??
-          currentPlotData?.stress_count ??
-          stressData?.total_events ??
-          0,
-        irrigationEvents: currentPlotData?.irrigation_events ??
-          currentPlotData?.irrigation_count ??
-          irrigationData?.total_events ??
-          null,
-        sugarYieldMean: sugarYieldMeanValue,
-        cnRatio: null,
-        sugarYieldMax: currentPlotData?.brix_sugar?.sugar_yield?.max ?? null,
-        sugarYieldMin: currentPlotData?.brix_sugar?.sugar_yield?.min ?? null,
-      };
-
-      console.log(`📊 Metrics extracted from agroStats:`, {
+      console.log(`📊 Metrics from grapes bundle:`, {
         plotId: currentPlotId,
-        hasData: !!currentPlotData,
-        metrics: newMetrics
+        hasBundle: !!grapesBundle,
+        metrics: newMetrics,
       });
 
       setMetrics(newMetrics);
@@ -1233,36 +1221,12 @@ const FarmerDashboard: React.FC = () => {
   // Fetch Brix Time Series data
   useEffect(() => {
     const fetchBrixTimeSeries = async () => {
-      if (!currentPlotId || !profile || profileLoading) {
+      if (!currentPlotId || profileLoading) {
         return;
       }
 
-      // Get the selected plot
-      const selectedPlot = profile.plots?.find(
-        (plot) => plot.fastapi_plot_id === currentPlotId
-      );
-
-      if (!selectedPlot?.farms || selectedPlot.farms.length === 0) {
-        return;
-      }
-
-      // Get pruning date from first farm (prefer foundation_pruning_date, fallback to fruit_pruning_date)
-      const firstFarm = selectedPlot.farms[0] as any;
-      const pruningDate = firstFarm?.foundation_pruning_date ||
-        firstFarm?.fruit_pruning_date ||
-        firstFarm?.plantation_date;
-
-      if (!pruningDate) {
-        console.warn('⚠️ No pruning date found for plot:', currentPlotId);
-        setBrixTimeSeriesError('No pruning date available');
-        return;
-      }
-
-      // Format pruning date to YYYY-MM-DD
-      const formattedPruningDate = pruningDate.split('T')[0];
-
-      // Check cache first
-      const cacheKey = `brixTimeSeries_${currentPlotId}_${formattedPruningDate}`;
+      // Check cache first (plot-only; API determines pruning server-side)
+      const cacheKey = `brixTimeSeries_${currentPlotId}`;
       const cached = getCache(cacheKey);
       if (cached && cached.time_series) {
         console.log('✅ Using cached brix time series data');
@@ -1273,7 +1237,7 @@ const FarmerDashboard: React.FC = () => {
       }
 
       // Check global context
-      const contextData = getApiData('brixTimeSeries', currentPlotId);
+      const contextData = getApiDataRef.current("brixTimeSeries", currentPlotId);
       if (contextData && contextData.time_series) {
         console.log('✅ Using brix time series data from context');
         setBrixTimeSeriesData(contextData.time_series);
@@ -1282,20 +1246,18 @@ const FarmerDashboard: React.FC = () => {
         return;
       }
 
-      // Fetch from API
       setBrixTimeSeriesLoading(true);
       setBrixTimeSeriesError(null);
 
       try {
-        console.log('🌱 Fetching brix time series for plot:', currentPlotId, 'pruning_date:', formattedPruningDate);
-        const data = await getBrixTimeSeries(currentPlotId, formattedPruningDate);
+        console.log('🌱 Fetching brix time series (POST) for plot:', currentPlotId);
+        const data = await getBrixTimeSeries(currentPlotId);
 
         const timeSeries = data?.time_series || [];
         setBrixTimeSeriesData(timeSeries);
 
-        // Cache the data
         setCache(cacheKey, data);
-        setApiData('brixTimeSeries', currentPlotId, data);
+        setApiDataRef.current("brixTimeSeries", currentPlotId, data);
 
         setBrixTimeSeriesError(null);
       } catch (error: any) {
@@ -1308,7 +1270,7 @@ const FarmerDashboard: React.FC = () => {
     };
 
     fetchBrixTimeSeries();
-  }, [currentPlotId, profile, profileLoading, getCache, setCache, getApiData, setApiData]);
+  }, [currentPlotId, profileLoading]);
 
   const toggleLine = (key: string): void => {
     const isOnlyThis = Object.keys(visibleLines).every((k) =>

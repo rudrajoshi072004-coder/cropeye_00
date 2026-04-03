@@ -11,11 +11,14 @@ export function getEventsBaseUrl(): string {
   const prodOverride = (import.meta.env.VITE_GRAPES_EVENTS_BASE_URL as string | undefined)?.trim();
   if (prodOverride && prodOverride.length > 0) return prodOverride.replace(/\/+$/, "");
 
-  // Prefer the same Events URL in local + production (backend connections unchanged).
+  // Optional dev override (e.g. full URL for special testing).
   const devUrl = (import.meta.env.VITE_DEV_EVENTS_API_URL as string | undefined)?.trim();
   if (devUrl && devUrl.length > 0) return devUrl.replace(/\/+$/, "");
 
-  // Default (unchanged backend)
+  // Vite dev server: same-origin proxy (see vite.config.ts `/api/events`) — avoids CORS on
+  // `/plots/.../indices`, `/grapes/brix-time-series`, etc.
+  if (import.meta.env.DEV) return "/api/events";
+
   return "https://cropeye-grapes-events-production.up.railway.app";
 }
 

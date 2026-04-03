@@ -85,7 +85,7 @@ This document provides a comprehensive overview of all API endpoints used in the
    - Rewrites: `/api/agroStats` → `/plots/agroStats`
 
 3. **`/api/backend`**
-   - Target: `https://cropeye-backend.up.railway.app`
+   - Target: `https://cropeye-server-flyio.onrender.com`
    - Used for: Main backend API (authentication, users, farms, etc.)
    - Rewrites: `/api/backend` → `/api`
 

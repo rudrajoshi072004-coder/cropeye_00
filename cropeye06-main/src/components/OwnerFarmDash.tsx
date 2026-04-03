@@ -716,7 +716,7 @@ const OwnerFarmDash: React.FC = () => {
     try {
       // Use authenticated API call from api.ts
       const response = await api.get(
-        `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api")}/users/owner-hierarchy/`,
+        `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")}/users/owner-hierarchy/`,
       );
       const responseData = response.data;
       const managersData = responseData.managers || [];
@@ -1314,7 +1314,7 @@ const OwnerFarmDash: React.FC = () => {
               <pre className="text-xs text-green-300 font-mono">
                 {JSON.stringify(
                   {
-                    endpoint: `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api")}/farms/recent-farmers/`,
+                    endpoint: `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")}/farms/recent-farmers/`,
                     method: "GET",
                     bearerToken: localStorage.getItem("access_token") || localStorage.getItem("token")
                       ? "✅ Present"

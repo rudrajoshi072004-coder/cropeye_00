@@ -53,6 +53,10 @@ import {
   isGrapesBundlePayload,
   metricsFromGrapesBundle,
 } from "../utils/grapesEventsBundle";
+import {
+  fetchRipeningStageMilestones,
+  formatMilestoneDate,
+} from "../utils/ripeningMilestones";
 
 // Register Chart.js components
 ChartJS.register(
@@ -665,6 +669,18 @@ const FarmerDashboard: React.FC = () => {
   const [brixTimeSeriesData, setBrixTimeSeriesData] = useState<any[]>([]);
   const [brixTimeSeriesLoading, setBrixTimeSeriesLoading] = useState<boolean>(false);
   const [brixTimeSeriesError, setBrixTimeSeriesError] = useState<string | null>(null);
+  /** Ripening / Harvest milestones card only (isolated from main dashboard bundle). */
+  const [milestoneState, setMilestoneState] = useState<{
+    ripeningStartDate: string | null;
+    harvestReadyStartDate: string | null;
+    loading: boolean;
+    error: boolean;
+  }>({
+    ripeningStartDate: null,
+    harvestReadyStartDate: null,
+    loading: false,
+    error: false,
+  });
   const [combinedChartData, setCombinedChartData] = useState<LineChartData[]>(
     []
   );
@@ -1272,6 +1288,57 @@ const FarmerDashboard: React.FC = () => {
     fetchBrixTimeSeries();
   }, [currentPlotId, profileLoading]);
 
+  // Ripening / Harvest milestones (this card only; GET /grapes/ripening-stage?plot_name=…)
+  useEffect(() => {
+    if (!currentPlotId || profileLoading) {
+      setMilestoneState({
+        ripeningStartDate: null,
+        harvestReadyStartDate: null,
+        loading: false,
+        error: false,
+      });
+      return;
+    }
+
+    let cancelled = false;
+    setMilestoneState((s) => ({
+      ...s,
+      loading: true,
+      error: false,
+    }));
+
+    (async () => {
+      try {
+        const data = await fetchRipeningStageMilestones(
+          getEventsBaseUrl(),
+          currentPlotId
+        );
+        if (cancelled) return;
+        const ra = data?.ripening_analysis;
+        setMilestoneState({
+          ripeningStartDate: ra?.ripening_start_date ?? null,
+          harvestReadyStartDate: ra?.harvest_ready_start_date ?? null,
+          loading: false,
+          error: false,
+        });
+      } catch (e) {
+        console.error("Ripening milestones fetch failed:", e);
+        if (!cancelled) {
+          setMilestoneState({
+            ripeningStartDate: null,
+            harvestReadyStartDate: null,
+            loading: false,
+            error: true,
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPlotId, profileLoading]);
+
   const toggleLine = (key: string): void => {
     const isOnlyThis = Object.keys(visibleLines).every((k) =>
       k === key
@@ -1646,18 +1713,35 @@ const FarmerDashboard: React.FC = () => {
           </div>
 
           <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f3f5e9' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/Time.png" alt="Time" className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg" style={{ maxWidth: '100%', height: 'auto' }} />
-              <div className="text-right">
-                <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
-                  {metrics.daysToHarvest !== null ? metrics.daysToHarvest : "-"}
-                </div>
-                <div className="text-sm font-semibold" style={{ color: '#6bb043' }}>
-                  Days
-                </div>
-              </div>
+            <div className="mb-2">
+              <Calendar className="w-5 h-5 shrink-0" strokeWidth={2} style={{ color: '#5a7c3a' }} aria-hidden />
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161', lineHeight: '1.2' }}>Time to Harvest</p>
+            <div className="space-y-1" aria-busy={milestoneState.loading}>
+              {[
+                { label: "Ripening Start", iso: milestoneState.ripeningStartDate },
+                { label: "Harvest Ready", iso: milestoneState.harvestReadyStartDate },
+              ].map((row) => {
+                const showDash = milestoneState.loading || milestoneState.error;
+                const text = showDash ? "—" : formatMilestoneDate(row.iso);
+                const subtleValue = showDash || text === "Not available";
+                return (
+                  <div key={row.label} className="flex items-center min-w-0 gap-2 justify-between">
+                    <span className="inline-flex items-center gap-2 min-w-0 flex-1">
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#6bb043' }} aria-hidden />
+                      <span className="text-sm truncate" style={{ color: '#616161', fontFamily: 'Inter, Poppins, sans-serif' }}>{row.label}</span>
+                    </span>
+                    <span
+                      className="text-sm font-semibold shrink-0 text-right truncate max-w-[48%] tabular-nums"
+                      style={{ color: subtleValue ? '#94a3b8' : '#374151', fontFamily: 'Inter, Poppins, sans-serif' }}
+                      title={subtleValue ? undefined : text}
+                    >
+                      {text}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs font-medium mt-3" style={{ color: '#616161', lineHeight: '1.2' }}>Ripening / Harvest Milestones</p>
           </div>
 
           <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>

@@ -161,23 +161,22 @@ export const pestsData: Pest[] = [
     },
     category: "sucking",
     symptoms: [
-      "White cottony masses on stems and berry clusters",
-      "Honeydew secretion and sooty mold",
-      "Berry quality reduction"
+      "Premature fruit drop ",
+      "Sooty mold on honeydew",
     ],
     identification: [
-      "Pinkish oval insects with white waxy coating",
-      "Cluster in leaf axils and berry bunches"
+      "Nymph: yellowish–pale white ",
+      "Adult: slender, white wax covering"
     ],
     where: "Shoots, fruits, bark",
-    why: "Sap feeding during berry development",
+    why: "Dry weather with ant activity, poor sanitation",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Fish oil resin soap", "Beauveria bassiana"],
-    chemical: ["Imidacloprid", "Dimethoate", "Chlorpyriphos"]
+    organic: ["Debark vine trunks • Sticky bands @ 25–30 per acre", "Release predator Cryptolaemus montrouzieri @ 250–300 beetles/acre"],
+    chemical: ["Dichlorvos 76 WSC @ 40 ml/acre + fish oil soap 250 g", "Quinalphos 25 EC @ 100 ml/acre soil drench"]
   },
   {
     name: "Thrips",
@@ -223,23 +222,24 @@ export const pestsData: Pest[] = [
     },
     category: "sucking",
     symptoms: [
-      "Puncture marks on ripening berries",
-      "Juice oozing from damaged berries",
-      "Secondary fungal infections at wound sites"
+      "Holes in berries",
+      "Juice sucking",
+      "Secondary infection → rotting",
+      "Fruit drop",
     ],
     identification: [
-      "Medium-sized moths with piercing mouthparts",
-      "Active at dusk and night"
+      "Adult: large brown moth with orange/yellow hind wings",
+      "Strong proboscis for piercing fruits"
     ],
-    where: "Ripening berries",
-    why: "Moths pierce berries to suck juice",
+    where: "Ripe fruits (berries)",
+    why: "Warm, humid weather; availability of ripe fruits",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Light traps", "Bagging of bunches"],
-    chemical: ["Lambda cyhalothrin", "Chlorpyriphos"]
+    organic: ["Collect & destroy damaged fruits", "Use light traps","Smoke in vineyard at night"],
+    chemical: ["Malathion 50 EC @ 200 ml in 200 L water (evening spray)"]
   },
   {
     name: "Fusarium wilt",

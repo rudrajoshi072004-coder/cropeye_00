@@ -4,7 +4,7 @@ export const GATEWAY_URL =
 
 export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
-  "https://cropeye-backend.up.railway.app/api";
+  "https://cropeye-server-flyio.onrender.com/api";
 
 function toAbsoluteAppUrl(maybeUrl: string): string {
   const raw = String(maybeUrl || "").trim();

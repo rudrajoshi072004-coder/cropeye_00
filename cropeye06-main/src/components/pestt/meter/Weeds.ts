@@ -21,8 +21,8 @@ export const weedsData: Weed[] = [
     ]
   },
   {
-    name: "Congress Grass (Parthenium hysterophorus)",
-    months: ["February", "March", "April", "May"],
+    name: "Congress Grass (Gajar Gavat)",
+    months: ["Feb-Oct"],
     when: "Germinates with first rains",
     where: "Roadsides, waste lands, also in cane fields",
     why: "Allelopathic, fast spreading, causes worker allergies",

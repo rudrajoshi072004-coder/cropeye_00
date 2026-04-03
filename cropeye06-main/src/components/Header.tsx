@@ -127,6 +127,10 @@ export const Header: React.FC<HeaderProps> = ({
         return { ...userLocation, source: "current" };
       }
 
+      if (locationPermission === "loading") {
+        throw new Error("Waiting for location");
+      }
+
       // If no location available, show prompt
       if (locationPermission === "prompt") {
         setShowLocationPrompt(true);
@@ -142,13 +146,17 @@ export const Header: React.FC<HeaderProps> = ({
       return { ...userLocation, source: "current" };
     }
 
+    if (locationPermission === "loading") {
+      throw new Error("Waiting for location");
+    }
+
     // If no location available, show prompt
     if (locationPermission === "prompt") {
       setShowLocationPrompt(true);
       throw new Error("Location permission required");
     }
 
-    // Fallback to default location (Pune, India)
+    // Denied or unknown: fallback to default location (Pune, India)
     return { latitude: 18.5204, longitude: 73.8567, source: "default" };
   };
 
@@ -250,6 +258,11 @@ export const Header: React.FC<HeaderProps> = ({
 
         // Set a user-friendly error message that doesn't crash the dashboard
         if (err instanceof Error) {
+          if (err.message === "Waiting for location") {
+            setError(null);
+            setLoading(true);
+            return;
+          }
           if (err.message === "Location permission required") {
             setError("Location access required for weather data");
           } else {
@@ -282,7 +295,8 @@ export const Header: React.FC<HeaderProps> = ({
   }, [
     userRole,
     farmerProfileLoading,
-    // Only include essential dependencies to prevent infinite loops
+    userLocation,
+    locationPermission,
   ]);
 
   const WeatherMarqueeContent = () => {

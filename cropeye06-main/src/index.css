@@ -50,9 +50,21 @@ body,
 }
 
 /* Prevent tiny width rounding shifts on zoom */
+/* Use stable only — both-edges reserves a left gutter and pushes fixed UI (e.g. sidebar) inward */
 html {
-  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable;
   text-size-adjust: 100%;
+}
+
+/* Full-bleed strip for global header (weather bar + farmer info): no side gutter */
+.app-container-header {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  box-sizing: border-box;
 }
 
 /* Centered fixed-width content shell (Figma-like) */
@@ -80,6 +92,8 @@ html {
 }
 
 body {
+  margin: 0;
+  padding: 0;
   font-family: "Poppins", "Inter", sans-serif;
   color: var(--text-primary);
 }
@@ -243,6 +257,26 @@ tbody tr:hover {
   border-radius: var(--radius-pill);
 }
 
+/* Full-bleed background inside app-container: cancel horizontal padding so the image reaches the main column edges */
+.dashboard-bg,
+.dashboard-bg-bleed {
+  margin-left: calc(-1 * var(--app-gutter));
+  margin-right: calc(-1 * var(--app-gutter));
+  width: calc(100% + 2 * var(--app-gutter));
+  max-width: none;
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+@media (max-width: 768px) {
+  .dashboard-bg,
+  .dashboard-bg-bleed {
+    margin-left: calc(-1 * var(--app-gutter-sm));
+    margin-right: calc(-1 * var(--app-gutter-sm));
+    width: calc(100% + 2 * var(--app-gutter-sm));
+  }
+}
+
 /* Dashboard background image with soft overlay */
 .dashboard-bg {
   background-image:
@@ -378,6 +412,8 @@ tbody tr:hover {
   border-right: 1px solid var(--glass-border) !important;
   position: relative;
   overflow: visible;
+  left: 0 !important;
+  margin-left: 0 !important;
 }
 
 .sidebar-glass::before {

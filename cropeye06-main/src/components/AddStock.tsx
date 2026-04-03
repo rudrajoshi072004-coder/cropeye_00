@@ -122,7 +122,7 @@ export const AddStock: React.FC<AddStockProps> = ({ setStocks }) => {
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center bg-fixed"
+      className="min-h-screen bg-cover bg-center bg-fixed dashboard-bg-bleed"
       style={{
         backgroundImage: `url('/Image/Background.png')`
       }}

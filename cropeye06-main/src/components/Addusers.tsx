@@ -142,7 +142,7 @@ export const Addusers: React.FC<AddusersProps> = ({ setUsers, users }) => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-fixed"
+      className="min-h-screen bg-cover bg-center bg-fixed dashboard-bg-bleed"
       style={{
         backgroundImage: `url('/icons/sugarcane main slide.jpg')`
       }}

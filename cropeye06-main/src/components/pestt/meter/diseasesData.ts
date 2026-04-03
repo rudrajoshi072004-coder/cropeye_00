@@ -26,7 +26,7 @@ export interface Disease {
 export const diseasesData: Disease[] = [
   {
     name: "Downy mildew",
-    months: ["September", "October", "November", "December", "January"],
+    months: ["October", "November", "December", "January"],
     stage: {
       minDays: 20,
       maxDays: 80,

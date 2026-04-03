@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { SingleCategoryRiskMeter } from './meter/SingleCategoryRiskMeter';
 import { ImageModal } from './meter/ImageModal';
 import { pestsData } from './meter/pestsData';
-import { diseasesData } from './meter/diseasesData';
 import { weedsData } from './meter/Weeds';
 import { DetectionCard } from './meter/PestCard';
 import {
@@ -10,8 +9,11 @@ import {
   fetchPlantationDate,
   fetchCurrentWeather,
   fetchPestDetectionData,
+  fetchRiskAssessmentFromApi,
+  resolvePestRecord,
+  resolveDiseaseRecord,
+  resolveWeedRecord,
   RiskAssessmentResult,
-  WeatherData,
   PestDetectionData
 } from './meter/riskAssessmentService';
 import { useAppContext } from '../../context/AppContext';
@@ -49,9 +51,19 @@ export const PestDisease: React.FC = () => {
         setPestDetectionData(cachedPestData);
         setIsLoading(false);
 
-        // Auto-select "High" risk level if there are High risk pests or diseases detected
-        if (cachedAssessment.pests.High.length > 0 || cachedAssessment.diseases.High.length > 0) {
-          setSelectedCategory(cachedAssessment.pests.High.length > 0 ? 'Pests' : 'Diseases');
+        const wh = cachedAssessment.weeds?.High?.length ?? 0;
+        if (
+          cachedAssessment.pests.High.length > 0 ||
+          cachedAssessment.diseases.High.length > 0 ||
+          wh > 0
+        ) {
+          if (cachedAssessment.pests.High.length > 0) {
+            setSelectedCategory('Pests');
+          } else if (cachedAssessment.diseases.High.length > 0) {
+            setSelectedCategory('Diseases');
+          } else {
+            setSelectedCategory('Weeds');
+          }
           setSelectedRiskLevel('High');
         }
         return; // Don't fetch if cache exists
@@ -81,9 +93,19 @@ export const PestDisease: React.FC = () => {
         setPestDetectionData(cachedPestData);
         setIsLoading(false);
 
-        // Auto-select "High" risk level if there are High risk pests or diseases detected
-        if (cachedAssessment.pests.High.length > 0 || cachedAssessment.diseases.High.length > 0) {
-          setSelectedCategory(cachedAssessment.pests.High.length > 0 ? 'Pests' : 'Diseases');
+        const wh2 = cachedAssessment.weeds?.High?.length ?? 0;
+        if (
+          cachedAssessment.pests.High.length > 0 ||
+          cachedAssessment.diseases.High.length > 0 ||
+          wh2 > 0
+        ) {
+          if (cachedAssessment.pests.High.length > 0) {
+            setSelectedCategory('Pests');
+          } else if (cachedAssessment.diseases.High.length > 0) {
+            setSelectedCategory('Diseases');
+          } else {
+            setSelectedCategory('Weeds');
+          }
           setSelectedRiskLevel('High');
         }
         return;
@@ -91,27 +113,48 @@ export const PestDisease: React.FC = () => {
 
       setIsLoading(true);
 
-      // Fetch plantation date, weather data, and pest detection data
+      const apiResult = await fetchRiskAssessmentFromApi(selectedPlotName);
+      if (apiResult) {
+        setCache(cacheKey, apiResult.assessment);
+        setCache(pestDataCacheKey, apiResult.pestDetectionData);
+        setRiskAssessment(apiResult.assessment);
+        setPestDetectionData(apiResult.pestDetectionData);
+
+        const a = apiResult.assessment;
+        const hasHigh =
+          a.pests.High.length > 0 ||
+          a.diseases.High.length > 0 ||
+          (a.weeds?.High.length ?? 0) > 0;
+        if (hasHigh) {
+          if (a.pests.High.length > 0) {
+            setSelectedCategory('Pests');
+          } else if (a.diseases.High.length > 0) {
+            setSelectedCategory('Diseases');
+          } else {
+            setSelectedCategory('Weeds');
+          }
+          setSelectedRiskLevel('High');
+        }
+        return;
+      }
+
+      // Fallback: local calculators + pest-detection API
       const plantationDate = await fetchPlantationDate(selectedPlotName || undefined);
       const weatherData = await fetchCurrentWeather(selectedPlotName || undefined);
       const pestData = await fetchPestDetectionData(selectedPlotName || undefined);
 
-      // Generate risk assessment with plotId (API data, stage, and month matching already integrated)
       const assessment = await generateRiskAssessment(
         plantationDate,
         weatherData,
         selectedPlotName || undefined
       );
 
-      // Cache the results
       setCache(cacheKey, assessment);
       setCache(pestDataCacheKey, pestData);
 
-      // Assessment already has correct logic: only HIGH if API percentage > 0 AND stage matches AND month matches
       setRiskAssessment(assessment);
       setPestDetectionData(pestData);
 
-      // Auto-select "High" risk level if there are High risk pests or diseases detected
       if (assessment.pests.High.length > 0 || assessment.diseases.High.length > 0) {
         setSelectedCategory(assessment.pests.High.length > 0 ? 'Pests' : 'Diseases');
         setSelectedRiskLevel('High');
@@ -156,43 +199,28 @@ export const PestDisease: React.FC = () => {
   const getDiseaseRiskTags = () => {
     if (!riskAssessment) return { high: [], moderate: [], low: [] };
 
-    // Fungal diseases that should show fungi percentage
     const fungalDiseaseNames = ['Downy mildew', 'Powdery mildew', 'Anthracnose', 'Fusarium wilt'];
 
-    const diseasesByRisk = {
-      high: riskAssessment.diseases.High.map(name => {
-        const disease = diseasesData.find(d => d.name === name);
-        const isFungal = fungalDiseaseNames.includes(name);
+    const mapNames = (names: string[]) =>
+      names.map((name) => {
+        const disease = resolveDiseaseRecord(name);
+        const isFungal = fungalDiseaseNames.some(
+          (fn) => fn.toLowerCase() === disease.name.toLowerCase()
+        );
         return {
-          name: disease?.name || name,
-          image: disease?.image || '/Image/wilt.png',
-          months: disease?.months || [],
-          fungiPercentage: isFungal && pestDetectionData ? pestDetectionData.fungi_affected_pixel_percentage : undefined
+          ...disease,
+          fungiPercentage:
+            isFungal && pestDetectionData
+              ? pestDetectionData.fungi_affected_pixel_percentage
+              : undefined,
         };
-      }),
-      moderate: riskAssessment.diseases.Moderate.map(name => {
-        const disease = diseasesData.find(d => d.name === name);
-        const isFungal = fungalDiseaseNames.includes(name);
-        return {
-          name: disease?.name || name,
-          image: disease?.image || '/Image/wilt.png',
-          months: disease?.months || [],
-          fungiPercentage: isFungal && pestDetectionData ? pestDetectionData.fungi_affected_pixel_percentage : undefined
-        };
-      }),
-      low: riskAssessment.diseases.Low.map(name => {
-        const disease = diseasesData.find(d => d.name === name);
-        const isFungal = fungalDiseaseNames.includes(name);
-        return {
-          name: disease?.name || name,
-          image: disease?.image || '/Image/wilt.png',
-          months: disease?.months || [],
-          fungiPercentage: isFungal && pestDetectionData ? pestDetectionData.fungi_affected_pixel_percentage : undefined
-        };
-      })
-    };
+      });
 
-    return diseasesByRisk;
+    return {
+      high: mapNames(riskAssessment.diseases.High),
+      moderate: mapNames(riskAssessment.diseases.Moderate),
+      low: mapNames(riskAssessment.diseases.Low),
+    };
   };
 
   const handleImageClick = (imageUrl: string, pestName: string) => {
@@ -213,9 +241,17 @@ export const PestDisease: React.FC = () => {
   const totalDiseasesDetected = riskAssessment ?
     riskAssessment.diseases.High.length + riskAssessment.diseases.Moderate.length + riskAssessment.diseases.Low.length : 0;
 
-  // Categorize weeds by current month
   const currentMonthLower = useMemo(getCurrentMonthLower, []);
-  const weedRiskBuckets = useMemo(() => categorizeWeedsBySeason(weedsData, currentMonthLower), [currentMonthLower]);
+  const weedRiskBuckets = useMemo(() => {
+    if (riskAssessment?.weeds) {
+      return {
+        high: riskAssessment.weeds.High.map((n) => resolveWeedRecord(n)),
+        moderate: riskAssessment.weeds.Moderate.map((n) => resolveWeedRecord(n)),
+        low: riskAssessment.weeds.Low.map((n) => resolveWeedRecord(n)),
+      };
+    }
+    return categorizeWeedsBySeason(weedsData, currentMonthLower);
+  }, [riskAssessment, currentMonthLower]);
 
   const handleRiskClick = (category: 'Pests' | 'Diseases' | 'Weeds', level: 'High' | 'Moderate' | 'Low') => {
     // If clicking the same category and level, deselect
@@ -229,19 +265,13 @@ export const PestDisease: React.FC = () => {
   };
 
   const displayedPests = selectedRiskLevel
-    ? pestsByRisk[selectedRiskLevel.toLowerCase() as 'high' | 'moderate' | 'low'].map((name: string) => {
-      return pestsData.find(p => p.name === name);
-    }).filter(Boolean)
+    ? pestsByRisk[selectedRiskLevel.toLowerCase() as 'high' | 'moderate' | 'low'].map((name: string) =>
+        resolvePestRecord(name)
+      )
     : [];
 
   const displayedDiseases = selectedRiskLevel
-    ? diseasesByRisk[selectedRiskLevel.toLowerCase() as 'high' | 'moderate' | 'low'].map((diseaseInfo: any) => {
-      const disease = diseasesData.find(d => d.name === diseaseInfo.name);
-      if (disease && diseaseInfo.fungiPercentage !== undefined) {
-        return { ...disease, fungiPercentage: diseaseInfo.fungiPercentage };
-      }
-      return disease;
-    }).filter(Boolean)
+    ? diseasesByRisk[selectedRiskLevel.toLowerCase() as 'high' | 'moderate' | 'low']
     : [];
 
   if (!riskAssessment) {
@@ -338,9 +368,9 @@ export const PestDisease: React.FC = () => {
             {/* Weeds Risk Meter */}
             <SingleCategoryRiskMeter
               category="Weeds"
-              highCount={weedRiskBuckets.high.length}
-              moderateCount={weedRiskBuckets.moderate.length}
-              lowCount={weedRiskBuckets.low.length}
+              highCount={riskAssessment?.weeds ? riskAssessment.weeds.High.length : weedRiskBuckets.high.length}
+              moderateCount={riskAssessment?.weeds ? riskAssessment.weeds.Moderate.length : weedRiskBuckets.moderate.length}
+              lowCount={riskAssessment?.weeds ? riskAssessment.weeds.Low.length : weedRiskBuckets.low.length}
               // icon="??"
               onRiskClick={handleRiskClick}
               selectedCategory={selectedCategory}
@@ -415,7 +445,13 @@ export const PestDisease: React.FC = () => {
         {selectedCategory === 'Weeds' && selectedRiskLevel && (
           <div className="mb-4 sm:mb-6 md:mb-10 px-1 xs:px-2 sm:px-0">
             <h3 className="text-lg xs:text-xl sm:text-xl md:text-2xl font-semibold text-gray-800 capitalize mb-3 sm:mb-4 text-center">
-              {selectedRiskLevel} Risk Weeds
+              {selectedRiskLevel} Risk Weeds (
+              {selectedRiskLevel === 'High'
+                ? weedRiskBuckets.high.length
+                : selectedRiskLevel === 'Moderate'
+                  ? weedRiskBuckets.moderate.length
+                  : weedRiskBuckets.low.length}
+              )
             </h3>
             <div className="pest-disease-grid">
               {(() => {

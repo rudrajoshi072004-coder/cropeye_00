@@ -99,10 +99,10 @@ const CATEGORY_INFO: Record<
 };
 
 const REMOTE_API_BASE =
-  import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api");
+  import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api");
 const LOCAL_API_BASE = (
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")
+  (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api")
 ).replace(/\/api\/?$/, "");
 
 const ensureArray = (payload: any): any[] => {

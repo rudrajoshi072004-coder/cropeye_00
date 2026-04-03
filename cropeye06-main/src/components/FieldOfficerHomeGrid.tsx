@@ -452,7 +452,7 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
 
   return (
     <div
-      className="relative min-h-[calc(100vh-64px)]"
+      className="relative min-h-[calc(100vh-64px)] dashboard-bg-bleed"
       style={{
         backgroundImage: "url('/Image/Background.png')",
         backgroundSize: 'cover',

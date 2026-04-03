@@ -2833,7 +2833,7 @@ The farmer can now login with Email credentials to access the dashboard and moni
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center bg-fixed py-4 sm:py-8 px-2 sm:px-4 lg:px-8"
+      className="min-h-screen bg-cover bg-center bg-fixed py-4 sm:py-8 px-2 sm:px-4 lg:px-8 dashboard-bg-bleed"
       style={{
         backgroundImage: `url('/Image/Background.png')`
       }}

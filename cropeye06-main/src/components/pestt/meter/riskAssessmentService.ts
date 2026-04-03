@@ -1,5 +1,9 @@
 import { pestsData } from './pestsData';
+import type { Pest } from './pestsData';
 import { diseasesData } from './diseasesData';
+import type { Disease } from './diseasesData';
+import { weedsData } from './Weeds';
+import type { Weed } from './Weeds';
 import { assessPestRiskLevel } from './pestRiskCalculator';
 import { assessDiseaseRiskLevel } from './diseaseRiskCalculator';
 import { getFarmerMyProfile } from '../../../api';
@@ -36,6 +40,211 @@ export interface RiskAssessmentResult {
     Moderate: string[];
     Low: string[];
   };
+  /** Present when data comes from the grapes-admin risk-assessment API */
+  weeds?: {
+    High: string[];
+    Moderate: string[];
+    Low: string[];
+  };
+}
+
+const GRAPES_ADMIN_BASE = 'https://cropeye-grapes-admin-production.up.railway.app';
+
+export interface RiskAssessmentApiResponse {
+  plot_name: string;
+  risk: {
+    pests: { High: string[]; Moderate: string[]; Low: string[] };
+    diseases: { High: string[]; Moderate: string[]; Low: string[] };
+    weeds: { High: string[]; Moderate: string[]; Low: string[] };
+  };
+  pixel_data?: {
+    fungi?: number;
+    chewing?: number;
+    sucking?: number;
+    soilborne?: number;
+  };
+}
+
+function mapPixelDataToPestDetection(pixel?: RiskAssessmentApiResponse['pixel_data']): PestDetectionData {
+  if (!pixel) {
+    return {
+      fungi_affected_pixel_percentage: 0,
+      chewing_affected_pixel_percentage: 0,
+      sucking_affected_pixel_percentage: 0,
+      SoilBorn_affected_pixel_percentage: 0,
+    };
+  }
+  return {
+    fungi_affected_pixel_percentage: Number(pixel.fungi) || 0,
+    chewing_affected_pixel_percentage: Number(pixel.chewing) || 0,
+    sucking_affected_pixel_percentage: Number(pixel.sucking) || 0,
+    SoilBorn_affected_pixel_percentage: Number(pixel.soilborne) || 0,
+  };
+}
+
+function assessmentFromApiPayload(body: RiskAssessmentApiResponse): RiskAssessmentResult {
+  const r = body.risk;
+  return {
+    stage: 'API',
+    current_conditions: {
+      month: '—',
+      temperature: '—',
+      humidity: '—',
+    },
+    pests: {
+      High: [...(r.pests?.High || [])],
+      Moderate: [...(r.pests?.Moderate || [])],
+      Low: [...(r.pests?.Low || [])],
+    },
+    diseases: {
+      High: [...(r.diseases?.High || [])],
+      Moderate: [...(r.diseases?.Moderate || [])],
+      Low: [...(r.diseases?.Low || [])],
+    },
+    weeds: {
+      High: [...(r.weeds?.High || [])],
+      Moderate: [...(r.weeds?.Moderate || [])],
+      Low: [...(r.weeds?.Low || [])],
+    },
+  };
+}
+
+/**
+ * Fetch risk buckets from grapes-admin; maps names to local detail data via resolvePestRecord / resolveDiseaseRecord / resolveWeedRecord.
+ */
+export async function fetchRiskAssessmentFromApi(
+  plotName: string
+): Promise<{ assessment: RiskAssessmentResult; pestDetectionData: PestDetectionData } | null> {
+  if (!plotName?.trim()) return null;
+
+  const token = getAuthToken();
+  const url = `${GRAPES_ADMIN_BASE}/risk-assessment?plot_name=${encodeURIComponent(plotName.trim())}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      console.warn('Risk assessment API:', response.status, response.statusText);
+      return null;
+    }
+
+    const body = (await response.json()) as RiskAssessmentApiResponse;
+    if (!body?.risk) {
+      return null;
+    }
+
+    const assessment = assessmentFromApiPayload(body);
+    const pestDetectionData = mapPixelDataToPestDetection(body.pixel_data);
+
+    console.log('✅ Risk assessment from API:', { plot: body.plot_name, assessment });
+
+    return { assessment, pestDetectionData };
+  } catch (e) {
+    console.warn('Risk assessment API request failed:', e);
+    return null;
+  }
+}
+
+function createStubPest(name: string): Pest {
+  return {
+    name,
+    months: [],
+    temperature: '',
+    humidity: '',
+    image: '/Image/wilt.png',
+    symptoms: ['No detailed profile found in the local catalog for this pest.'],
+    identification: [],
+    where: '—',
+    why: '—',
+    when: { high: '—', moderate: '—', low: '—' },
+    organic: [],
+    chemical: [],
+  };
+}
+
+function createStubDisease(name: string): Disease {
+  return {
+    name,
+    months: [],
+    symptoms: ['No detailed profile found in the local catalog for this disease.'],
+    where: '—',
+    why: '—',
+    when: { high: '—', moderate: '—', low: '—' },
+    organic: [],
+    chemical: [],
+    image: '/Image/wilt.png',
+  };
+}
+
+function createStubWeed(name: string): Weed {
+  return {
+    name,
+    months: [],
+    when: '—',
+    where: '—',
+    why: '—',
+    image: '/Image/wilt.png',
+    chemical: [],
+  };
+}
+
+/** Resolve API pest name to full Pest row from pestsData (fuzzy match) or a readable stub. */
+export function resolvePestRecord(name: string): Pest {
+  const t = name.trim();
+  const exact = pestsData.find((p) => p.name === t);
+  if (exact) return exact;
+  const ci = pestsData.find((p) => p.name.toLowerCase() === t.toLowerCase());
+  if (ci) return ci;
+  const partial = pestsData.find(
+    (p) =>
+      t.toLowerCase().includes(p.name.toLowerCase()) ||
+      p.name.toLowerCase().includes(t.toLowerCase())
+  );
+  if (partial) return partial;
+  return createStubPest(t);
+}
+
+/** Resolve API disease name to diseasesData row or stub. */
+export function resolveDiseaseRecord(name: string): Disease {
+  const t = name.trim();
+  const exact = diseasesData.find((d) => d.name === t);
+  if (exact) return exact;
+  const ci = diseasesData.find((d) => d.name.toLowerCase() === t.toLowerCase());
+  if (ci) return ci;
+  const partial = diseasesData.find(
+    (d) =>
+      t.toLowerCase().includes(d.name.toLowerCase()) ||
+      d.name.toLowerCase().includes(t.toLowerCase())
+  );
+  if (partial) return partial;
+  return createStubDisease(t);
+}
+
+/** Resolve API weed name to weedsData row or stub. */
+export function resolveWeedRecord(name: string): Weed {
+  const t = name.trim();
+  const exact = weedsData.find((w) => w.name === t);
+  if (exact) return exact;
+  const ci = weedsData.find((w) => w.name.toLowerCase() === t.toLowerCase());
+  if (ci) return ci;
+  const partial = weedsData.find(
+    (w) =>
+      t.toLowerCase().includes(w.name.toLowerCase()) ||
+      w.name.toLowerCase().includes(t.toLowerCase()) ||
+      t.split(/[(),]/).some((part) => {
+        const p = part.trim().toLowerCase();
+        return p && w.name.toLowerCase().includes(p);
+      })
+  );
+  if (partial) return partial;
+  return createStubWeed(t);
 }
 
 export interface SugarcaneStage {

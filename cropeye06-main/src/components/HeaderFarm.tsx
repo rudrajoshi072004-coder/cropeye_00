@@ -19,8 +19,8 @@ export const Header: React.FC<HeaderFarmProps> = () => {
   });
 
   return (
-    <header className="bg-green-800 py-2 shadow-md">
-      <div className="flex flex-row justify-between items-center px-2 sm:px-4 gap-2">
+    <header className="bg-green-800 py-2 shadow-md w-full box-border">
+      <div className="flex flex-row justify-between items-center w-full pl-3 pr-3 sm:pl-4 sm:pr-4 gap-2">
         {profileLoading ? (
           <div className="text-gray-500 text-xs sm:text-sm">Loading...</div>
         ) : profile ? (
@@ -54,15 +54,3 @@ export const Header: React.FC<HeaderFarmProps> = () => {
 };
 
 export default Header;
-
-
-
- {/* Left: Farmer Name 
-        <div className="flex items-center">
-          <h2 className="font-semibold mr-2">Ajay Dhale</h2>
-          <span className="bg-green-600 px-2 py-0.5 rounded">(2.48 acres)</span>
-        </div> */}
- {/* Right: Total Fields 
-        <div className="text-right">
-          Total Fields: 2
-        </div> */}

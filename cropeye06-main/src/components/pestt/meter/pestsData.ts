@@ -28,7 +28,7 @@ export interface Pest {
 export const pestsData: Pest[] = [
   {
     name: "Flea beetle",
-    months: ["September", "October"],
+    months: ["September-October"],
     temperature: "25–32",
     humidity: "60–75",
     image: "/Image/flea_beetle.jpg",
@@ -39,23 +39,24 @@ export const pestsData: Pest[] = [
     },
     category: "chewing",
     symptoms: [
-      "Shot-hole damage on young leaves",
-      "Skeletonized leaves",
-      "Stunted shoot growth"
+      "Holes in tender leaves",
+      "Damage to buds ",
+      "Shot holes on leaves",
+      "Root damage by grubs"
     ],
     identification: [
-      "Small jumping beetles",
-      "Feed on emerging buds and young shoots"
+      "Adult: reddish-brown, shiny, 6 spots on back ",
+      "Grub: brown with black head"
     ],
-    where: "Young leaves and shoots",
-    why: "Feeding damage during early growth stage",
+    where: "Buds, young leaves, roots",
+    why: "Flush period after pruning, high humidity",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Neem oil spray", "Kaolin clay"],
-    chemical: ["Thiamethoxam", "Lambda cyhalothrin"]
+    organic: ["Shake vines & collect adults in kerosenated water ", "Maintain clean pruning fields"],
+    chemical: ["Phosalone 35 EC @ 80 ml/acre in 200 L water"]
   },
   {
     name: "Leaf roller",
@@ -70,23 +71,23 @@ export const pestsData: Pest[] = [
     },
     category: "chewing",
     symptoms: [
-      "Leaves rolled and webbed together",
-      "Caterpillar feeding inside rolled leaves",
-      "Reduced photosynthesis"
+      "Leaves rolled ",
+      "Chlorophyll scraped inside",
+      "Skeletonized leaves"
     ],
     identification: [
-      "Caterpillars roll leaves and tie with silk",
-      "Feed within protected rolled foliage"
+      "Larva: pale green, hairy ",
+      "Adult: brown moth with wavy line"
     ],
-    where: "Leaves",
-    why: "Feeding damage during vegetative growth",
+    where: "Tender leaves, shoots",
+    why: "Warm humid weather favors caterpillar activity",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["BT (Bacillus thuringiensis)", "Trichogramma release"],
-    chemical: ["Chlorantraniliprole", "Emamectin benzoate"]
+    organic: ["Collect & destroy rolled leaves", "Encourage natural enemies (Trichogramma release)"],
+    chemical: ["Quinalphos 25 EC @ 100 ml/acre ", "Phosalone 35 EC @ 80 ml/acre"]
   },
   {
     name: "Sphingid caterpillar",
@@ -101,27 +102,25 @@ export const pestsData: Pest[] = [
     },
     category: "chewing",
     symptoms: [
-      "Defoliation of vines",
-      "Large irregular holes in leaves",
-      "Damage to growing shoots"
+      "Defoliation (eats leaves)",
     ],
     identification: [
-      "Large green or brown hornworm caterpillars",
-      "Active during monsoon season"
+      "Larva: stout green with anal horn ",
+      "Adult: large red-brown moth"
     ],
-    where: "Leaves and shoots",
-    why: "Heavy feeding during monsoon vegetative growth",
+    where: "Leaves (defoliation)",
+    why: "Humid monsoon climate favors growth",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Hand picking", "BT spray"],
-    chemical: ["Chlorantraniliprole", "Spinosad"]
+    organic: ["Handpick larvae ", "Neem oil 3% @ 1.2 L/acre in 200 L water"],
+    chemical: ["Quinalphos 25 EC @ 100 ml/acre ", "Chlorpyrifos 20 EC @ 100 ml/acre"]
   },
   {
     name: "Stem girdler",
-    months: ["August", "September", "October", "November"],
+    months: ["Aug–Nov"],
     temperature: "25–35",
     humidity: "55–75",
     image: "/Image/stem_girdler.jpg",
@@ -132,29 +131,28 @@ export const pestsData: Pest[] = [
     },
     category: "chewing",
     symptoms: [
-      "Girdled stems causing shoot wilting",
-      "Circular feeding damage around stems",
-      "Shoots above girdle may die"
+      "Wilting of branches and whole vine ",
+      "Cane girdling injury",
     ],
     identification: [
-      "Beetle larvae girdle stems",
-      "Characteristic circular groove around stem"
+      "Grub: dark brown head, strong jaws",
+      "Adult: grey beetle with white spot on each wing cover"
     ],
-    where: "Stems and shoots",
-    why: "Larval feeding girdles the stem",
+    where: "Trunks, canes, branches",
+    why: "Adults lay eggs in bark after pruning",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Remove and destroy affected shoots", "Neem cake"],
-    chemical: ["Chlorantraniliprole", "Imidacloprid"]
+    organic: ["Remove loose bark at pruning ", "Destroy girdled branches"],
+    chemical: ["Carbaryl 50 WP @ 80 g/acre (2 g/L) swabbing ", "Quinalphos 25 EC @ 100 ml/acre in 200 L water"]
   },
   {
     name: "Mealybug",
     months: ["December", "January", "February", "March", "April"],
     temperature: "20–32",
-    humidity: "40–65",
+    humidity: "55-75",
     image: "/Image/mealybug.jpg",
     stage: {
       minDays: 65,
@@ -171,7 +169,7 @@ export const pestsData: Pest[] = [
       "Pinkish oval insects with white waxy coating",
       "Cluster in leaf axils and berry bunches"
     ],
-    where: "Stems, leaf axils, and berry clusters",
+    where: "Shoots, fruits, bark",
     why: "Sap feeding during berry development",
     when: {
       high: "Present at the field",
@@ -184,7 +182,7 @@ export const pestsData: Pest[] = [
   {
     name: "Thrips",
     months: ["October", "November", "December", "January"],
-    temperature: "22–30",
+    temperature: "25–35",
     humidity: "40–65",
     image: "/Image/thrips.jpg",
     stage: {
@@ -194,23 +192,23 @@ export const pestsData: Pest[] = [
     },
     category: "sucking",
     symptoms: [
-      "Silvering or scarring on leaves and berries",
-      "Deformed growth",
-      "Reduced berry quality"
+      "Silvery white patches on leaves ",
+      "Fruit scarring ",
+      "Premature fruit drop"
     ],
     identification: [
-      "Tiny slender insects",
-      "Feed on developing tissue"
+      "Nymph: yellowish-brown with red abdomen ",
+      "Adult: black-brown body, yellow wings"
     ],
-    where: "Leaves, flowers, and young berries",
-    why: "Sap feeding and rasping damage",
+    where: "Leaves, flower clusters, berries",
+    why: "Hot & dry weather, dusty conditions",
     when: {
       high: "Present at the field",
       moderate: "In next 3–7 days",
       low: "In next 10–14 days"
     },
-    organic: ["Sticky traps", "Spinosad"],
-    chemical: ["Imidacloprid", "Thiamethoxam"]
+    organic: ["Blue sticky traps (10–12/acre)", " Neem oil 3% @ 1.2 L/acre"],
+    chemical: ["Dimethoate 30 EC @ 120 ml/acre in 200 L water ", "Methyl demeton 25 EC @ 100 ml/acre"]
   },
   {
     name: "Fruit sucking moth",
@@ -222,6 +220,37 @@ export const pestsData: Pest[] = [
       minDays: 90,
       maxDays: 130,
       description: "Ripening stage (90–130 DAP)"
+    },
+    category: "sucking",
+    symptoms: [
+      "Puncture marks on ripening berries",
+      "Juice oozing from damaged berries",
+      "Secondary fungal infections at wound sites"
+    ],
+    identification: [
+      "Medium-sized moths with piercing mouthparts",
+      "Active at dusk and night"
+    ],
+    where: "Ripening berries",
+    why: "Moths pierce berries to suck juice",
+    when: {
+      high: "Present at the field",
+      moderate: "In next 3–7 days",
+      low: "In next 10–14 days"
+    },
+    organic: ["Light traps", "Bagging of bunches"],
+    chemical: ["Lambda cyhalothrin", "Chlorpyriphos"]
+  },
+  {
+    name: "Fusarium wilt",
+    months: ["Oct - Feb"],
+    temperature: "25- 30",
+    humidity: "80-90",
+    image: "/Image/fruit_sucking_moth.jpg",
+    stage: {
+      minDays: 90,
+      maxDays: 130,
+      description: "bud break to berry thinning - 20- 75 DAP"
     },
     category: "sucking",
     symptoms: [

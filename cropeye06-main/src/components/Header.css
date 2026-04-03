@@ -1,6 +1,8 @@
 
-/* Header Container */
+/* Header Container — full width under app-container-header (no side gutter) */
 .header-container {
+  width: 100%;
+  box-sizing: border-box;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   background: linear-gradient(180deg, #e0e7ff 0%, #ffffff 100%) !important;
   border-bottom-left-radius: 12px;
@@ -8,9 +10,9 @@
   color: #1f2937;
 }
 
-/* Header Main Section */
+/* Header Main Section — inner padding only (outer gutter removed via app-container-header) */
 .header-main {
-  padding: 1rem;
+  padding: 1rem max(1rem, env(safe-area-inset-right, 0px)) 1rem max(1rem, env(safe-area-inset-left, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;

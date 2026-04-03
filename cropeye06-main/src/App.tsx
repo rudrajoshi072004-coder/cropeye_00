@@ -384,7 +384,7 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
       <div className="flex flex-col">
         {/* Header - responsive margin on desktop only */}
         <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:ml-[280px]" : "lg:ml-0"}`}>
-          <div className="app-container">
+          <div className="app-container-header">
             <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
           </div>
         </div>
@@ -392,7 +392,7 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
         {/* Farmer Information Bar - Only show for farmers */}
         {userRole === 'farmer' && (
           <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:ml-[280px]" : "lg:ml-0"}`}>
-            <div className="app-container">
+            <div className="app-container-header">
               <FarmerInfoBar />
             </div>
           </div>

@@ -70,8 +70,8 @@ const MainApp: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <header className="bg-white shadow-sm border-b w-full box-border">
+        <div className="w-full py-4 pl-3 pr-3 sm:pl-4 sm:pr-4">
           <h1 className="text-2xl font-bold text-gray-900">
             Agricultural Plot Analysis Dashboard
           </h1>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { useAppContext } from "../context/AppContext";
+import { getGrapesAdminBaseUrl } from "../utils/serviceUrls";
 import budData from "./bud.json";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -20,6 +21,85 @@ interface FertilizerEntry {
   organic_inputs?: string[];
 }
 
+/** Pull the 7-day schedule list from admin API JSON (handles alternate key names). */
+function extractScheduleDaysArray(raw: unknown): unknown[] | undefined {
+  if (raw === null || raw === undefined) return undefined;
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw !== "object") return undefined;
+  const o = raw as Record<string, unknown>;
+  const keys = [
+    "next_7_days",
+    "next7_days",
+    "next7Days",
+    "next_seven_days",
+    "schedule",
+  ] as const;
+  for (const k of keys) {
+    if (Object.prototype.hasOwnProperty.call(o, k)) {
+      const v = o[k];
+      if (v === null) return [];
+      if (Array.isArray(v)) return v;
+      return undefined;
+    }
+  }
+  const nested = o.data;
+  if (nested && typeof nested === "object" && !Array.isArray(nested)) {
+    const d = nested as Record<string, unknown>;
+    for (const k of keys) {
+      if (Object.prototype.hasOwnProperty.call(d, k)) {
+        const v = d[k];
+        if (v === null) return [];
+        if (Array.isArray(v)) return v;
+        return undefined;
+      }
+    }
+  }
+  return undefined;
+}
+
+function mapGrapesScheduleNext7ToEntries(items: unknown[]): FertilizerEntry[] {
+  if (!Array.isArray(items)) return [];
+  return items.map((raw) => {
+    const item = raw as Record<string, unknown>;
+    const fertilizersRaw = item.fertilizers ?? item.fertilizer;
+    const organicRaw = item.organic_inputs ?? item.organicInputs ?? item.organic;
+    let fertilizers: FertilizerEntry["fertilizers"];
+    if (
+      fertilizersRaw &&
+      typeof fertilizersRaw === "object" &&
+      !Array.isArray(fertilizersRaw)
+    ) {
+      const f = fertilizersRaw as Record<string, unknown>;
+      fertilizers = {
+        Urea_N_kg_per_acre: Number(f.Urea_N_kg_per_acre ?? f.urea_n_kg_per_acre ?? 0),
+        SuperPhosphate_P_kg_per_acre: Number(
+          f.SuperPhosphate_P_kg_per_acre ?? f.superphosphate_p_kg_per_acre ?? 0
+        ),
+        Potash_K_kg_per_acre: Number(
+          f.Potash_K_kg_per_acre ?? f.potash_k_kg_per_acre ?? 0
+        ),
+      };
+    }
+    let organic_inputs: string[] | undefined;
+    if (Array.isArray(organicRaw)) {
+      organic_inputs = organicRaw.map((x) => String(x));
+    } else if (organicRaw != null && organicRaw !== "") {
+      organic_inputs = [String(organicRaw)];
+    }
+    const str = (v: unknown) => (v == null ? "" : String(v));
+    return {
+      date: str(item.date ?? item.day ?? item.schedule_date),
+      stage: str(item.stage ?? item.crop_stage ?? item.stage_name),
+      days: str(item.days ?? item.day_number ?? item.days_since_planting),
+      N_kg_acre: str(item.N_kg_acre ?? item.n_kg_acre ?? item.N ?? item.n),
+      P_kg_acre: str(item.P_kg_acre ?? item.p_kg_acre ?? item.P ?? item.p),
+      K_kg_acre: str(item.K_kg_acre ?? item.k_kg_acre ?? item.K ?? item.k),
+      fertilizers,
+      organic_inputs,
+    };
+  });
+}
+
 // Plantation type to months mapping
 const PLANTATION_TYPE_MONTHS: Record<string, number> = {
   Suru: 10,
@@ -34,6 +114,11 @@ const FertilizerTable: React.FC = () => {
   const [plantationType, setPlantationType] = useState<string | null>(null);
   const [monthsCompleted, setMonthsCompleted] = useState<number | null>(null);
   const [noFertilizerRequired, setNoFertilizerRequired] =
+    useState<boolean>(false);
+  /** Admin API returned 200 with empty/null next_7_days — show success, not planting-method error. */
+  const [apiScheduleCompleted, setApiScheduleCompleted] =
+    useState<boolean>(false);
+  const [scheduleFetchLoading, setScheduleFetchLoading] =
     useState<boolean>(false);
   const tableRef = useRef<HTMLDivElement>(null);
   const {
@@ -269,11 +354,104 @@ const FertilizerTable: React.FC = () => {
       setPlantationType(null);
       setMonthsCompleted(null);
       setNoFertilizerRequired(false);
+      setApiScheduleCompleted(false);
+      setScheduleFetchLoading(false);
       return;
     }
 
-    try {
+    let cancelled = false;
+
+    const run = async () => {
+      setScheduleFetchLoading(true);
+      setApiScheduleCompleted(false);
       setLocalError(null);
+      setNoFertilizerRequired(false);
+
+      try {
+        const base = getGrapesAdminBaseUrl();
+        const url = `${base.replace(/\/+$/, "")}/grapes-schedule/${encodeURIComponent(String(plotToUse))}`;
+        const controller = new AbortController();
+        const scheduleTimeoutMs = 120000;
+        const timeoutId = window.setTimeout(
+          () => controller.abort(),
+          scheduleTimeoutMs
+        );
+        let res: Response;
+        try {
+          res = await fetch(url, {
+            method: "GET",
+            headers: { Accept: "application/json" },
+            signal: controller.signal,
+          });
+        } finally {
+          window.clearTimeout(timeoutId);
+        }
+        if (cancelled) {
+          setScheduleFetchLoading(false);
+          return;
+        }
+
+        if (res.ok) {
+          let parsed: unknown;
+          try {
+            parsed = await res.json();
+          } catch {
+            console.warn(
+              "FertilizerTable: grapes-schedule returned non-JSON body, using legacy bud.json"
+            );
+            parsed = undefined;
+          }
+          const next = extractScheduleDaysArray(parsed);
+          if (next !== undefined) {
+            if (next.length === 0) {
+              if (!cancelled) {
+                setApiScheduleCompleted(true);
+                setData([]);
+                setLocalError(null);
+                setNoFertilizerRequired(false);
+                setPlantationType(null);
+                setMonthsCompleted(null);
+                setScheduleFetchLoading(false);
+              }
+              return;
+            }
+            if (!cancelled) {
+              setApiScheduleCompleted(false);
+              setData(mapGrapesScheduleNext7ToEntries(next));
+              setLocalError(null);
+              setNoFertilizerRequired(false);
+              setScheduleFetchLoading(false);
+            }
+            return;
+          }
+          console.warn(
+            "FertilizerTable: grapes-schedule 200 but no schedule array in response; keys:",
+            parsed && typeof parsed === "object"
+              ? Object.keys(parsed as object)
+              : typeof parsed
+          );
+        } else {
+          console.warn(
+            "FertilizerTable: grapes-schedule HTTP",
+            res.status,
+            res.statusText,
+            "— trying legacy bud.json"
+          );
+        }
+      } catch (e) {
+        console.warn(
+          "FertilizerTable: grapes-schedule request failed, using legacy bud.json",
+          e
+        );
+      }
+
+      if (cancelled) {
+        setScheduleFetchLoading(false);
+        return;
+      }
+
+      try {
+        setLocalError(null);
 
       // Check if profile exists and has plots
       if (!profile || !profile.plots || profile.plots.length === 0) {
@@ -525,29 +703,28 @@ const FertilizerTable: React.FC = () => {
           }. Please check if planting method "${plantingMethod}" is supported.`
         );
       }
-    } catch (error: any) {
-      // Failed to fetch data - show error only if fertilizer is still required
-      console.error(
-        "FertilizerTable: Error loading fertilizer data:",
-        error?.message || error
-      );
+      } catch (error: any) {
+        console.error(
+          "FertilizerTable: Error loading fertilizer data:",
+          error?.message || error
+        );
 
-      // Only set error if we haven't determined that no fertilizer is required
-      // This prevents showing errors when plantation type check succeeded
-      if (!noFertilizerRequired) {
         setLocalError(
           `Failed to fetch data: ${error?.message || "Unknown error occurred"}`
         );
-      }
-
-      setData([]);
-      // Don't reset plantation type and months if we already determined no fertilizer is needed
-      if (!noFertilizerRequired) {
+        setData([]);
         setPlantationType(null);
         setMonthsCompleted(null);
         setNoFertilizerRequired(false);
+      } finally {
+        if (!cancelled) setScheduleFetchLoading(false);
       }
-    }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
   }, [profile, profileLoading, profileError, selectedPlotName]);
 
   const handleDownloadPDF = async () => {
@@ -681,7 +858,31 @@ const FertilizerTable: React.FC = () => {
         return null;
       })()}
 
-      {(localError || profileError) && !noFertilizerRequired && (
+      {apiScheduleCompleted && (
+        <div className="mb-4 p-6 bg-green-50 border border-green-200 rounded-lg text-center">
+          <svg
+            className="w-12 h-12 text-green-600 mx-auto mb-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="text-lg font-bold text-green-800 mb-2">
+            Fertilizer Schedule Completed
+          </p>
+          <p className="text-sm text-green-700">
+            No upcoming fertilizer applications in the next 7 days for this plot.
+          </p>
+        </div>
+      )}
+
+      {(localError || profileError) && !noFertilizerRequired && !apiScheduleCompleted && (
         <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <div className="flex items-start">
             <svg
@@ -704,7 +905,7 @@ const FertilizerTable: React.FC = () => {
         </div>
       )}
 
-      {profileLoading ? (
+      {profileLoading || scheduleFetchLoading ? (
         <div className="flex items-center justify-center py-8">
           {/* <Satellite className="w-8 h-8 animate-spin text-blue-500" /> */}
           <span className="ml-2 text-gray-600">Loading fertilizer data...</span>
@@ -739,8 +940,12 @@ const FertilizerTable: React.FC = () => {
             return null;
           }
 
+          if (apiScheduleCompleted) {
+            return null;
+          }
+
           // Show loading state if profile is still loading
-          if (profileLoading) {
+          if (profileLoading || scheduleFetchLoading) {
             return (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
@@ -753,8 +958,11 @@ const FertilizerTable: React.FC = () => {
             );
           }
 
-          // Show error or empty state
-          if (localError || profileError || data.length === 0) {
+          // Show error or empty state (not when API says schedule is complete)
+          if (
+            (localError || profileError || data.length === 0) &&
+            !apiScheduleCompleted
+          ) {
             // Provide more helpful error messages
             let errorMessage =
               localError || profileError || "No fertilizer data available";

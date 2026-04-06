@@ -33,6 +33,8 @@ const videoList = [
 ];
 
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
+import { getGrapesMainBaseUrl } from "../utils/serviceUrls";
+import { normalizeNpkFromApi, isValidSoilNpkResponse } from "../utils/npkNormalize";
 
 const Fertilizer: React.FC = () => {
   const { profile, loading: profileLoading } = useFarmerProfile();
@@ -50,7 +52,7 @@ const Fertilizer: React.FC = () => {
   // Use global selectedPlotName, fallback to first plot if not available
   const PLOT_NAME = selectedPlotName || (profile?.plots && profile.plots.length > 0 ? profile.plots[0].fastapi_plot_id : "");
 
-  const API_BASE_URL = "https://cropeye-grapes-main-production.up.railway.app";
+  const API_BASE_URL = getGrapesMainBaseUrl();
 
   const getCurrentDate = () => {
     return new Date().toLocaleDateString("en-IN", {
@@ -66,9 +68,10 @@ const Fertilizer: React.FC = () => {
   const preloadedNpkData = PLOT_NAME ? getApiData('npk', PLOT_NAME) : null;
   const [localNpkData, setLocalNpkData] = useState<any>({});
 
-  // Sync npkData from multiple sources
+  // Sync npkData from multiple sources (API uses soilN/soilP/soilK; UI uses N/P/K)
   const npkData = useMemo(() => {
-    return preloadedNpkData || appState.npkData || localNpkData || {};
+    const raw = preloadedNpkData || appState.npkData || localNpkData || {};
+    return normalizeNpkFromApi(raw);
   }, [preloadedNpkData, appState.npkData, localNpkData]);
 
   // Update local state when appState changes
@@ -102,9 +105,10 @@ const Fertilizer: React.FC = () => {
     // Check global context first (preloaded data)
     const contextData = getApiData('npk', PLOT_NAME);
     if (contextData && Object.keys(contextData).length > 0) {
-      console.log(`✅ Fertilizer: Using preloaded NPK data from global context for ${PLOT_NAME}`, contextData);
-      setAppState((prev: any) => ({ ...prev, npkData: contextData }));
-      setLocalNpkData(contextData);
+      const normalized = normalizeNpkFromApi(contextData);
+      console.log(`✅ Fertilizer: Using preloaded NPK data from global context for ${PLOT_NAME}`, normalized);
+      setAppState((prev: any) => ({ ...prev, npkData: normalized }));
+      setLocalNpkData(normalized);
       setNpkLoading(false);
       npkFetchingRef.current = false;
       return;
@@ -115,9 +119,10 @@ const Fertilizer: React.FC = () => {
     const cached = getCached(cacheKey);
 
     if (cached && Object.keys(cached).length > 0) {
-      console.log(`✅ Fertilizer: Using cached NPK data from localStorage for ${PLOT_NAME}`, cached);
-      setAppState((prev: any) => ({ ...prev, npkData: cached }));
-      setLocalNpkData(cached);
+      const normalized = normalizeNpkFromApi(cached);
+      console.log(`✅ Fertilizer: Using cached NPK data from localStorage for ${PLOT_NAME}`, normalized);
+      setAppState((prev: any) => ({ ...prev, npkData: normalized }));
+      setLocalNpkData(normalized);
       setNpkLoading(false);
       npkFetchingRef.current = false;
       return;
@@ -133,7 +138,7 @@ const Fertilizer: React.FC = () => {
       const selectedPlot = profile?.plots?.find(
         (p) => p.fastapi_plot_id === PLOT_NAME
       ) || profile?.plots?.[0];
-      const crop = (selectedPlot?.farms?.[0]?.crop_type?.crop_type || "sugarcane").toLowerCase();
+      const crop = (selectedPlot?.farms?.[0]?.crop_type?.crop_type || "grapes").toLowerCase();
 
       console.log(`🌱 Fertilizer: Fetching required-n data from: ${url}`);
 
@@ -167,55 +172,38 @@ const Fertilizer: React.FC = () => {
         const json = await res.json();
         console.log(`✅ Fertilizer: Required-n API response received:`, json);
 
-        // Extract all NPK data from the response structure
-        // The API returns: soilN, soilP, soilK, plantanalysis_n, plantanalysis_p, plantanalysis_k
-        // and other fields like: plot_name, crop, plantation_date, days_since_plantation,
-        // soil_analysis_value, max_yield, required_n_per_acre, gndvi, area_acres
-
-        // Check if required fields exist (allow null/0 values but not undefined)
-        const hasRequiredFields = (
-          (json.soilN !== undefined || json.soilN === null || json.soilN === 0) &&
-          (json.soilP !== undefined || json.soilP === null || json.soilP === 0) &&
-          (json.soilK !== undefined || json.soilK === null || json.soilK === 0) &&
-          (json.plantanalysis_n !== undefined || json.plantanalysis_n === null || json.plantanalysis_n === 0) &&
-          (json.plantanalysis_p !== undefined || json.plantanalysis_p === null || json.plantanalysis_p === 0) &&
-          (json.plantanalysis_k !== undefined || json.plantanalysis_k === null || json.plantanalysis_k === 0)
-        );
-
-        if (hasRequiredFields) {
-          const npk = {
-            N: json.soilN ?? 0,
-            P: json.soilP ?? 0,
-            K: json.soilK ?? 0,
-            plantanalysis_n: json.plantanalysis_n ?? 0,
-            plantanalysis_p: json.plantanalysis_p ?? 0,
-            plantanalysis_k: json.plantanalysis_k ?? 0,
-            // Store additional fields for potential future use
-            plot_name: json.plot_name,
-            crop: json.crop,
-            plantation_date: json.plantation_date,
-            days_since_plantation: json.days_since_plantation,
-            soil_analysis_value: json.soil_analysis_value,
-            max_yield: json.max_yield,
-            required_n_per_acre: json.required_n_per_acre,
-            gndvi: json.gndvi,
-            area_acres: json.area_acres,
-          };
-
-          console.log(`✅ Fertilizer: Extracted NPK data:`, npk);
-          setAppState((prev: any) => ({ ...prev, npkData: npk }));
-          setLocalNpkData(npk);
-          setCached(cacheKey, npk);
-          // Also store in global context for instant access across navigation
-          setApiData('npk', PLOT_NAME, npk);
-          console.log(`✅ Fertilizer: NPK data stored successfully in appState, local state, cache, and global context`);
-        } else {
-          console.error(`❌ Fertilizer: Invalid NPK response structure. Received:`, json);
-          console.error(`❌ Fertilizer: Missing fields - soilN: ${json.soilN}, soilP: ${json.soilP}, soilK: ${json.soilK}, plantanalysis_n: ${json.plantanalysis_n}, plantanalysis_p: ${json.plantanalysis_p}, plantanalysis_k: ${json.plantanalysis_k}`);
+        if (!isValidSoilNpkResponse(json)) {
+          console.error(`❌ Fertilizer: Missing soil N/P/K in required-n response:`, json);
           throw new Error(
-            "Invalid NPK response structure - missing required fields (soilN, soilP, soilK or plantanalysis_n, _p, _k)"
+            "Invalid NPK response: expected numeric soilN, soilP, soilK from required-n API"
           );
         }
+
+        const npk = {
+          ...normalizeNpkFromApi(json),
+          N: json.soilN,
+          P: json.soilP,
+          K: json.soilK,
+          plantanalysis_n: json.plantanalysis_n ?? null,
+          plantanalysis_p: json.plantanalysis_p ?? null,
+          plantanalysis_k: json.plantanalysis_k ?? null,
+          plot_name: json.plot_name,
+          crop: json.crop,
+          plantation_date: json.plantation_date,
+          days_since_plantation: json.days_since_plantation,
+          soil_analysis_value: json.soil_analysis_value,
+          max_yield: json.max_yield,
+          required_n_per_acre: json.required_n_per_acre,
+          gndvi: json.gndvi,
+          area_acres: json.area_acres,
+        };
+
+        console.log(`✅ Fertilizer: Extracted NPK data:`, npk);
+        setAppState((prev: any) => ({ ...prev, npkData: npk }));
+        setLocalNpkData(npk);
+        setCached(cacheKey, npk);
+        setApiData("npk", PLOT_NAME, npk);
+        console.log(`✅ Fertilizer: NPK data stored successfully in appState, local state, cache, and global context`);
       } catch (fetchErr: any) {
         clearTimeout(timeoutId);
 
@@ -271,9 +259,10 @@ const Fertilizer: React.FC = () => {
       // Check if data exists in context first
       const contextNpkData = getApiData('npk', PLOT_NAME);
       if (contextNpkData && Object.keys(contextNpkData).length > 0) {
-        console.log(`✅ Fertilizer: Found preloaded NPK data in context for ${PLOT_NAME}`, contextNpkData);
-        setAppState((prev: any) => ({ ...prev, npkData: contextNpkData }));
-        setLocalNpkData(contextNpkData);
+        const normalized = normalizeNpkFromApi(contextNpkData);
+        console.log(`✅ Fertilizer: Found preloaded NPK data in context for ${PLOT_NAME}`, normalized);
+        setAppState((prev: any) => ({ ...prev, npkData: normalized }));
+        setLocalNpkData(normalized);
         setNpkLoading(false);
         return;
       }
@@ -282,9 +271,10 @@ const Fertilizer: React.FC = () => {
       const cacheKey = `npkData_${PLOT_NAME}`;
       const cached = getCached(cacheKey);
       if (cached && Object.keys(cached).length > 0) {
-        console.log(`✅ Fertilizer: Found cached NPK data for ${PLOT_NAME}`, cached);
-        setAppState((prev: any) => ({ ...prev, npkData: cached }));
-        setLocalNpkData(cached);
+        const normalized = normalizeNpkFromApi(cached);
+        console.log(`✅ Fertilizer: Found cached NPK data for ${PLOT_NAME}`, normalized);
+        setAppState((prev: any) => ({ ...prev, npkData: normalized }));
+        setLocalNpkData(normalized);
         setNpkLoading(false);
         return;
       }

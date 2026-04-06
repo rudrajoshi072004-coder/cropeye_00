@@ -118,6 +118,8 @@ export default defineConfig(({ mode }) => ({
       '/api/dev-plot': {
         target: 'https://cropeye-grapes-admin-production.up.railway.app',
         changeOrigin: true,
+        timeout: 180000,
+        proxyTimeout: 180000,
         rewrite: (path) => path.replace(/^\/api\/dev-plot/, ''),
         configure: (proxy, _options) => {
           // Handle OPTIONS preflight requests
@@ -226,6 +228,36 @@ export default defineConfig(({ mode }) => ({
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'text/plain'
               });
+              res.end('Proxy error');
+            }
+          });
+        },
+      },
+      // Soil NPK / required-n / analyze-npk (cropeye-grapes-main-production)
+      '/api/grapes-main': {
+        target: 'https://cropeye-grapes-main-production.up.railway.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/grapes-main/, ''),
+        configure: (proxy, _options) => {
+          proxy.on('proxyReq', (proxyReq, _req, _res) => {
+            proxyReq.setHeader(
+              'Origin',
+              'https://cropeye-grapes-main-production.up.railway.app'
+            );
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+            proxyRes.headers['Access-Control-Allow-Methods'] =
+              'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD';
+            proxyRes.headers['Access-Control-Allow-Headers'] =
+              'Content-Type, Authorization, Accept, Accept-Language, Origin, X-Requested-With';
+            if (req.method === 'OPTIONS') {
+              proxyRes.statusCode = 200;
+            }
+          });
+          proxy.on('error', (err, _req, res) => {
+            if (res && !res.headersSent) {
+              res.writeHead(500, { 'Access-Control-Allow-Origin': '*' });
               res.end('Proxy error');
             }
           });

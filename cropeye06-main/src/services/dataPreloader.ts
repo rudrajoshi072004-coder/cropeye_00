@@ -5,6 +5,8 @@
  */
 
 import { setCache } from '../components/utils/cache';
+import { getGrapesMainBaseUrl } from '../utils/serviceUrls';
+import { normalizeNpkFromApi } from '../utils/npkNormalize';
 
 // Import context - will be passed as parameter to avoid circular dependencies
 interface AppContextType {
@@ -409,7 +411,7 @@ const fetchFertilizerData = async (
   crop: string,
   context?: AppContextType
 ): Promise<void> => {
-  const BASE_URL = "https://cropeye-grapes-main-production.up.railway.app";
+  const BASE_URL = getGrapesMainBaseUrl();
   const currentDate = getCurrentEndDate();
   
   try {
@@ -434,9 +436,10 @@ const fetchFertilizerData = async (
         });
         if (response.ok) {
           const data = await response.json();
-          cacheData(npkCacheKey, data);
+          const normalized = normalizeNpkFromApi(data);
+          cacheData(npkCacheKey, normalized);
           if (context) {
-            context.setApiData('npk', plotName, data);
+            context.setApiData('npk', plotName, normalized);
           }
         }
       } catch (err) {

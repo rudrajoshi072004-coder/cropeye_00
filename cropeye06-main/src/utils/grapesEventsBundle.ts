@@ -1,6 +1,7 @@
 /**
  * Grapes Events API (Railway) — dashboard metrics bundle.
- * OpenAPI no longer exposes GET /plots/agroStats; use POST endpoints instead.
+ * Yield/ripening/brix come from POST grapes/* routes; soil pH and organic carbon
+ * still come from GET /plots/agroStats (plot-level `soil.phh2o`, `soil.organic_carbon_stock`).
  */
 
 export const GRAPES_BUNDLE_SOURCE = "grapes-bundle-v1" as const;
@@ -76,13 +77,50 @@ function daysUntilHarvestFromRipening(ra: any): number | null {
   return Math.max(0, Math.ceil((d.getTime() - today.getTime()) / 86400000));
 }
 
+/** One plot row from GET /plots/agroStats — same shape as legacy agroStats extract. */
+export function soilMetricsFromAgroPlotRow(plotRow: any | null | undefined): {
+  soilPH: number | null;
+  organicCarbonDensity: number | null;
+} {
+  if (!plotRow) {
+    return { soilPH: null, organicCarbonDensity: null };
+  }
+  // GeoJSON Feature-style payloads keep metrics under `properties`.
+  const row =
+    plotRow.soil != null || plotRow.brix_sugar != null
+      ? plotRow
+      : plotRow.properties && typeof plotRow.properties === "object"
+        ? plotRow.properties
+        : plotRow;
+  const soil = row.soil;
+  const ph = soil?.phh2o ?? row?.soil_ph ?? plotRow?.soil_ph;
+  const ocs = soil?.organic_carbon_stock ?? row?.organic_carbon_stock ?? plotRow?.organic_carbon_stock;
+
+  const soilPH =
+    typeof ph === "number" && Number.isFinite(ph)
+      ? ph
+      : typeof ph === "string" && ph.trim() !== "" && Number.isFinite(Number(ph))
+        ? Number(ph)
+        : null;
+
+  let organicCarbonDensity: number | null = null;
+  if (typeof ocs === "number" && Number.isFinite(ocs)) {
+    organicCarbonDensity = parseFloat(ocs.toFixed(4));
+  } else if (typeof ocs === "string" && ocs.trim() !== "" && Number.isFinite(Number(ocs))) {
+    organicCarbonDensity = parseFloat(Number(ocs).toFixed(4));
+  }
+
+  return { soilPH, organicCarbonDensity };
+}
+
 /** Maps bundle + stress/irrigation to FarmerDashboard `Metrics` shape. */
 export function metricsFromGrapesBundle(
   bundle: GrapesBundlePayload,
   profile: any,
   plotId: string,
   stressData: any,
-  irrigationData: any
+  irrigationData: any,
+  agroPlotRowForSoil?: any | null
 ) {
   const y = bundle.yield || {};
   const ra = bundle.ripening?.ripening_analysis || {};
@@ -92,6 +130,7 @@ export function metricsFromGrapesBundle(
     Array.isArray(series) && series.length > 0 ? series[series.length - 1]?.ta ?? null : null;
 
   const expectedYield = y.expected_yield_ton_per_ha ?? null;
+  const soil = soilMetricsFromAgroPlotRow(agroPlotRowForSoil);
 
   return {
     brix: bs.mean ?? null,
@@ -103,8 +142,8 @@ export function metricsFromGrapesBundle(
     totalBiomass: y.total_biomass_tons ?? null,
     daysToHarvest: daysUntilHarvestFromRipening(ra),
     growthStage: ra.crop_status ?? null,
-    soilPH: null,
-    organicCarbonDensity: null,
+    soilPH: soil.soilPH,
+    organicCarbonDensity: soil.organicCarbonDensity,
     actualYield: expectedYield,
     stressCount: stressData?.total_events ?? 0,
     irrigationEvents: irrigationData?.total_events ?? null,

@@ -19,6 +19,56 @@ interface FertilizerEntry {
     Potash_K_kg_per_acre: number;
   };
   organic_inputs?: string[];
+  /** Grapes admin JSON schedule (issue / nutrient / recommendation / organic / type) */
+  issue?: string;
+  recommendation?: string;
+  organicDetail?: string;
+  nutrient?: string;
+  scheduleType?: string;
+}
+
+type GrapesScheduleMeta = {
+  plot?: string;
+  foundation_pruning_date?: string;
+  fruit_pruning_date?: string;
+  today?: Record<string, unknown>;
+};
+
+function isGrapesScheduleV2Rows(parsed: unknown, next: unknown[]): boolean {
+  if (parsed && typeof parsed === "object" && "today" in (parsed as object)) {
+    return true;
+  }
+  const first = next[0];
+  if (first && typeof first === "object") {
+    const o = first as Record<string, unknown>;
+    if (typeof o.type === "string" && ("day" in o || "nutrient" in o)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function extractGrapesScheduleMeta(parsed: unknown): GrapesScheduleMeta | null {
+  if (!parsed || typeof parsed !== "object") return null;
+  const p = parsed as Record<string, unknown>;
+  const str = (v: unknown) =>
+    typeof v === "string" && v.length > 0 ? v : undefined;
+  const today =
+    p.today && typeof p.today === "object" && !Array.isArray(p.today)
+      ? (p.today as Record<string, unknown>)
+      : undefined;
+  const hasMeta =
+    str(p.plot) ||
+    str(p.foundation_pruning_date) ||
+    str(p.fruit_pruning_date) ||
+    today;
+  if (!hasMeta) return null;
+  return {
+    plot: str(p.plot),
+    foundation_pruning_date: str(p.foundation_pruning_date),
+    fruit_pruning_date: str(p.fruit_pruning_date),
+    today,
+  };
 }
 
 /** Pull the 7-day schedule list from admin API JSON (handles alternate key names). */
@@ -57,8 +107,35 @@ function extractScheduleDaysArray(raw: unknown): unknown[] | undefined {
   return undefined;
 }
 
-function mapGrapesScheduleNext7ToEntries(items: unknown[]): FertilizerEntry[] {
+function scheduleCellText(v: string | undefined | null): string {
+  const t = v?.trim();
+  return t ? t : "—";
+}
+
+function mapGrapesScheduleNext7ToEntries(
+  items: unknown[],
+  useV2: boolean
+): FertilizerEntry[] {
   if (!Array.isArray(items)) return [];
+  if (useV2) {
+    return items.map((raw) => {
+      const item = raw as Record<string, unknown>;
+      const str = (v: unknown) => (v == null ? "" : String(v));
+      return {
+        date: str(item.date),
+        stage: str(item.stage),
+        days: item.day != null ? String(item.day) : "",
+        N_kg_acre: "",
+        P_kg_acre: "",
+        K_kg_acre: "",
+        issue: str(item.issue),
+        recommendation: str(item.recommendation),
+        organicDetail: str(item.organic),
+        nutrient: str(item.nutrient),
+        scheduleType: str(item.type),
+      };
+    });
+  }
   return items.map((raw) => {
     const item = raw as Record<string, unknown>;
     const fertilizersRaw = item.fertilizers ?? item.fertilizer;
@@ -120,6 +197,9 @@ const FertilizerTable: React.FC = () => {
     useState<boolean>(false);
   const [scheduleFetchLoading, setScheduleFetchLoading] =
     useState<boolean>(false);
+  const [grapesScheduleMeta, setGrapesScheduleMeta] =
+    useState<GrapesScheduleMeta | null>(null);
+  const [grapesScheduleV2, setGrapesScheduleV2] = useState(false);
   const tableRef = useRef<HTMLDivElement>(null);
   const {
     profile,
@@ -356,6 +436,8 @@ const FertilizerTable: React.FC = () => {
       setNoFertilizerRequired(false);
       setApiScheduleCompleted(false);
       setScheduleFetchLoading(false);
+      setGrapesScheduleMeta(null);
+      setGrapesScheduleV2(false);
       return;
     }
 
@@ -407,6 +489,8 @@ const FertilizerTable: React.FC = () => {
               if (!cancelled) {
                 setApiScheduleCompleted(true);
                 setData([]);
+                setGrapesScheduleMeta(null);
+                setGrapesScheduleV2(false);
                 setLocalError(null);
                 setNoFertilizerRequired(false);
                 setPlantationType(null);
@@ -416,8 +500,11 @@ const FertilizerTable: React.FC = () => {
               return;
             }
             if (!cancelled) {
+              const v2 = isGrapesScheduleV2Rows(parsed, next);
+              setGrapesScheduleV2(v2);
+              setGrapesScheduleMeta(v2 ? extractGrapesScheduleMeta(parsed) : null);
               setApiScheduleCompleted(false);
-              setData(mapGrapesScheduleNext7ToEntries(next));
+              setData(mapGrapesScheduleNext7ToEntries(next, v2));
               setLocalError(null);
               setNoFertilizerRequired(false);
               setScheduleFetchLoading(false);
@@ -611,6 +698,8 @@ const FertilizerTable: React.FC = () => {
           monthsSincePlantation >= requiredMonths
         ) {
           setNoFertilizerRequired(true);
+          setGrapesScheduleMeta(null);
+          setGrapesScheduleV2(false);
           setData([]);
           setLocalError(null); // Clear any previous errors
           console.log(
@@ -686,6 +775,8 @@ const FertilizerTable: React.FC = () => {
           plantationDate,
           plantingMethod
         );
+        setGrapesScheduleMeta(null);
+        setGrapesScheduleV2(false);
         setData(fertilizerData);
         console.log(
           "FertilizerTable: Generated fertilizer data",
@@ -713,6 +804,8 @@ const FertilizerTable: React.FC = () => {
           `Failed to fetch data: ${error?.message || "Unknown error occurred"}`
         );
         setData([]);
+        setGrapesScheduleMeta(null);
+        setGrapesScheduleV2(false);
         setPlantationType(null);
         setMonthsCompleted(null);
         setNoFertilizerRequired(false);
@@ -1012,7 +1105,145 @@ const FertilizerTable: React.FC = () => {
             );
           }
 
-          return (
+          return grapesScheduleV2 ? (
+            <div ref={tableRef} className="overflow-x-auto space-y-4">
+              {grapesScheduleMeta && (
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs sm:text-sm text-gray-700 border-b border-gray-200 pb-3">
+                  {grapesScheduleMeta.plot && (
+                    <span>
+                      <span className="font-semibold text-gray-800">Plot: </span>
+                      {grapesScheduleMeta.plot}
+                    </span>
+                  )}
+                  {grapesScheduleMeta.foundation_pruning_date && (
+                    <span>
+                      <span className="font-semibold text-gray-800">
+                        Foundation pruning:{" "}
+                      </span>
+                      {grapesScheduleMeta.foundation_pruning_date}
+                    </span>
+                  )}
+                  {grapesScheduleMeta.fruit_pruning_date && (
+                    <span>
+                      <span className="font-semibold text-gray-800">
+                        Fruit pruning:{" "}
+                      </span>
+                      {grapesScheduleMeta.fruit_pruning_date}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {grapesScheduleMeta?.today && (
+                <div className="rounded-lg border border-blue-200 bg-blue-50/60 p-3 sm:p-4">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                    Today
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
+                    {(
+                      [
+                        ["Date", "date"],
+                        ["Day (DAP)", "day"],
+                        ["Stage", "stage"],
+                        ["Type", "type"],
+                        ["Issue", "issue"],
+                        ["Nutrient", "nutrient"],
+                        ["Recommendation", "recommendation"],
+                        ["Organic", "organic"],
+                      ] as const
+                    ).map(([label, key]) => {
+                      const raw = grapesScheduleMeta.today?.[key];
+                      const val =
+                        raw === null || raw === undefined
+                          ? ""
+                          : String(raw);
+                      return (
+                        <div key={key}>
+                          <div className="text-gray-500 text-xs mb-0.5">
+                            {label}
+                          </div>
+                          <div className="text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(val)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                  Next days schedule
+                </h3>
+                <div className="rounded-lg border border-gray-200 overflow-hidden">
+                  <table className="min-w-full text-left text-xs sm:text-sm">
+                    <thead className="bg-green-100 text-gray-800">
+                      <tr>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Date
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Day
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Stage
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Type
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Issue
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                          Nutrient
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200 min-w-[140px]">
+                          Recommendation
+                        </th>
+                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200 min-w-[140px]">
+                          Organic
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((row, idx) => (
+                        <tr
+                          key={`${row.date}-${idx}`}
+                          className="bg-white odd:bg-gray-50/80 border-t border-gray-100"
+                        >
+                          <td className="px-2 sm:px-3 py-2 align-top whitespace-nowrap text-gray-900">
+                            {scheduleCellText(row.date)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900">
+                            {scheduleCellText(row.days)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900">
+                            {scheduleCellText(row.stage)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 capitalize">
+                            {scheduleCellText(row.scheduleType)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words max-w-[120px] sm:max-w-none">
+                            {scheduleCellText(row.issue)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.nutrient)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.recommendation)}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.organicDetail)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : (
             <div ref={tableRef} className="overflow-x-auto">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-700 mb-2">

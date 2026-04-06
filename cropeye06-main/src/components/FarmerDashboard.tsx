@@ -6,8 +6,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   Cell,
   ReferenceLine,
   ReferenceArea,
@@ -40,13 +38,15 @@ import {
   Users,
   MapPin,
   Beaker,
+  CloudSun,
+  Star,
 } from "lucide-react";
 import axios from "axios";
 import { getCache, setCache } from "../utils/cache";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { useAppContext } from "../context/AppContext";
 import CommonSpinner from "./CommanSpinner";
-import { getEventsBaseUrl } from "../utils/serviceUrls";
+import { getEventsBaseUrl, getGrapesAdminBaseUrl } from "../utils/serviceUrls";
 import {
   fetchGrapesEventsBundle,
   getPlotAreaAcresFromProfile,
@@ -70,6 +70,95 @@ ChartJS.register(
   Legend,
   Filler
 );
+
+/** Recovery Rate / canopy vigour distribution chart plot height (px) */
+const RECOVERY_QUALITY_CHART_PLOT_H = 200;
+
+type VigourPixelPct = {
+  poor: number;
+  moderate: number;
+  good: number;
+  excellent: number;
+};
+
+/** Fallback when API is unavailable (matches prior demo proportions). */
+const FALLBACK_VIGOUR_PCT: VigourPixelPct = {
+  poor: 12,
+  moderate: 28,
+  good: 40,
+  excellent: 20,
+};
+
+function parseCanopyVigourPixelSummary(data: unknown): VigourPixelPct | null {
+  if (!data || typeof data !== "object") return null;
+  const ps = (data as { pixel_summary?: Record<string, unknown> })
+    .pixel_summary;
+  if (!ps || typeof ps !== "object") return null;
+  const n = (v: unknown) =>
+    typeof v === "number" && !Number.isNaN(v) ? v : null;
+  const poor = n(ps.poor_vigour_percentage);
+  const moderate = n(ps.moderate_vigour_percentage);
+  const good = n(ps.good_vigour_percentage);
+  const excellent = n(ps.excellent_vigour_percentage);
+  if (
+    poor === null ||
+    moderate === null ||
+    good === null ||
+    excellent === null
+  ) {
+    return null;
+  }
+  return { poor, moderate, good, excellent };
+}
+
+function vigourToBarRows(v: VigourPixelPct): {
+  pctLabel: string;
+  color: string;
+  label: string;
+  heightPct: number;
+}[] {
+  const clamp = (x: number) => Math.min(100, Math.max(0, x));
+  return [
+    {
+      label: "Poor",
+      color: "#e74c3c",
+      pctLabel: `${v.poor.toFixed(v.poor >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.poor),
+    },
+    {
+      label: "Moderate",
+      color: "#f39c12",
+      pctLabel: `${v.moderate.toFixed(v.moderate >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.moderate),
+    },
+    {
+      label: "Good",
+      color: "#4a80e8",
+      pctLabel: `${v.good.toFixed(v.good >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.good),
+    },
+    {
+      label: "Excellent",
+      color: "#57b86a",
+      pctLabel: `${v.excellent.toFixed(v.excellent >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.excellent),
+    },
+  ];
+}
+
+function dominantVigourCategory(v: VigourPixelPct): {
+  name: string;
+  pct: number;
+  color: string;
+} {
+  const items: { name: string; pct: number; color: string }[] = [
+    { name: "Poor", pct: v.poor, color: "#e74c3c" },
+    { name: "Moderate", pct: v.moderate, color: "#f39c12" },
+    { name: "Good", pct: v.good, color: "#4a80e8" },
+    { name: "Excellent", pct: v.excellent, color: "#57b86a" },
+  ];
+  return items.reduce((a, b) => (b.pct > a.pct ? b : a));
+}
 
 // Type definitions
 interface PieChartWithNeedleProps {
@@ -674,13 +763,6 @@ const BrixTimeSeriesChart: React.FC<BrixTimeSeriesChartProps> = ({ data, isLoadi
   );
 };
 
-const OTHER_FARMERS_RECOVERY = {
-  regional_average: 7.85,
-  top_quartile: 8.52,
-  bottom_quartile: 6.58,
-  similar_farms: 7.63,
-};
-
 const FarmerDashboard: React.FC = () => {
   const {
     profile,
@@ -702,6 +784,10 @@ const FarmerDashboard: React.FC = () => {
   const dashboardLoadInFlightRef = useRef<string | null>(null);
 
   const [currentPlotId, setCurrentPlotId] = useState<string | null>(null);
+  const [vigourPixelPct, setVigourPixelPct] = useState<VigourPixelPct | null>(
+    null
+  );
+  const [vigourChartLoading, setVigourChartLoading] = useState(false);
   const [showDebugInfo, setShowDebugInfo] = useState(false);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
   // Track if data has already been loaded for current plot to prevent re-fetching
@@ -830,6 +916,61 @@ const FarmerDashboard: React.FC = () => {
     }
     prevPlotIdRef.current = currentPlotId;
   }, [currentPlotId]);
+
+  useEffect(() => {
+    if (!currentPlotId) {
+      setVigourPixelPct(null);
+      setVigourChartLoading(false);
+      return;
+    }
+    if (profileLoading) return;
+
+    let cancelled = false;
+
+    const cached = getApiDataRef.current("canopyVigour", currentPlotId);
+    if (cached) {
+      const parsed = parseCanopyVigourPixelSummary(cached);
+      if (parsed) {
+        setVigourPixelPct(parsed);
+        setVigourChartLoading(false);
+        return;
+      }
+    }
+
+    setVigourPixelPct(null);
+    setVigourChartLoading(true);
+    (async () => {
+      try {
+        const base = getGrapesAdminBaseUrl().replace(/\/+$/, "");
+        const url = `${base}/grapes/canopy-vigour1?plot_name=${encodeURIComponent(
+          currentPlotId
+        )}`;
+        const res = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          credentials: "omit",
+          headers: { Accept: "application/json" },
+        });
+        if (cancelled) return;
+        if (!res.ok) {
+          setVigourPixelPct(FALLBACK_VIGOUR_PCT);
+          return;
+        }
+        const data = await res.json();
+        setApiDataRef.current("canopyVigour", currentPlotId, data);
+        const parsed = parseCanopyVigourPixelSummary(data);
+        setVigourPixelPct(parsed ?? FALLBACK_VIGOUR_PCT);
+      } catch {
+        if (!cancelled) setVigourPixelPct(FALLBACK_VIGOUR_PCT);
+      } finally {
+        if (!cancelled) setVigourChartLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPlotId, profileLoading]);
 
   useEffect(() => {
     if (!currentPlotId || profileLoading) return;
@@ -1646,32 +1787,14 @@ const FarmerDashboard: React.FC = () => {
     },
   ];
 
-  const recoveryComparisonData = [
-    {
-      name: "Your Farm",
-      value: metrics.recovery || 0,
-      fill: "#10b981",
-      label: "Your Recovery Rate",
-    },
-    {
-      name: "Regional Average",
-      value: OTHER_FARMERS_RECOVERY.regional_average,
-      fill: "#3b82f6",
-      label: "Regional Average",
-    },
-    {
-      name: "Top 25%",
-      value: OTHER_FARMERS_RECOVERY.top_quartile,
-      fill: "#22c55e",
-      label: "Top Quartile",
-    },
-    {
-      name: "Similar Farms",
-      value: OTHER_FARMERS_RECOVERY.similar_farms,
-      fill: "#f59e0b",
-      label: "Similar Farms",
-    },
-  ];
+  const recoveryQualityBarRows = useMemo(
+    () => vigourToBarRows(vigourPixelPct ?? FALLBACK_VIGOUR_PCT),
+    [vigourPixelPct]
+  );
+  const dominantRecoveryQuality = useMemo(
+    () => dominantVigourCategory(vigourPixelPct ?? FALLBACK_VIGOUR_PCT),
+    [vigourPixelPct]
+  );
 
   if (profileLoading) {
     return (
@@ -2435,48 +2558,182 @@ const FarmerDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Recovery Rate Comparison */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-5 sm:p-6 flex flex-col" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden', minHeight: '220px' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" />
+          {/* Recovery Rate Comparison — custom chart matches Quality Distribution reference */}
+          <div
+            className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-5 sm:p-6 flex flex-col overflow-visible"
+            style={{
+              width: "100%",
+              maxWidth: "100%",
+              boxSizing: "border-box",
+              minHeight: "min-content",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3 sm:mb-4 shrink-0">
+              <Users className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 shrink-0" />
               <h3 className="text-base sm:text-lg font-semibold text-gray-800">
                 Recovery Rate Comparison
               </h3>
             </div>
-            <div className="mt-auto">
-              <div className="h-48 flex items-center justify-center -mt-8">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={recoveryComparisonData}
-                    margin={{ top: 1, right: 5, left: 5, bottom: 5 }}
+
+            <div className="mt-1 flex w-full min-w-0 flex-col gap-4">
+              {/* Plotting area + Y axis */}
+              <div className="flex w-full min-w-0 gap-2 sm:gap-3">
+                <div
+                  className="flex shrink-0 flex-col justify-between pt-0.5 text-[10px] font-medium leading-none text-gray-700 sm:text-xs text-right"
+                  style={{
+                    height: RECOVERY_QUALITY_CHART_PLOT_H,
+                    width: "2.25rem",
+                  }}
+                  aria-hidden
+                >
+                  <span>100%</span>
+                  <span>70%</span>
+                  <span>30%</span>
+                  <span>0%</span>
+                </div>
+
+                <div className="min-w-0 flex-1 flex flex-col">
+                  {/* Headroom so tallest bar can extend above 100% grid */}
+                  <div
+                    className="relative w-full overflow-visible pl-0.5"
+                    style={{
+                      paddingTop: "1.25rem",
+                      minHeight: RECOVERY_QUALITY_CHART_PLOT_H + 20,
+                    }}
                   >
-                    <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
-                    <XAxis dataKey="name" tick={{ fontSize: 9 }} height={10} />
-                    <YAxis tick={{ fontSize: 10, fill: '#374151' }} domain={[0, 10]} width={35} />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        `${value.toFixed(1)}%`,
-                        "Recovery Rate",
-                      ]}
-                    />
-                    <Bar dataKey="value" fill="#3b82f6" radius={[3, 3, 0, 0]}>
-                      {recoveryComparisonData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                    {vigourChartLoading && vigourPixelPct === null && (
+                      <div className="absolute inset-0 z-10 flex items-center justify-center rounded border border-gray-200 bg-white/80 backdrop-blur-[1px]">
+                        <span className="text-sm text-gray-600">
+                          Loading canopy vigour…
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      className="relative box-border w-full overflow-visible border-b-2 border-l-2 border-gray-600"
+                      style={{
+                        height: RECOVERY_QUALITY_CHART_PLOT_H,
+                        marginTop: 0,
+                        opacity:
+                          vigourChartLoading && vigourPixelPct === null
+                            ? 0.45
+                            : 1,
+                      }}
+                    >
+                      {/* Dashed guides + right border — plot interior */}
+                      <div
+                        className="pointer-events-none absolute inset-0 border-r border-dashed border-gray-300"
+                        aria-hidden
+                      >
+                        <div className="absolute left-0 right-0 top-0 border-t border-dashed border-gray-300" />
+                        <div
+                          className="absolute left-0 right-0 border-t border-dashed border-gray-300"
+                          style={{ bottom: "70%" }}
+                        />
+                        <div
+                          className="absolute left-0 right-0 border-t border-dashed border-gray-300"
+                          style={{ bottom: "30%" }}
+                        />
+                      </div>
+
+                      {/* Bars — heights from API pixel_summary vigour percentages */}
+                      <div
+                        className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-2 sm:gap-3 px-1.5 sm:px-2"
+                        style={{ height: RECOVERY_QUALITY_CHART_PLOT_H }}
+                      >
+                        {recoveryQualityBarRows.map((b) => {
+                          const rawH =
+                            (b.heightPct / 100) *
+                            RECOVERY_QUALITY_CHART_PLOT_H;
+                          const barHeightPx =
+                            b.heightPct > 0 && rawH < 2 ? 2 : rawH;
+                          return (
+                            <div
+                              key={b.label}
+                              className="flex min-h-0 min-w-0 flex-1 flex-col justify-end"
+                            >
+                              <div
+                                className="flex w-full items-start justify-center rounded-t-md pt-1.5 shadow-sm"
+                                style={{
+                                  height: barHeightPx,
+                                  minHeight: 0,
+                                  backgroundColor: b.color,
+                                }}
+                              >
+                                <span className="text-center text-[11px] font-bold leading-tight text-white sm:text-xs">
+                                  {b.pctLabel}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Icons + category labels — same 4 columns as bars */}
+                  <div className="mt-3 grid w-full grid-cols-4 gap-2 px-1.5 sm:gap-3 sm:px-2">
+                    <div className="flex min-h-[3.25rem] flex-col items-center justify-end gap-1.5">
+                      <Leaf
+                        className="h-5 w-5 shrink-0 text-[#e74c3c] sm:h-6 sm:w-6"
+                        strokeWidth={2}
+                        aria-hidden
+                      />
+                      <span className="w-full text-center text-[11px] font-semibold leading-tight text-[#e74c3c] sm:text-xs">
+                        Poor
+                      </span>
+                    </div>
+                    <div className="flex min-h-[3.25rem] flex-col items-center justify-end gap-1.5">
+                      <CloudSun
+                        className="h-5 w-5 shrink-0 text-[#f39c12] sm:h-6 sm:w-6"
+                        strokeWidth={2}
+                        aria-hidden
+                      />
+                      <span className="w-full text-center text-[11px] font-semibold leading-tight text-[#f39c12] sm:text-xs">
+                        Moderate
+                      </span>
+                    </div>
+                    <div className="flex min-h-[3.25rem] flex-col items-center justify-end gap-1.5">
+                      <div className="flex shrink-0 items-center justify-center gap-0.5" aria-hidden>
+                        <Leaf
+                          className="h-4 w-4 text-[#4a80e8] sm:h-5 sm:w-5"
+                          strokeWidth={2}
+                        />
+                        <Leaf
+                          className="h-4 w-4 text-[#57b86a] sm:h-5 sm:w-5"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <span className="w-full text-center text-[11px] font-semibold leading-tight text-[#4a80e8] sm:text-xs">
+                        Good
+                      </span>
+                    </div>
+                    <div className="flex min-h-[3.25rem] flex-col items-center justify-end gap-1.5">
+                      <Star
+                        className="h-5 w-5 shrink-0 fill-yellow-400 text-yellow-500 sm:h-6 sm:w-6"
+                        strokeWidth={2}
+                        aria-hidden
+                      />
+                      <span className="w-full text-center text-[11px] font-semibold leading-tight text-[#57b86a] sm:text-xs">
+                        Excellent
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="mt-2 text-center text-sm sm:text-base text-gray-600">
-                <span className="font-semibold text-green-700">
-                  Your Farm: {(metrics.recovery || 0).toFixed(1)}%
+
+              <p className="mt-1 text-center text-sm text-gray-600 sm:text-base">
+                Your Farm Quality:{" "}
+                <span
+                  className="font-bold"
+                  style={{ color: dominantRecoveryQuality.color }}
+                >
+                  {dominantRecoveryQuality.name} (
+                  {dominantRecoveryQuality.pct.toFixed(
+                    dominantRecoveryQuality.pct >= 10 ? 1 : 2
+                  )}
+                  %)
                 </span>
-                {" vs "}
-                <span className="font-semibold text-blue-700">
-                  Regional Avg:{" "}
-                  {OTHER_FARMERS_RECOVERY.regional_average.toFixed(1)}%
-                </span>
-              </div>
+              </p>
             </div>
           </div>
         </div>

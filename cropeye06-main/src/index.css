@@ -282,10 +282,11 @@ tbody tr:hover {
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.60) 25%, rgba(255, 255, 255, 0.40) 50%, rgba(255, 255, 255, 0.30) 100%),
     url('/Image/Background.png');
-  background-size: cover;
-  background-position: center;
+  /* Per layer: gradient fills viewport; photo covers, anchored right, no stretch artifacts */
+  background-size: cover, cover;
+  background-position: center, right center;
   background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat, no-repeat;
   min-height: 100vh;
 }
 

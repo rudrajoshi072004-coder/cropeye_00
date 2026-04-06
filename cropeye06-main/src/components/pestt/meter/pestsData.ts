@@ -153,7 +153,7 @@ export const pestsData: Pest[] = [
     months: ["December", "January", "February", "March", "April"],
     temperature: "20–32",
     humidity: "55-75",
-    image: "/Image/mealybug.jpg",
+    image: "/Image/mealybug.webp",
     stage: {
       minDays: 65,
       maxDays: 120,
@@ -214,7 +214,7 @@ export const pestsData: Pest[] = [
     months: ["December", "January", "February", "March", "April"],
     temperature: "18–30",
     humidity: "60–80",
-    image: "/Image/fruit_sucking_moth.jpg",
+    image: "/Image/fruit%20sucking%20moth.webp",
     stage: {
       minDays: 90,
       maxDays: 130,
@@ -246,7 +246,7 @@ export const pestsData: Pest[] = [
     months: ["Oct - Feb"],
     temperature: "25- 30",
     humidity: "80-90",
-    image: "/Image/fruit_sucking_moth.jpg",
+    image: "/Image/wilt.png",
     stage: {
       minDays: 90,
       maxDays: 130,

@@ -64,7 +64,7 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ currentUserId, currentUserR
     if (currentUserRole === 'manager' || currentUserRole === 'fieldofficer') {
       fetchContacts();
     }
-  }, [currentUserId]);
+  }, [currentUserId, currentUserRole]);
 
   const fetchTasks = async () => {
     if (!currentUserId) {
@@ -81,10 +81,24 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ currentUserId, currentUserR
         ? response.data.results 
         : (Array.isArray(response.data) ? response.data : []);
       
-      const filteredTasks = tasksData.filter((task: any) =>
-        task.assigned_to && task.assigned_to.id === currentUserId
-      );
-      
+      let filteredTasks: Task[];
+      if (currentUserRole === 'fieldofficer') {
+        // Same task set as Tasklist for field officers: assigned to me + tasks I created for farmers
+        const assigned = tasksData.filter(
+          (task: any) => task.assigned_to && task.assigned_to.id === currentUserId
+        );
+        const createdByMe = tasksData.filter(
+          (task: any) => task.created_by && task.created_by.id === currentUserId
+        );
+        const byId = new Map<number, Task>();
+        [...assigned, ...createdByMe].forEach((t: any) => byId.set(t.id, t));
+        filteredTasks = Array.from(byId.values());
+      } else {
+        filteredTasks = tasksData.filter((task: any) =>
+          task.assigned_to && task.assigned_to.id === currentUserId
+        );
+      }
+
       console.log('Tasks loaded for calendar:', filteredTasks.length);
       setTasks(filteredTasks);
     } catch (error) {
@@ -123,22 +137,46 @@ const TaskCalendar: React.FC<TaskCalendarProps> = ({ currentUserId, currentUserR
 const fetchContacts = async () => {
   try {
     const response = await getContactDetails();
-    const contactData = response.data.contacts;
+    const contactData =
+      (response.data && (response.data as any).contacts) ? (response.data as any).contacts : response.data;
     
     if (currentUserRole === 'fieldofficer') {
-      // TEMPORARY: Show all farmers (no filtering)
-      // TODO: Backend needs to add created_by field or create new endpoint
-      const allFarmers = contactData.farmers || [];
-      
-      console.log('Showing all farmers (not filtered):', allFarmers.length);
-      setContacts(allFarmers);
+      // Field officer: show all assignable users returned by backend
+      // Accept multiple possible shapes/keys from backend.
+      const farmers = (contactData as any)?.farmers ?? (contactData as any)?.farmers_list ?? [];
+      const fieldOfficers =
+        (contactData as any)?.field_officers ??
+        (contactData as any)?.fieldOfficers ??
+        [];
+      const managers = (contactData as any)?.managers ?? [];
+      const owners = (contactData as any)?.owners ?? [];
+      const admins = (contactData as any)?.admins ?? [];
+
+      const all = [
+        ...(Array.isArray(farmers) ? farmers : []),
+        ...(Array.isArray(fieldOfficers) ? fieldOfficers : []),
+        ...(Array.isArray(managers) ? managers : []),
+        ...(Array.isArray(owners) ? owners : []),
+        ...(Array.isArray(admins) ? admins : []),
+      ];
+
+      // De-dup by id
+      const byId = new Map<number, any>();
+      all.forEach((u: any) => {
+        const id = Number(u?.id);
+        if (!Number.isNaN(id)) byId.set(id, u);
+      });
+
+      const merged = Array.from(byId.values());
+      console.log('TaskCalendar: assignable users (fieldofficer):', merged.length);
+      setContacts(merged);
       
     } else if (currentUserRole === 'manager') {
       const allContacts = [
-        ...(contactData.field_officers || []),
-        ...(contactData.farmers || [])
+        ...(((contactData as any)?.field_officers ?? (contactData as any)?.fieldOfficers ?? []) as any[]),
+        ...(((contactData as any)?.farmers ?? []) as any[]),
       ];
-      setContacts(allContacts);
+      setContacts(Array.isArray(allContacts) ? allContacts : []);
     }
   } catch (error) {
     console.error('Error fetching contacts:', error);

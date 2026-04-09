@@ -198,12 +198,12 @@ export default defineConfig(({ mode }) => ({
       },
       // Proxy for backend API (main API server)
       '/api/backend': {
-        target: 'https://cropeye-server-flyio.onrender.com',
+        target: 'https://cropeye-backend.up.railway.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/backend/, '/api'),
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            proxyReq.setHeader('Origin', 'https://cropeye-server-flyio.onrender.com');
+            proxyReq.setHeader('Origin', 'https://cropeye-backend.up.railway.app');
           });
           
           proxy.on('proxyRes', (proxyRes, req, _res) => {

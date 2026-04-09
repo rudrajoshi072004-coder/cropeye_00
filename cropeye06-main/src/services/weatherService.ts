@@ -2,6 +2,45 @@
 // Centralized Weather API Base URL
 export const WEATHER_API_BASE = "https://weather-cropeye.up.railway.app";
 
+/** Current forecast + rain alerts (Railway) — see https://currentforecast-production.up.railway.app/docs */
+export const FORECAST_WEATHER_API_BASE =
+  "https://currentforecast-production.up.railway.app";
+
+export type ForecastPeriodPrediction = {
+  rain_alert?: string;
+  rain_probability?: string;
+};
+
+export type ForecastCurrentWeather = {
+  location?: string;
+  region?: string;
+  country?: string;
+  localtime?: string;
+  latitude?: number;
+  longitude?: number;
+  temperature_c?: number;
+  humidity?: number;
+  wind_kph?: number;
+  precip_mm?: number;
+  cloud?: number;
+  pressure_mb?: number;
+  dewpoint_c?: number;
+  condition_text?: string | null;
+  rain_score?: number;
+  rain_alert?: string;
+  rain_probability?: string;
+  next_24h_prediction?: {
+    morning?: ForecastPeriodPrediction;
+    afternoon?: ForecastPeriodPrediction;
+    night?: ForecastPeriodPrediction;
+  };
+  next_48h_prediction?: {
+    morning?: ForecastPeriodPrediction;
+    afternoon?: ForecastPeriodPrediction;
+    night?: ForecastPeriodPrediction;
+  };
+};
+
 export interface WeatherData {
   location: string;
   region: string;
@@ -92,6 +131,30 @@ const fetchWithRetry = async (
   }
   
   throw lastError;
+};
+
+/**
+ * Current conditions + rain alerts and 24h/48h predictions from the forecast API.
+ */
+export const fetchForecastCurrentWeather = async (
+  lat: number,
+  lon: number
+): Promise<ForecastCurrentWeather> => {
+  if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+    throw new Error("Invalid coordinates for forecast weather");
+  }
+  const apiUrl = `${FORECAST_WEATHER_API_BASE}/current-weather?lat=${lat}&lon=${lon}`;
+  const response = await fetchWithRetry(apiUrl, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Forecast API error: ${response.status}`);
+  }
+  return (await response.json()) as ForecastCurrentWeather;
 };
 
 /**

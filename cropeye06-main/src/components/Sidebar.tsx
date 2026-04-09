@@ -31,7 +31,6 @@ const CropImg = ({
 const IMG = {
   Home:         '/Image/crop images/Home.png',
   Farmers:      '/Image/crop images/Farmers.png',
-  Fields:       '/Image/crop images/Fields.png',
   Tasks:        '/Image/crop images/Tasks.png',
   Messages:     '/Image/crop images/Messages.png',
   Weather:      '/Image/crop images/Weather.png',
@@ -57,12 +56,20 @@ interface SidebarProps {
   expandedMenu?: string | null;
 }
 
-// ─── Field Officer flat nav items ───────────────────────────────────────────
-const FO_NAV = [
-  { key: 'farmers',  label: 'Farmers',  iconImg: IMG.Farmers,  action: 'ViewFarmerPlot' },
-  { key: 'fields',   label: 'Fields',   iconImg: IMG.Fields,   action: 'Farmlist' },
-  { key: 'tasks',    label: 'Tasks',    iconImg: IMG.Tasks,    action: 'Tasklist',  badge: true },
-];
+// ─── Field Officer: Farmers row (Farmlist / Fields removed from sidebar) ───────
+type FOFlatItem = {
+  key: string;
+  label: string;
+  iconImg: string;
+  action: string;
+};
+
+const FO_FARMERS: FOFlatItem = {
+  key: 'farmers',
+  label: 'Farmers',
+  iconImg: IMG.Farmers,
+  action: 'ViewFarmerPlot',
+};
 
 export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
@@ -118,6 +125,58 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const toggleSubmenu = (title: string) => {
     setOpenMenus((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
+    );
+  };
+
+  /** Farmers row */
+  const renderFieldOfficerFlatItem = (item: FOFlatItem) => {
+    const isActive = activeItem === item.key;
+    const iconMap: Record<string, string> = {
+      Farmers: 'groups',
+    };
+    const materialIcon = iconMap[item.label] ?? null;
+    const useMaterialIcon = materialIcon !== null;
+
+    return (
+      <button
+        key={item.key}
+        type="button"
+        onClick={() => {
+          setActiveItem(item.key);
+          onMenuSelect(item.action);
+        }}
+        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-left group mb-1 ${
+          isActive ? 'sidebar-item-active' : 'text-black hover:bg-green-50/50'
+        }`}
+      >
+        <div className="flex items-center space-x-3">
+          {useMaterialIcon ? (
+            <div className="icon-circle">
+              <span className="material-icons">{materialIcon}</span>
+            </div>
+          ) : (
+            <div
+              className={`sidebar-icon-container ${
+                isActive
+                  ? 'bg-green-600 text-white'
+                  : 'bg-transparent text-gray-500 group-hover:text-green-600'
+              }`}
+            >
+              <CropImg src={item.iconImg} alt={item.label} active={isActive} />
+            </div>
+          )}
+          <span className="text-sm font-semibold font-premium text-black">{item.label}</span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <ChevronRight
+            size={14}
+            className={`transition-colors ${
+              isActive ? 'text-green-600' : 'text-gray-300 group-hover:text-gray-500'
+            }`}
+          />
+        </div>
+      </button>
     );
   };
 
@@ -379,91 +438,83 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-1">
           {userRole === 'fieldofficer' ? (
-            // ── Field Officer: flat icon-style nav ──────────────────────────
+            // ── Field Officer: Farmers → User Desk → My Task → Resources → Plan & Book
             <>
-              {FO_NAV.map((item) => {
-                const isActive = activeItem === item.key;
-                
-                // Get Material Icon for field officer nav items
-                const getFieldOfficerIcon = (label: string): string | null => {
-                  const iconMap: Record<string, string> = {
-                    'Farmers': 'groups',
-                    'Fields': 'map',
-                    'Tasks': 'task',
-                  };
-                  return iconMap[label] || null;
-                };
-                
-                const materialIcon = getFieldOfficerIcon(item.label);
-                const useMaterialIcon = materialIcon !== null;
-                
+              {renderFieldOfficerFlatItem(FO_FARMERS)}
+
+              {renderMenu('User Desk', IMG.Farmers, ['AddFarm', 'Farmlist', 'Contactuser'])}
+
+              {/* My Task: Task List / Task Calendar */}
+              {(() => {
+                const tasksOpen = openMenus.includes('Tasks');
+                const tasksActive = activeItem === 'tasks';
                 return (
-                  <button
-                    key={item.key}
-                    onClick={() => {
-                      setActiveItem(item.key);
-                        onMenuSelect(item.action);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 text-left group mb-1 ${
-                      isActive
-                        ? 'sidebar-item-active'
-                        : 'text-black hover:bg-green-50/50'
+                  <div className="mb-1">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => toggleSubmenu('Tasks')}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleSubmenu('Tasks');
+                        }
+                      }}
+                      className={`flex items-center justify-between px-3 py-2.5 cursor-pointer rounded-xl transition-all duration-200 group w-full ${
+                        tasksActive || tasksOpen
+                          ? 'sidebar-item-active'
+                          : 'text-black hover:bg-green-50/50'
                       }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      {useMaterialIcon ? (
+                    >
+                      <div className="flex items-center space-x-3">
                         <div className="icon-circle">
-                          <span className="material-icons">{materialIcon}</span>
+                          <span className="material-icons">task</span>
                         </div>
-                      ) : (
-                        <div
-                          className={`sidebar-icon-container ${
-                            isActive
-                            ? 'bg-green-600 text-white'
-                            : 'bg-transparent text-gray-500 group-hover:text-green-600'
-                            }`}
-                        >
-                          <CropImg
-                            src={item.iconImg}
-                            alt={item.label}
-                            active={isActive}
-                          />
-                        </div>
-                      )}
-                      <span className="text-sm font-semibold font-premium text-black">
-                        {item.label}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      {/* Badge */}
-                      {(item.badge && taskCount > 0) || (item as any).badgeValue ? (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-green-600 text-white pulsate">
-                          {(item as any).badgeValue || taskCount}
+                        <span className="text-sm font-semibold font-premium text-black">
+                          My Task
                         </span>
-                      ) : null}
-
-                      <ChevronRight
-                        size={14}
-                        className={`transition-colors ${
-                          isActive
-                            ? 'text-green-600'
-                            : 'text-gray-300 group-hover:text-gray-500'
-                        }`}
-                      />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {taskCount > 0 ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-green-600 text-white pulsate">
+                            {taskCount}
+                          </span>
+                        ) : null}
+                        <span className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                          {tasksOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                        </span>
+                      </div>
                     </div>
-                  </button>
+                    {tasksOpen && (
+                      <div className="ml-10 mt-1 space-y-1 border-l border-gray-200 pl-4">
+                        <div
+                          className="py-1.5 px-2 text-xs font-bold cursor-pointer text-black hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                          onClick={() => {
+                            setActiveItem('tasks');
+                            onMenuSelect('Tasklist');
+                          }}
+                        >
+                          Task List
+                        </div>
+                        <div
+                          className="py-1.5 px-2 text-xs font-bold cursor-pointer text-black hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                          onClick={() => {
+                            setActiveItem('tasks');
+                            onMenuSelect('TaskCalendar');
+                          }}
+                        >
+                          Task Calendar
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
-              })}
+              })()}
 
-              {/* Additional field officer submenus (triggered from home grid) */}
-              <div>
-                {renderMenu('User Desk',          IMG.Farmers,  ['AddFarm', 'Farmlist', 'Contactuser'])}
-                {renderMenu('Resources Planning',  IMG.Location, [
-                  'Add Vendor', 'Vendor list', 'Add order', 'order list', 'Add Stock', 'stock list',
-                ])}
-                {renderMenu('Plan & Book',         IMG.Events,   ['Add Booking', 'Booking List'])}
-              </div>
+              {renderMenu('Resources Planning', IMG.Location, [
+                'Add Vendor', 'Vendor list', 'Add order', 'order list', 'Add Stock', 'stock list',
+              ])}
+              {renderMenu('Plan & Book', IMG.Events, ['Add Booking', 'Booking List'])}
             </>
           ) : (
             // ── Other roles: submenu-based nav ──────────────────────────────

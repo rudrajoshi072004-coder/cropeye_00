@@ -65,8 +65,12 @@ export default defineConfig(({ mode }) => ({
       'Pragma': 'no-cache',
       'Expires': '0',
     },
+    host: "0.0.0.0",
     port: 3002,
     strictPort: false,
+    hmr: {
+      port: 3002,
+    },
     // Proxy API requests to avoid CORS issues in development
     proxy: {
       '/api/dev-plot': {

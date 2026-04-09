@@ -327,6 +327,37 @@ function AddFarm() {
     formData.variety || ""
   );
 
+  const varietyLabel = (v: string): string => {
+    const map: Record<string, string> = {
+      tas_a_ganesh: "Tas-A-Ganesh",
+      manik_chaman: "Manik Chaman",
+      flame_seedless: "Flame Seedless",
+      crimson_seedless: "Crimson Seedless",
+      red_globe: "Red Globe",
+      sudhakar_seedless: "Sudhakar Seedless",
+      thompson_seedless: "Thompson Seedless",
+      super_sonaka: "Super Sonaka",
+      sharad_seedless: "Sharad Seedless",
+      mama_jambo: "Mama Jambo",
+      raigad_purple: "Raigad Purple",
+      nanasaheb_purple: "Nanasaheb Purple",
+      ssn: "SSN",
+      rk: "RK",
+      ard_35: "ARD 35",
+      ard_36: "ARD 36",
+      arra_35: "ARRA 35",
+      arra_36: "ARRA 36",
+      variety_1530: "1530",
+      variety_1557: "1557",
+    };
+    if (map[v]) return map[v];
+    return v
+      .replace(/_/g, " ")
+      .split(" ")
+      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+      .join(" ");
+  };
+
   const [showIcons, setShowIcons] = useState<IconVisibility>({
     first_name: true,
     last_name: true,
@@ -2028,60 +2059,68 @@ The farmer can now login with Email credentials to access the dashboard and moni
           return ["dogridge", "banglore", "polson", "polso"];
         case "grafted_variety":
           return [
-            "Thompson seedless",
-            "super sonaka",
-            "Manik chaman",
-            "Crimson ",
-            "sudhakar seedless",
-            "SSN",
-            "sharad seedless",
-            "mama jambo",
-            "Tas-A-Ganesh",
-            "Flame seedless",
-            "Crimson seedless",
-            "Red Globe",
-            "RK",
-            "Allison",
-            "Timco",
-            "Arra-35",
-            "Arra-36",
-            "1530",
-            "1557",
-            "clone ",
-            "Timson",
-            "Raigad purple",
-            "Anushka",
-            "nanasaheb purple",
+            "thompson",
+            "tas_a_ganesh",
+            "sonaka",
+            "manik_chaman",
+            "flame_seedless",
+            "crimson_seedless",
+            "red_globe",
+            "sudhakar_seedless",
+            "allison",
+            "timco",
+            "ard_35",
+            "ard_36",
+            "thompson_seedless",
+            "super_sonaka",
+            "crimson",
+            "ssn",
+            "sharad_seedless",
+            "mama_jambo",
+            "rk",
+            "arra_35",
+            "arra_36",
+            "variety_1530",
+            "variety_1557",
+            "clone",
+            "timson",
+            "raigad_purple",
+            "anushka",
+            "nanasaheb_purple",
             "other",
           ];
         case "soil_type":
           return ["clay", "loam", "sandy_loam", "sandy"];
         case "variety":
           return [
-            "Thompson seedless",
-            "super sonaka",
-            "Manik chaman",
-            "Crimson ", 
-            "sudhakar seedless",
-            "SSN",
-            "sharad seedless",
-            "mama jambo",
-            "Tas-A-Ganesh", 
-            "Flame seedless",
-            "Crimson seedless",
-            "Red Globe",
-            "RK",
-            "Allison",
-            "Timco",
-            "Arra-35",    
-            "Arra-36",  
-            "1530",
-            "1557",
-            "clone ",
-            "Timson",
-            "Raigad purple",
-            "Anushka",
-            "nanasaheb purple",
+            "thompson",
+            "tas_a_ganesh",
+            "sonaka",
+            "manik_chaman",
+            "flame_seedless",
+            "crimson_seedless",
+            "red_globe",
+            "sudhakar_seedless",
+            "allison",
+            "timco",
+            "ard_35",
+            "ard_36",
+            "thompson_seedless",
+            "super_sonaka",
+            "crimson",
+            "ssn",
+            "sharad_seedless",
+            "mama_jambo",
+            "rk",
+            "arra_35",
+            "arra_36",
+            "variety_1530",
+            "variety_1557",
+            "clone",
+            "timson",
+            "raigad_purple",
+            "anushka",
+            "nanasaheb_purple",
             "other",
 
           ];
@@ -2162,7 +2201,9 @@ The farmer can now login with Email credentials to access the dashboard and moni
                   <option value="">Select {key.replace("_", " ")}</option>
                   {options.filter(opt => opt != null && opt !== "").map((option) => (
                     <option key={option} value={option}>
-                      {option}
+                      {key === "grafted_variety" || key === "variety"
+                        ? varietyLabel(String(option))
+                        : option}
                     </option>
                   ))}
                 </select>

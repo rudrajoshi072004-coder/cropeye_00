@@ -730,7 +730,9 @@ const FertilizerTable: React.FC = () => {
       // API path: plots[].farms[].crop_type.planting_method (e.g., "2_bud")
       const plantingMethod =
         firstFarm.crop_type?.planting_method || // Primary: farms[].crop_type.planting_method (e.g., "2_bud")
-        firstFarm.crop_type?.planting_method_display; // Alternative: farms[].crop_type.planting_method_display (e.g., "2 Bud Method")
+        firstFarm.crop_type?.planting_method_display || // Alternative: farms[].crop_type.planting_method_display (e.g., "2 Bud Method")
+        (firstFarm as any).planting_method || // Some backends send at farm root
+        (firstFarm as any).planting_method_display; // Some backends send at farm root
 
       if (!plantingMethod) {
         console.error(
@@ -1058,7 +1060,15 @@ const FertilizerTable: React.FC = () => {
           ) {
             // Provide more helpful error messages
             let errorMessage =
-              localError || profileError || "No fertilizer data available";
+              localError ||
+              profileError ||
+              "No fertilizer data available.";
+
+            // Generic empty state: schedule API + legacy path left no rows (see console: FertilizerTable)
+            if (!localError && !profileError) {
+              errorMessage +=
+                " Check Network for grapes-schedule, and that the farm has plantation_date and a planting method supported by the schedule (or bud.json fallback).";
+            }
 
             // Add helpful suggestions based on the error
             if (errorMessage.includes("Planting method")) {
@@ -1134,74 +1144,88 @@ const FertilizerTable: React.FC = () => {
                 </div>
               )}
 
-              {grapesScheduleMeta?.today && (
-                <div className="rounded-lg border border-blue-200 bg-blue-50/60 p-3 sm:p-4">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                    Today
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
-                    {(
-                      [
-                        ["Date", "date"],
-                        ["Day (DAP)", "day"],
-                        ["Stage", "stage"],
-                        ["Type", "type"],
-                        ["Issue", "issue"],
-                        ["Nutrient", "nutrient"],
-                        ["Recommendation", "recommendation"],
-                        ["Organic", "organic"],
-                      ] as const
-                    ).map(([label, key]) => {
-                      const raw = grapesScheduleMeta.today?.[key];
-                      const val =
-                        raw === null || raw === undefined
-                          ? ""
-                          : String(raw);
-                      return (
-                        <div key={key}>
-                          <div className="text-gray-500 text-xs mb-0.5">
-                            {label}
-                          </div>
-                          <div className="text-gray-900 whitespace-pre-wrap break-words">
-                            {scheduleCellText(val)}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
               <div>
                 <h3 className="text-lg font-semibold text-gray-700 mb-2">
                   Next days schedule
                 </h3>
-                <div className="rounded-lg border border-gray-200 overflow-hidden">
-                  <table className="min-w-full text-left text-xs sm:text-sm">
-                    <thead className="bg-green-100 text-gray-800">
+                {/* Mobile: readable cards */}
+                <div className="grid grid-cols-1 gap-3 sm:hidden">
+                  {data.map((row, idx) => (
+                    <div
+                      key={`${row.date}-${idx}`}
+                      className="rounded-lg border border-gray-200 bg-white p-3"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">
+                            {scheduleCellText(row.date)}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            Day: {scheduleCellText(row.days)} • {scheduleCellText(row.stage)}
+                          </div>
+                        </div>
+                        <div className="text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-800 capitalize whitespace-nowrap">
+                          {scheduleCellText(row.scheduleType)}
+                        </div>
+                      </div>
+
+                      <div className="mt-3 space-y-2 text-xs">
+                        <div>
+                          <div className="text-gray-500 mb-0.5">Issue</div>
+                          <div className="text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.issue)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-500 mb-0.5">Nutrient</div>
+                          <div className="text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.nutrient)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-500 mb-0.5">Recommendation</div>
+                          <div className="text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.recommendation)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-gray-500 mb-0.5">Organic</div>
+                          <div className="text-gray-900 whitespace-pre-wrap break-words">
+                            {scheduleCellText(row.organicDetail)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop/tablet: wide table with proper widths + wrapping (scroll horizontally if needed) */}
+                <div className="hidden sm:block rounded-lg border border-gray-200 overflow-x-auto">
+                  <table className="w-full min-w-[1100px] table-fixed text-left text-xs sm:text-sm">
+                    <thead className="bg-green-100 text-gray-800 sticky top-0">
                       <tr>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[110px]">
                           Date
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[70px]">
                           Day
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[140px]">
                           Stage
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[110px]">
                           Type
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[170px]">
                           Issue
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[140px]">
                           Nutrient
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200 min-w-[140px]">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[260px]">
                           Recommendation
                         </th>
-                        <th className="px-2 sm:px-3 py-2 font-semibold border-b border-gray-200 min-w-[140px]">
+                        <th className="px-3 py-2 font-semibold border-b border-gray-200 w-[260px]">
                           Organic
                         </th>
                       </tr>
@@ -1212,28 +1236,28 @@ const FertilizerTable: React.FC = () => {
                           key={`${row.date}-${idx}`}
                           className="bg-white odd:bg-gray-50/80 border-t border-gray-100"
                         >
-                          <td className="px-2 sm:px-3 py-2 align-top whitespace-nowrap text-gray-900">
+                          <td className="px-3 py-2 align-top whitespace-nowrap text-gray-900">
                             {scheduleCellText(row.date)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900">
+                          <td className="px-3 py-2 align-top text-gray-900">
                             {scheduleCellText(row.days)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900">
+                          <td className="px-3 py-2 align-top text-gray-900">
                             {scheduleCellText(row.stage)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 capitalize">
+                          <td className="px-3 py-2 align-top text-gray-900 capitalize">
                             {scheduleCellText(row.scheduleType)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words max-w-[120px] sm:max-w-none">
+                          <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
                             {scheduleCellText(row.issue)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
                             {scheduleCellText(row.nutrient)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
                             {scheduleCellText(row.recommendation)}
                           </td>
-                          <td className="px-2 sm:px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
                             {scheduleCellText(row.organicDetail)}
                           </td>
                         </tr>
@@ -1251,129 +1275,67 @@ const FertilizerTable: React.FC = () => {
                 </h3>
                 {/* <p className="text-sm text-gray-600">Showing first and last day (same values for all 7 days)</p> */}
               </div>
-              <table className="min-w-full bg-green-400 border border-gray-200">
-                <thead className="bg-green-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-weight-bold text-black-500 border-b">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-weight-bold text-black-500 border-b">
-                      Stage
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-weight-bold text-black-500 border-b">
-                      Nutrients(kg/acre)
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-weight-bold text-black-500 border-b">
-                      Chemical Inputs
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-weight-bold text-black-500 border-b">
-                      Organic Inputs
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {/* First row - show actual data */}
-                  {data.length > 0 && (
-                    <tr className="bg-white">
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].date}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {/* {data[0].stage} */}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        N : {data[0].N_kg_acre}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].fertilizers && (
-                          <div className="text-sm font-normal">
-                            <div>
-                              Urea: {data[0].fertilizers?.Urea_N_kg_per_acre} kg
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].organic_inputs && (
-                          <div className="text-sm font-normal">
-                            {data[0].organic_inputs?.map((input, index) => (
-                              <div key={index}>{index === 0 ? input : ""}</div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
+              <div className="rounded-lg border border-gray-200 overflow-x-auto">
+                <table className="w-full min-w-[980px] table-fixed text-left text-xs sm:text-sm">
+                  <thead className="bg-green-200">
+                    <tr>
+                      <th className="px-3 py-2 font-semibold text-gray-900 border-b w-[110px]">
+                        Date
+                      </th>
+                      <th className="px-3 py-2 font-semibold text-gray-900 border-b w-[160px]">
+                        Stage
+                      </th>
+                      <th className="px-3 py-2 font-semibold text-gray-900 border-b w-[170px]">
+                        Nutrients (kg/acre)
+                      </th>
+                      <th className="px-3 py-2 font-semibold text-gray-900 border-b w-[260px]">
+                        Chemical Inputs
+                      </th>
+                      <th className="px-3 py-2 font-semibold text-gray-900 border-b w-[260px]">
+                        Organic Inputs
+                      </th>
                     </tr>
-                  )}
-
-                  {/* Middle rows - show dots if there are more than 2 days */}
-                  {data.length > 2 && (
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        To
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].stage}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        P : {data[0].P_kg_acre}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        <div className="text-sm font-normal">
-                          SuperPhosphate:{" "}
-                          {data[0].fertilizers?.SuperPhosphate_P_kg_per_acre} kg
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].organic_inputs && (
-                          <div className="text-sm font-normal">
-                            {data[0].organic_inputs?.map((input, index) => (
-                              <div key={index}>{index === 1 ? input : ""}</div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-
-                  {/* Last row - show actual data if there are more than 1 day */}
-                  {data.length > 1 && (
-                    <tr className="bg-white">
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[data.length - 1].date}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {/* {data[data.length - 1].stage} */}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        K : {data[0].K_kg_acre}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[data.length - 1].fertilizers && (
-                          <div className="text-sm font-normal">
-                            <div>
-                              Muriate of Potash:{" "}
-                              {
-                                data[data.length - 1].fertilizers
-                                  ?.Potash_K_kg_per_acre
-                              }{" "}
-                              kg
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-normal text-gray-900 border-b">
-                        {data[0].organic_inputs && (
-                          <div className="text-sm font-normal">
-                            {data[0].organic_inputs?.map((input, index) => (
-                              <div key={index}>{index === 2 ? input : ""}</div>
-                            ))}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white">
+                    {data.map((row, idx) => (
+                      <tr
+                        key={`${row.date}-${idx}`}
+                        className="odd:bg-white even:bg-gray-50/70 border-t border-gray-100"
+                      >
+                        <td className="px-3 py-2 align-top whitespace-nowrap text-gray-900">
+                          {scheduleCellText(row.date)}
+                        </td>
+                        <td className="px-3 py-2 align-top text-gray-900">
+                          {scheduleCellText(row.stage)}
+                        </td>
+                        <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          <div>N: {scheduleCellText(row.N_kg_acre)}</div>
+                          <div>P: {scheduleCellText(row.P_kg_acre)}</div>
+                          <div>K: {scheduleCellText(row.K_kg_acre)}</div>
+                        </td>
+                        <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          {row.fertilizers ? (
+                            <>
+                              <div>Urea: {row.fertilizers.Urea_N_kg_per_acre} kg</div>
+                              <div>
+                                SuperPhosphate: {row.fertilizers.SuperPhosphate_P_kg_per_acre} kg
+                              </div>
+                              <div>Potash: {row.fertilizers.Potash_K_kg_per_acre} kg</div>
+                            </>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className="px-3 py-2 align-top text-gray-900 whitespace-pre-wrap break-words">
+                          {row.organic_inputs && row.organic_inputs.length > 0
+                            ? row.organic_inputs.join("\n")
+                            : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           );
         })()

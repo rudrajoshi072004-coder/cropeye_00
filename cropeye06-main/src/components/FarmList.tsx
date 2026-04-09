@@ -161,7 +161,7 @@ export const FarmList: React.FC<FarmlistProps> = ({ users: propUsers, setUsers: 
             area: Number(farmAreaAcresRaw.toFixed(2)),
             area_hectares: Number(farmAreaHectares.toFixed(4)),
             plantation_type: firstFarm?.plantation_type || 'N/A',
-            crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Sugarcane',
+            crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Grapes',
             crop_variety: firstFarm?.crop_type?.crop_variety || firstFarm?.crop_variety || '',
             farmer: {
               id: farmer.id,
@@ -263,7 +263,7 @@ export const FarmList: React.FC<FarmlistProps> = ({ users: propUsers, setUsers: 
         farmForms[farm.id.toString()] = {
           area: areaInAcres !== 'N/A' ? areaInAcres : formatAcresValue(farmer.area),
           plantation_type: farm.plantation_type || farmer.plantation_type || '',
-          crop_type: farm.crop_type?.crop_type || farm.crop_type_name || farmer.crop_type || 'Sugarcane',
+          crop_type: farm.crop_type?.crop_type || farm.crop_type_name || farmer.crop_type || 'Grapes',
           crop_variety: farm.crop_type?.crop_variety || farm.crop_variety || farmer.crop_variety || '',
         };
       }
@@ -447,7 +447,7 @@ export const FarmList: React.FC<FarmlistProps> = ({ users: propUsers, setUsers: 
           area: Number(farmAreaAcresRaw.toFixed(2)),
           area_hectares: Number(farmAreaHectares.toFixed(4)),
           plantation_type: firstFarm?.plantation_type || 'N/A',
-          crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Sugarcane',
+          crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Grapes',
           crop_variety: firstFarm?.crop_type?.crop_variety || firstFarm?.crop_variety || '',
           farmer: {
             id: farmer.id,
@@ -729,7 +729,7 @@ export const FarmList: React.FC<FarmlistProps> = ({ users: propUsers, setUsers: 
           area: Number(farmAreaAcresRaw.toFixed(2)),
           area_hectares: Number(farmAreaHectares.toFixed(4)),
           plantation_type: firstFarm?.plantation_type || 'N/A',
-          crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Sugarcane',
+          crop_type: firstFarm?.crop_type?.crop_type || firstFarm?.crop_type_name || 'Grapes',
           crop_variety: firstFarm?.crop_type?.crop_variety || firstFarm?.crop_variety || '',
           farmer: {
             id: updatedFarmer.id,
@@ -2198,7 +2198,7 @@ export const FarmList: React.FC<FarmlistProps> = ({ users: propUsers, setUsers: 
                       const farmForm = farmEditForms[farmId] || {
                         area: farm.area_size ? formatAcresFromHectaresOrNA(farm.area_size) : '0',
                         plantation_type: farm.plantation_type || '',
-                        crop_type: farm.crop_type?.crop_type || farm.crop_type_name || farm.crop_type || 'Sugarcane',
+                        crop_type: farm.crop_type?.crop_type || farm.crop_type_name || farm.crop_type || 'Grapes',
                         crop_variety: farm.crop_type?.crop_variety || farm.crop_variety || '',
                       };
 

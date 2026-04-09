@@ -1,15 +1,18 @@
-### Root Dockerfile (Render): gateway + cropeye06 + cropeye07 behind ONE port
-### Served as static SPAs via Nginx:
-###   /           -> gateway (login)
-###   /login/     -> gateway (same SPA)
-###   /grapes/    -> cropeye06
-###   /sugarcan/  -> cropeye07 (sugarcane app)
+### Root Dockerfile (Render / any host): gateway + cropeye06 + cropeye07 on ONE port
+### Nginx serves static SPAs:
+###   /           -> 302 /login/
+###   /login/     -> gateway (login SPA)
+###   /grapes/    -> cropeye06 (grapes)
+###   /sugarcan/  -> cropeye07 (sugarcane)
 ###
-### Deploy host (override when building):
-###   docker build --build-arg VITE_PUBLIC_ORIGIN=https://cropeye-00.onrender.com .
-### Login:  https://cropeye-00.onrender.com/
-### Grapes: https://cropeye-00.onrender.com/grapes/
-### Sugar:  https://cropeye-00.onrender.com/sugarcan/
+### VITE_* are baked at **build** time — set VITE_PUBLIC_ORIGIN to your public HTTPS origin
+### (no trailing path), e.g. your Render service URL or custom domain.
+###
+###   docker build --build-arg VITE_PUBLIC_ORIGIN=https://YOUR-SERVICE.onrender.com -t cropeye .
+###   docker run -p 10000:10000 -e PORT=10000 cropeye
+###
+### Render: add Docker build arg `VITE_PUBLIC_ORIGIN` = `https://<your-service>.onrender.com`
+### (Dashboard → Service → Settings → Build → Docker Build Args).
 
 FROM node:20-alpine AS build
 WORKDIR /build

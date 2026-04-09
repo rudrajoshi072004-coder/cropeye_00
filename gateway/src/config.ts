@@ -4,7 +4,7 @@ export const GATEWAY_URL =
 
 export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
-  "https://cropeye-server-flyio.onrender.com/api";
+  "https://cropeye-backend.up.railway.app/api";
 
 function toAbsoluteAppUrl(maybeUrl: string): string {
   const raw = String(maybeUrl || "").trim();
@@ -24,6 +24,7 @@ export function getRedirectURL(industryName: string | null | undefined): string 
     (import.meta.env.VITE_GRAPES_APP_URL as string | undefined) ||
       (typeof window !== "undefined" && !import.meta.env.DEV ? "/grapes/" : "http://localhost:3001"),
   );
+  // Dev: sugarcane UI is cropeye07-main — run `npm run dev` there (port 3002). Override with VITE_SUGARCANE_APP_URL.
   const sugarcaneUrl = toAbsoluteAppUrl(
     (import.meta.env.VITE_SUGARCANE_APP_URL as string | undefined) ||
       (typeof window !== "undefined" && !import.meta.env.DEV ? "/sugarcan/" : "http://localhost:3002"),

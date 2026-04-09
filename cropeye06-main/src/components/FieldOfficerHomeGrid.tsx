@@ -481,8 +481,8 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
                   // Open sidebar and expand User Desk menu
                   onOpenSidebarWithMenu('User Desk');
                 } else if (item.title === 'MyTask') {
-                  // Open sidebar and expand MyTask menu
-                  onOpenSidebarWithMenu('MyTask');
+                  // Open sidebar and expand Tasks submenu (Task List / Task Calendar)
+                  onOpenSidebarWithMenu('Tasks');
                 } else if (item.title === 'Plan & Book') {
                   // Open sidebar and expand Plan & Book menu
                   console.log('🔧 FieldOfficerHomeGrid: Plan & Book clicked, calling onOpenSidebarWithMenu');

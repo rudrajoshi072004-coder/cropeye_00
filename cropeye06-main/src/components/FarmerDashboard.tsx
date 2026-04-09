@@ -1163,14 +1163,6 @@ const FarmerDashboard: React.FC = () => {
       let key: string;
 
       switch (period) {
-        case "weekly":
-          const weekStart = new Date(date);
-          weekStart.setDate(date.getDate() - date.getDay());
-          // Use local date parts (avoid `toISOString()` UTC shifting by timezone)
-          key = `${weekStart.getFullYear()}-${String(
-            weekStart.getMonth() + 1
-          ).padStart(2, "0")}-${String(weekStart.getDate()).padStart(2, "0")}`;
-          break;
         case "monthly":
           key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
             2,
@@ -1915,25 +1907,37 @@ const FarmerDashboard: React.FC = () => {
         )}
 
         {/* Top Priority Metrics - 4 Key Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-          <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#eff2e7' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/Fields.png" alt="Field Area" className="w-14 h-14 sm:w-16 sm:h-16 object-contain" style={{ backgroundColor: 'transparent', mixBlendMode: 'normal' }} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+          <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#eff2e7' }}>
+            <img
+              src="/Image/crop images/Fields.png"
+              alt=""
+              aria-hidden
+              className="absolute left-2 top-2 w-20 h-20 sm:w-24 sm:h-24 object-contain opacity-100 z-0 pointer-events-none select-none"
+              style={{ backgroundColor: 'transparent', mixBlendMode: 'normal' }}
+            />
+            <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">
-                <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
+                <div className="text-3xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {metrics.area?.toFixed(2) || "-"}
                 </div>
-                <div className="text-sm font-semibold" style={{ color: '#6bb043' }}>
+                <div className="text-base font-semibold" style={{ color: '#6bb043' }}>
                   acre
                 </div>
               </div>
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161', lineHeight: '1.2' }}>Field Area</p>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161', lineHeight: '1.2' }}>Field Area</p>
           </div>
 
-          <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/Crop Status.png" alt="Crop Status" className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg" style={{ maxWidth: '100%', height: 'auto', marginLeft: '-8px' }} />
+          <div className="rounded-xl p-4 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>
+            <img
+              src="/Image/crop images/Crop Status.png"
+              alt=""
+              aria-hidden
+              className="absolute left-1 top-5 w-24 h-24 sm:w-28 sm:h-28 object-contain opacity-100 z-0 pointer-events-none select-none"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+            <div className="flex items-center justify-end mb-2 pt-3 relative z-10">
               <div className="text-right">
                 <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {metrics.growthStage || "-"}
@@ -1943,55 +1947,61 @@ const FarmerDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161', lineHeight: '1.2' }}>Crop Status</p>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161', lineHeight: '1.2' }}>Crop Status</p>
           </div>
 
-          <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f3f5e9' }}>
-            <div className="mb-2">
-              <Calendar className="w-5 h-5 shrink-0" strokeWidth={2} style={{ color: '#5a7c3a' }} aria-hidden />
-            </div>
-            <div className="space-y-1" aria-busy={milestoneState.loading}>
-              {[
+          <div className="rounded-xl p-4 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f3f5e9' }}>
+            <Calendar className="absolute left-7 top-7 w-12 h-12 opacity-100 z-0 pointer-events-none select-none" strokeWidth={2} style={{ color: '#5a7c3a' }} aria-hidden />
+
+            <div className="flex flex-col flex-1 min-h-0 relative z-10 pl-16" aria-busy={milestoneState.loading}>
+              {([
                 { label: "Ripening Start", iso: milestoneState.ripeningStartDate },
                 { label: "Harvest Ready", iso: milestoneState.harvestReadyStartDate },
-              ].map((row) => {
+              ] as const).map((row) => {
                 const showDash = milestoneState.loading || milestoneState.error;
-                const text = showDash ? "—" : formatMilestoneDate(row.iso);
-                const subtleValue = showDash || text === "Not available";
+                const dateText = showDash ? "—" : formatMilestoneDate(row.iso);
+                const subtleValue = showDash || dateText === "Not available";
                 return (
-                  <div key={row.label} className="flex items-center min-w-0 gap-2 justify-between">
-                    <span className="inline-flex items-center gap-2 min-w-0 flex-1">
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#6bb043' }} aria-hidden />
-                      <span className="text-sm truncate" style={{ color: '#616161', fontFamily: 'Inter, Poppins, sans-serif' }}>{row.label}</span>
-                    </span>
-                    <span
-                      className="text-sm font-semibold shrink-0 text-right truncate max-w-[48%] tabular-nums"
-                      style={{ color: subtleValue ? '#94a3b8' : '#374151', fontFamily: 'Inter, Poppins, sans-serif' }}
-                      title={subtleValue ? undefined : text}
+                  <div key={row.label} className="flex flex-col items-end gap-0.5 py-1">
+                    <div
+                      className="text-sm font-bold tabular-nums"
+                      style={{ color: subtleValue ? '#94a3b8' : '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}
+                      title={subtleValue ? undefined : dateText}
                     >
-                      {text}
-                    </span>
+                      {dateText}
+                    </div>
+                    {/* Match Field Area card label color */}
+                    <div className="text-base font-semibold" style={{ color: '#6bb043' }}>
+                      {row.label}
+                    </div>
                   </div>
                 );
               })}
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161', lineHeight: '1.2' }}>Ripening / Harvest Milestones</p>
+
+            <p className="text-sm font-medium mt-auto pt-0 -mt-2 relative z-10" style={{ color: '#616161', lineHeight: '1.2' }}>Ripening/Harvest</p>
           </div>
 
-          <div className="rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/yield.png" alt="Sugar Content" className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg" style={{ maxWidth: '100%', height: 'auto' }} />
+          <div className="rounded-xl p-4 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>
+            <img
+              src="/Image/crop images/yield.png"
+              alt=""
+              aria-hidden
+              className="absolute left-1 top-5 w-24 h-24 sm:w-28 sm:h-28 object-contain opacity-100 z-0 pointer-events-none select-none"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+            <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">
-                <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
+                <div className="text-3xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {metrics.brix !== null && metrics.brix !== undefined ? (metrics.brix === 0 ? "0" : metrics.brix) : "-"}
                 </div>
-                <div className="text-sm font-semibold" style={{ color: '#6bb043' }}>
+                <div className="text-base font-semibold" style={{ color: '#6bb043' }}>
                   °Brix
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
-              <span className="text-xs font-medium" style={{ color: '#616161' }}>Sugar Content</span>
+            <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-200 relative z-10">
+              <span className="text-sm font-medium" style={{ color: '#616161' }}>Sugar Content</span>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-semibold" style={{ color: '#ef4444' }}>Min:</span>
@@ -2376,9 +2386,9 @@ const FarmerDashboard: React.FC = () => {
 
         {/* Secondary Metrics Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-emerald-200 hover:shadow-xl transition-all duration-300 flex flex-col" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <div className="flex items-start justify-between mb-2">
-              <img src="/Image/crop images/Organic Carbon.png" alt="Organic Carbon" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" style={{ flexShrink: 0 }} />
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-emerald-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
+            <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" />
+            <div className="flex items-start justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-lg font-bold text-gray-800">
                   {metrics.organicCarbonDensity != null &&
@@ -2391,12 +2401,12 @@ const FarmerDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto">Organic Carbon Density</p>
+            <p className="text-xs text-gray-600 mt-auto relative z-10">Organic Carbon Density</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <div className="flex items-start justify-between mb-2">
-              <img src="/Image/crop images/Biomass.png" alt="Biomass" className="w-20 h-20 sm:w-24 sm:h-24 object-contain" style={{ maxWidth: '100%', height: 'auto', flexShrink: 0 }} />
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
+            <img src="/Image/crop images/Biomass.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
+            <div className="flex items-start justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-lg font-bold text-gray-800">
                   {totalBiomass?.toFixed(1) || "-"}
@@ -2406,12 +2416,12 @@ const FarmerDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto">Total Biomass</p>
+            <p className="text-xs text-gray-600 mt-auto relative z-10">Total Biomass</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-yellow-200 hover:shadow-xl transition-all duration-300 flex flex-col" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <div className="flex items-start justify-between mb-2">
-              <img src="/Image/crop images/Organic Carbon.png" alt="Soil pH" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" style={{ maxWidth: '100%', height: 'auto', flexShrink: 0 }} />
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-yellow-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
+            <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
+            <div className="flex items-start justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-lg font-bold text-gray-800">
                   {metrics.soilPH != null && Number.isFinite(Number(metrics.soilPH))
@@ -2421,12 +2431,12 @@ const FarmerDashboard: React.FC = () => {
                 <div className="text-xs font-semibold text-yellow-600">pH</div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto">Soil pH Level</p>
+            <p className="text-xs text-gray-600 mt-auto relative z-10">Soil pH Level</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-green-200 hover:shadow-xl transition-all duration-300 flex flex-col" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <div className="flex items-start justify-between mb-2">
-              <img src="/Image/crop images/yield.png" alt="Recovery Rate" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" style={{ maxWidth: '100%', height: 'auto', flexShrink: 0 }} />
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-green-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
+            <img src="/Image/crop images/yield.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
+            <div className="flex items-start justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-lg font-bold text-gray-800">
                   {metrics.recovery?.toFixed(1) || "-"}
@@ -2434,7 +2444,7 @@ const FarmerDashboard: React.FC = () => {
                 <div className="text-xs font-semibold text-green-600">%</div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto">Recovery Rate</p>
+            <p className="text-xs text-gray-600 mt-auto relative z-10">Recovery Rate</p>
           </div>
         </div>
 

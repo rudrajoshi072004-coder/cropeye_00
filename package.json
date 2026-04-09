@@ -1,0 +1,10 @@
+{
+  "name": "cropeye-test",
+  "private": true,
+  "description": "Run each app in its own terminal, or use the scripts below from this folder.",
+  "scripts": {
+    "dev:gateway": "npm --prefix gateway run dev",
+    "dev:grapes": "npm --prefix cropeye06-main run dev",
+    "dev:sugarcane": "npm --prefix cropeye07-main run dev"
+  }
+}

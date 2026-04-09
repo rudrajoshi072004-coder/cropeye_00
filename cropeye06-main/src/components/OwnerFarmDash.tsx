@@ -716,7 +716,7 @@ const OwnerFarmDash: React.FC = () => {
     try {
       // Use authenticated API call from api.ts
       const response = await api.get(
-        `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")}/users/owner-hierarchy/`,
+        `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api")}/users/owner-hierarchy/`,
       );
       const responseData = response.data;
       const managersData = responseData.managers || [];
@@ -1314,7 +1314,7 @@ const OwnerFarmDash: React.FC = () => {
               <pre className="text-xs text-green-300 font-mono">
                 {JSON.stringify(
                   {
-                    endpoint: `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-server-flyio.onrender.com/api")}/farms/recent-farmers/`,
+                    endpoint: `${import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/backend' : "https://cropeye-backend.up.railway.app/api")}/farms/recent-farmers/`,
                     method: "GET",
                     bearerToken: localStorage.getItem("access_token") || localStorage.getItem("token")
                       ? "✅ Present"
@@ -1511,27 +1511,37 @@ const OwnerFarmDash: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
         {/* Top Priority Metrics - 4 Key Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/location.png" alt="Field Area" className="w-14 h-14 object-contain rounded-lg" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <img
+              src="/Image/crop images/location.png"
+              alt=""
+              aria-hidden
+              className="absolute left-4 top-5 w-20 h-20 object-contain opacity-100 z-0 pointer-events-none select-none"
+            />
+            <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">
-                <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
+                <div className="text-3xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {loadingData ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     metrics.area?.toFixed(2) || "-"
                   )}
                 </div>
-                <div className="text-sm font-semibold" style={{ color: '#6bb043' }}>acre</div>
+                <div className="text-base font-semibold" style={{ color: '#6bb043' }}>acre</div>
               </div>
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161' }}>Field Area</p>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161' }}>Field Area</p>
           </div>
 
-          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/Crop Status.png" alt="Crop Status" className="w-14 h-14 object-contain rounded-lg" />
+          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-4 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <img
+              src="/Image/crop images/Crop Status.png"
+              alt=""
+              aria-hidden
+              className="absolute left-4 top-5 w-20 h-20 object-contain opacity-100 z-0 pointer-events-none select-none"
+            />
+            <div className="flex items-center justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-lg font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {loadingData ? (
@@ -1542,14 +1552,19 @@ const OwnerFarmDash: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161' }}>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161' }}>
               Crop Status
             </p>
           </div>
 
-          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/Time.png" alt="Days to Harvest" className="w-14 h-14 object-contain rounded-lg" />
+          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-4 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <img
+              src="/Image/crop images/Time.png"
+              alt=""
+              aria-hidden
+              className="absolute left-4 top-5 w-20 h-20 object-contain opacity-100 z-0 pointer-events-none select-none"
+            />
+            <div className="flex items-center justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {loadingData ? (
@@ -1563,12 +1578,17 @@ const OwnerFarmDash: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161' }}>Time to Harvest</p>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161' }}>Time to Harvest</p>
           </div>
 
-          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-5 hover:shadow-lg transition-all duration-300" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <img src="/Image/crop images/yield.png" alt="Sugar Content" className="w-14 h-14 object-contain rounded-lg" />
+          <div className="bg-[#f8f9fa] rounded-xl shadow-md p-4 hover:shadow-lg transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <img
+              src="/Image/crop images/yield.png"
+              alt=""
+              aria-hidden
+              className="absolute left-4 top-5 w-20 h-20 object-contain opacity-100 z-0 pointer-events-none select-none"
+            />
+            <div className="flex items-center justify-end mb-2 relative z-10">
               <div className="text-right">
                 <div className="text-2xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
                   {loadingData ? (
@@ -1581,10 +1601,10 @@ const OwnerFarmDash: React.FC = () => {
                 </div>
                 <div className="text-sm font-semibold" style={{ color: '#6bb043' }}>
                   °Brix
+                </div>
               </div>
             </div>
-                  </div>
-            <p className="text-xs font-medium mt-3" style={{ color: '#616161' }}>Sugar Content</p>
+            <p className="text-sm font-medium mt-auto pt-3 relative z-10" style={{ color: '#616161' }}>Sugar Content</p>
           </div>
         </div>
 

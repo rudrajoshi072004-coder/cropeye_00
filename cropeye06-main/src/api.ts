@@ -84,12 +84,12 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${currentToken}`;
       }
     }
-    
+
     // If data is FormData, remove Content-Type header so browser can set it with boundary
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
-    
+
     return config;
   },
   (error) => {
@@ -1285,11 +1285,11 @@ export const uploadGrapesReport = async (
   if (!file) {
     throw new Error("Please select a file to upload");
   }
-  
+
   if (!(file instanceof File)) {
     throw new Error(`Invalid file object. Expected File, got ${typeof file}`);
   }
-  
+
   if (file.size === 0) {
     throw new Error("Selected file is empty. Please select a valid file.");
   }
@@ -1299,12 +1299,12 @@ export const uploadGrapesReport = async (
   if (!token) {
     throw new Error("Authentication required. Please login to upload files.");
   }
-  
+
   const decoded = decodeToken(token);
   if (!decoded) {
     throw new Error("Invalid authentication token. Please login again.");
   }
-  
+
   const userId = (decoded as any).user_id || (decoded as any).id;
   if (!userId) {
     throw new Error("User ID not found in token. Please login again.");
@@ -1353,10 +1353,10 @@ export const uploadGrapesReport = async (
     return responseData;
   } catch (error: any) {
     console.error(`❌ Error uploading Grapse Report:`, error);
-    const errorMessage = error?.response?.data?.detail || 
-                        error?.response?.data?.message || 
-                        error?.message || 
-                        "File upload failed";
+    const errorMessage = error?.response?.data?.detail ||
+      error?.response?.data?.message ||
+      error?.message ||
+      "File upload failed";
     throw new Error(`Failed to upload ${fileType} file: ${errorMessage}`);
   }
 };
@@ -1567,9 +1567,9 @@ const convertSinglePlotToAllInOneFormat = (formData: any, plot: any) => {
       // Registration page (3–13y) uses `variety`; new plantation uses `grafted_variety` — same as farm.crop_variety
       grafted_variety: String(
         formData.variety ||
-          formData.grafted_variety ||
-          plot.crop_variety ||
-          "",
+        formData.grafted_variety ||
+        plot.crop_variety ||
+        "",
       ).trim(),
       soil_type: (formData.soil_type && String(formData.soil_type).trim()) || "sandy_loam",
     },

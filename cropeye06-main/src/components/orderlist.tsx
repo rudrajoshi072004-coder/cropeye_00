@@ -313,10 +313,7 @@ export const OrderList: React.FC<OrderListProps> = ({ items, setItems }) => {
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center bg-fixed dashboard-bg-bleed"
-      style={{
-        backgroundImage: `url('/Image/Background.png')`
-      }}
+      className="min-h-screen dashboard-bg-bleed"
     >
       <div className="min-h-screen bg-black bg-opacity-40">
         <div className="max-w-7xl mx-auto px-4 py-12">

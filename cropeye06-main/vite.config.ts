@@ -128,7 +128,7 @@ export default defineConfig(({ mode }) => ({
             // Set CORS headers on request
             proxyReq.setHeader('Origin', 'https://cropeye-grapes-admin-production.up.railway.app');
           });
-          
+
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             // Comprehensive CORS headers - Allow all origins
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
@@ -138,15 +138,15 @@ export default defineConfig(({ mode }) => ({
             proxyRes.headers['Access-Control-Max-Age'] = '86400'; // 24 hours
             proxyRes.headers['Access-Control-Allow-Private-Network'] = 'true';
             proxyRes.headers['Access-Control-Expose-Headers'] = 'Content-Length, Content-Type, Date, Server';
-            
+
             // Handle OPTIONS preflight
             if (req.method === 'OPTIONS') {
               proxyRes.statusCode = 200;
             }
-            
+
             console.log('Proxy response:', proxyRes.statusCode, req.url);
           });
-          
+
           proxy.on('error', (err, _req, res) => {
             console.log('Proxy error:', err);
             if (res && !res.headersSent) {
@@ -168,7 +168,7 @@ export default defineConfig(({ mode }) => ({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             proxyReq.setHeader('Origin', 'https://cropeye-grapes-events-production.up.railway.app');
           });
-          
+
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             // Comprehensive CORS headers - Allow all origins
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
@@ -178,12 +178,12 @@ export default defineConfig(({ mode }) => ({
             proxyRes.headers['Access-Control-Max-Age'] = '86400';
             proxyRes.headers['Access-Control-Allow-Private-Network'] = 'true';
             proxyRes.headers['Access-Control-Expose-Headers'] = 'Content-Length, Content-Type, Date, Server';
-            
+
             if (req.method === 'OPTIONS') {
               proxyRes.statusCode = 200;
             }
           });
-          
+
           proxy.on('error', (err, _req, res) => {
             console.log('AgroStats proxy error:', err);
             if (res && !res.headersSent) {
@@ -205,7 +205,7 @@ export default defineConfig(({ mode }) => ({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             proxyReq.setHeader('Origin', 'https://cropeye-backend.up.railway.app');
           });
-          
+
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             // Comprehensive CORS headers - Allow all origins
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
@@ -215,12 +215,12 @@ export default defineConfig(({ mode }) => ({
             proxyRes.headers['Access-Control-Max-Age'] = '86400';
             proxyRes.headers['Access-Control-Allow-Private-Network'] = 'true';
             proxyRes.headers['Access-Control-Expose-Headers'] = 'Content-Length, Content-Type, Date, Server, Authorization';
-            
+
             if (req.method === 'OPTIONS') {
               proxyRes.statusCode = 200;
             }
           });
-          
+
           proxy.on('error', (err, _req, res) => {
             console.log('Backend API proxy error:', err);
             if (res && !res.headersSent) {
@@ -272,7 +272,7 @@ export default defineConfig(({ mode }) => ({
           proxy.on('proxyReq', (proxyReq, req, _res) => {
             proxyReq.setHeader('Origin', 'https://cropeye-grapes-sef-production.up.railway.app');
           });
-          
+
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             proxyRes.headers['Access-Control-Allow-Origin'] = '*';
             proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD';
@@ -280,7 +280,7 @@ export default defineConfig(({ mode }) => ({
             proxyRes.headers['Access-Control-Allow-Credentials'] = 'false';
             proxyRes.headers['Access-Control-Max-Age'] = '86400';
             proxyRes.headers['Access-Control-Allow-Private-Network'] = 'true';
-            
+
             if (req.method === 'OPTIONS') {
               proxyRes.statusCode = 200;
             }

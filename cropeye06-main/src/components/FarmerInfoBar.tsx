@@ -26,6 +26,54 @@ type ToastItem = {
   created_at: string;
 };
 
+function isFromFieldOfficer(n: NotificationRow): boolean {
+  const t = String(n.notification_type || "").toLowerCase();
+  if (t.includes("fieldofficer") || t.includes("field_officer") || t.includes("field officer")) return true;
+  const m: any = n.metadata || {};
+  const candidates: Array<any> = [
+    m.sender_role,
+    m.from_role,
+    m.actor_role,
+    m.created_by_role,
+    m.sender?.role,
+    m.from?.role,
+    m.actor?.role,
+    m.created_by?.role,
+    m.sender?.user_role,
+    m.from?.user_role,
+    m.actor?.user_role,
+    m.created_by?.user_role,
+  ];
+  return candidates
+    .map((v) => String(v || "").toLowerCase())
+    .some((v) => v === "fieldofficer" || v === "field_officer" || v === "field officer");
+}
+
+function isTaskFromFieldOfficer(n: NotificationRow): boolean {
+  if (!isFromFieldOfficer(n)) return false;
+  // Prefer explicit task_id (present in our NotificationRow type)
+  if (typeof n.task_id === "number" && n.task_id > 0) return true;
+  const t = String(n.notification_type || "").toLowerCase();
+  if (t.includes("task")) return true;
+  const m: any = n.metadata || {};
+  if (m.task_id || m.task || m.task_title) return true;
+  // Fallback: many notifications only carry a text message
+  if (String(n.message || "").toLowerCase().includes("task")) return true;
+  return false;
+}
+
+function isTaskLikeNotification(n: NotificationRow): boolean {
+  if (typeof n.task_id === "number" && n.task_id > 0) return true;
+  const t = String(n.notification_type || "").toLowerCase();
+  if (t.includes("task")) return true;
+  const msg = String(n.message || "").toLowerCase();
+  if (msg.includes("assigned a new task")) return true;
+  if (msg.startsWith("task") || msg.includes("task:")) return true;
+  const m: any = n.metadata || {};
+  if (m.task_id || m.task || m.task_title) return true;
+  return false;
+}
+
 function getFirstPlotLatLon(
   plots: Array<{ coordinates?: { location?: { coordinates?: [number, number]; latitude?: number; longitude?: number } } }> | undefined
 ): { lat: number; lon: number } | null {
@@ -106,6 +154,7 @@ const FarmerInfoBar: React.FC = () => {
   const [forecast, setForecast] = useState<ForecastCurrentWeather | null>(null);
   const [forecastLoading, setForecastLoading] = useState(false);
   const [forecastError, setForecastError] = useState<string | null>(null);
+  const [showAlerts, setShowAlerts] = useState(false);
   const panelWrapRef = useRef<HTMLDivElement | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<number | null>(null);
@@ -130,9 +179,15 @@ const FarmerInfoBar: React.FC = () => {
     ? (getTotalPlots() || profile.plots?.length || 0)
     : 0;
 
+  const displayItems = useMemo(() => {
+    const fieldOfficerOnly = items.filter(isFromFieldOfficer);
+    // If backend provides role metadata, use it. Otherwise, show all (avoid empty dropdown).
+    return fieldOfficerOnly.length > 0 ? fieldOfficerOnly : items;
+  }, [items]);
+
   const unreadCount = useMemo(
-    () => items.filter((n) => !n.is_read).length,
-    [items]
+    () => displayItems.filter((n) => !n.is_read).length,
+    [displayItems]
   );
 
   const forecastLatLon = useMemo(
@@ -280,6 +335,7 @@ const FarmerInfoBar: React.FC = () => {
     if (!open) {
       setForecast(null);
       setForecastError(null);
+      setShowAlerts(false);
       return;
     }
     let cancelled = false;
@@ -407,12 +463,23 @@ const FarmerInfoBar: React.FC = () => {
       {toasts.length > 0 ? (
         <div className="notif-toasts" aria-live="polite" aria-atomic="true">
           {toasts.map((t) => (
-            <div key={t.id} className="notif-toast">
-              <div className="notif-toast-msg">{t.message}</div>
-              <div className="notif-toast-meta">
-                {new Date(t.created_at).toLocaleString()}
+            <button
+              key={t.id}
+              type="button"
+              className="notif-toast notif-toast-click"
+              onClick={() => {
+                setOpen(true);
+                setShowAlerts(true);
+              }}
+              title="Open alerts"
+            >
+              <div className="notif-toast-top">
+                <div className="notif-toast-title">New message</div>
+                <div className="notif-toast-cta">View</div>
               </div>
-            </div>
+              <div className="notif-toast-msg">{t.message}</div>
+              <div className="notif-toast-meta">{new Date(t.created_at).toLocaleString()}</div>
+            </button>
           ))}
         </div>
       ) : null}
@@ -462,45 +529,18 @@ const FarmerInfoBar: React.FC = () => {
               <div className="notif-panel" role="dialog" aria-label="Notifications">
                 <div className="notif-panel-header">
                   <div className="notif-panel-header-main">
-                    <div className="notif-panel-header-title">Notifications</div>
-                    <div className="notif-weather-alerts" aria-label="Weather alerts">
-                      {forecastLoading ? (
-                        <div className="notif-weather-alerts-muted">Loading alerts…</div>
-                      ) : forecastError ? (
-                        <div className="notif-weather-alerts-muted">{forecastError}</div>
-                      ) : forecast ? (
-                        <>
-                          <div className="notif-weather-pill notif-weather-pill-rain">
-                            <span className="notif-weather-pill-label">Rain</span>
-                            <span className="notif-weather-pill-value">
-                              {forecast.rain_alert ?? '—'}
-                              {forecast.rain_probability
-                                ? ` (${forecast.rain_probability})`
-                                : ''}
-                            </span>
-                          </div>
-                          <ForecastPeriodRows
-                            title="24 hrs prediction"
-                            prediction={forecast.next_24h_prediction}
-                          />
-                          <ForecastPeriodRows
-                            title="48 hrs prediction"
-                            prediction={forecast.next_48h_prediction}
-                          />
-                          {typeof forecast.humidity === 'number' && forecast.humidity > 80 ? (
-                            <div className="notif-weather-pill notif-weather-pill-warn">
-                              <span className="notif-weather-pill-label">Humidity</span>
-                              <span className="notif-weather-pill-value">High humidity</span>
-                            </div>
-                          ) : null}
-                          <div className="notif-weather-pill notif-weather-pill-temp">
-                            <span className="notif-weather-pill-label">Temperature</span>
-                            <span className="notif-weather-pill-value">
-                              {temperatureStressLabel(forecast.temperature_c)}
-                            </span>
-                          </div>
-                        </>
-                      ) : null}
+                    <div className="notif-panel-header-title-row">
+                      <div className="notif-panel-header-title">Notifications</div>
+                      <button
+                        type="button"
+                        className="notif-alert-btn"
+                        onClick={() => setShowAlerts((p) => !p)}
+                        aria-expanded={showAlerts}
+                        aria-controls="notif-alerts"
+                        title="Alerts"
+                      >
+                        Alert
+                      </button>
                     </div>
                   </div>
                   <div className="notif-panel-actions">
@@ -523,20 +563,78 @@ const FarmerInfoBar: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {showAlerts ? (
+                  <div id="notif-alerts" className="notif-alerts-panel" aria-label="Alerts">
+                    <div className="notif-weather-alerts" aria-label="Weather alerts">
+                      {forecastLoading ? (
+                        <div className="notif-weather-alerts-muted">Loading alerts…</div>
+                      ) : forecastError ? (
+                        <div className="notif-weather-alerts-muted">{forecastError}</div>
+                      ) : forecast ? (
+                        <>
+                          <div className="notif-weather-pill notif-weather-pill-rain">
+                            <span className="notif-weather-pill-label">Rain</span>
+                            <span className="notif-weather-pill-value">
+                              {forecast.rain_alert ?? '—'}
+                              {forecast.rain_probability ? ` (${forecast.rain_probability})` : ''}
+                            </span>
+                          </div>
+                          <ForecastPeriodRows title="24 hrs prediction" prediction={forecast.next_24h_prediction} />
+                          <ForecastPeriodRows title="48 hrs prediction" prediction={forecast.next_48h_prediction} />
+                          {typeof forecast.humidity === 'number' && forecast.humidity > 80 ? (
+                            <div className="notif-weather-pill notif-weather-pill-warn">
+                              <span className="notif-weather-pill-label">Humidity</span>
+                              <span className="notif-weather-pill-value">High humidity</span>
+                            </div>
+                          ) : null}
+                          <div className="notif-weather-pill notif-weather-pill-temp">
+                            <span className="notif-weather-pill-label">Temperature</span>
+                            <span className="notif-weather-pill-value">
+                              {temperatureStressLabel(forecast.temperature_c)}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="notif-weather-alerts-muted">No alerts</div>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="notif-list">
                   {loading ? (
                     <div className="notif-empty">Loading…</div>
-                  ) : items.length === 0 ? (
+                  ) : displayItems.length === 0 ? (
                     <div className="notif-empty">No notifications</div>
                   ) : (
-                    items.map((n) => (
-                      <div key={n.id} className="notif-item">
-                        <div className="notif-item-msg">{n.message}</div>
-                        <div className="notif-item-meta">
-                          {new Date(n.created_at).toLocaleString()}
-                        </div>
-                      </div>
-                    ))
+                    displayItems.map((n) => {
+                      const shouldNavigate =
+                        isTaskLikeNotification(n) || isTaskFromFieldOfficer(n);
+                      return (
+                        <button
+                          key={n.id}
+                          type="button"
+                          className="notif-item notif-item-click"
+                          onClick={() => {
+                            if (!shouldNavigate) return;
+                            // Navigate to My Task Checklist
+                            window.dispatchEvent(
+                              new CustomEvent("cropeye:navigate", {
+                                detail: { menu: "ViewList" },
+                              })
+                            );
+                            setOpen(false);
+                          }}
+                          title={shouldNavigate ? "Open My Task Checklist" : undefined}
+                        >
+                          <div className="notif-item-msg">{n.message}</div>
+                          <div className="notif-item-meta">
+                            {new Date(n.created_at).toLocaleString()}
+                          </div>
+                        </button>
+                      );
+                    })
                   )}
                 </div>
               </div>

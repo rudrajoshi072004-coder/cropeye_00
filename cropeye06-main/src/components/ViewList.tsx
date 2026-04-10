@@ -356,7 +356,7 @@
 // export default ViewList;
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Download, Search, CheckCircle, Clock, User, Calendar, RefreshCw } from 'lucide-react';
 import { getTasksForUser, updateTaskStatus } from '../api';
 
@@ -399,10 +399,44 @@ const ViewList: React.FC<ViewListProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const [statusMenuForTaskId, setStatusMenuForTaskId] = useState<number | null>(null);
+  const statusMenuWrapRef = useRef<HTMLDivElement | null>(null);
+  const [statusUpdateError, setStatusUpdateError] = useState<string>('');
+
+  const normalizeStatus = (status: string): string => {
+    const s = String(status || '').toLowerCase().trim();
+    if (s === 'inprocess' || s === 'in_process' || s === 'in process') return 'in_progress';
+    if (s === 'complete' || s === 'done') return 'completed';
+    if (s === 'pending') return 'pending';
+    if (s === 'in_progress') return 'in_progress';
+    if (s === 'completed') return 'completed';
+    return s || 'pending';
+  };
+
+  const toBackendStatusCandidates = (normalized: string): string[] => {
+    // Backend might accept either `in_progress` (common) or `inprocess` (legacy).
+    if (normalized === 'in_progress') return ['in_progress', 'inprocess'];
+    if (normalized === 'completed') return ['completed'];
+    if (normalized === 'pending') return ['pending'];
+    return [normalized];
+  };
 
   useEffect(() => {
     fetchTasks();
   }, [currentUserId]);
+
+  useEffect(() => {
+    const onDocDown = (ev: MouseEvent) => {
+      if (statusMenuForTaskId === null) return;
+      const el = statusMenuWrapRef.current;
+      if (!el) return;
+      if (ev.target instanceof Node && !el.contains(ev.target)) {
+        setStatusMenuForTaskId(null);
+      }
+    };
+    document.addEventListener('mousedown', onDocDown);
+    return () => document.removeEventListener('mousedown', onDocDown);
+  }, [statusMenuForTaskId]);
 
   const fetchTasks = async () => {
     if (!currentUserId) {
@@ -434,38 +468,35 @@ const ViewList: React.FC<ViewListProps> = ({
     }
   };
 
-  const toggleTaskStatus = async (taskId: number, currentStatus: string) => {
-    let newStatus: string;
-    
-    if (currentStatus === 'pending' || currentStatus === 'in_progress') {
-      newStatus = 'completed';
-    } else {
-      newStatus = 'in_progress';
-    }
+  const setTaskStatus = async (taskId: number, currentStatus: string, nextStatus: string) => {
+    const newStatus = normalizeStatus(nextStatus);
+    if (!['completed', 'in_progress', 'pending'].includes(newStatus)) return;
+    setStatusMenuForTaskId(null);
+    setStatusUpdateError('');
 
     // Optimistically update UI
-    setTasks(prev => 
-      prev.map(task => 
-        task.id === taskId 
-          ? { ...task, status: newStatus }
-          : task
-      )
+    setTasks((prev) =>
+      prev.map((task) => (task.id === taskId ? { ...task, status: newStatus } : task))
     );
 
-    // Update in backend
     try {
-      await updateTaskStatus(taskId, newStatus);
-      console.log('Task status updated successfully');
+      const candidates = toBackendStatusCandidates(newStatus);
+      let lastErr: any = null;
+      for (const candidate of candidates) {
+        try {
+          await updateTaskStatus(taskId, candidate);
+          lastErr = null;
+          break;
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      if (lastErr) throw lastErr;
+      // Sync with backend (ensures UI matches server canonical values)
+      await fetchTasks();
     } catch (error) {
       console.error('Failed to update task status:', error);
-      // Revert on error
-      setTasks(prev => 
-        prev.map(task => 
-          task.id === taskId 
-            ? { ...task, status: currentStatus }
-            : task
-        )
-      );
+      setStatusUpdateError('Failed to update status. Please try again.');
     }
   };
 
@@ -518,7 +549,7 @@ const ViewList: React.FC<ViewListProps> = ({
   };
 
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (normalizeStatus(status)) {
       case 'completed':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'in_progress':
@@ -529,7 +560,7 @@ const ViewList: React.FC<ViewListProps> = ({
   };
 
   const getStatusLabel = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (normalizeStatus(status)) {
       case 'completed':
         return 'Completed';
       case 'in_progress':
@@ -618,6 +649,12 @@ const ViewList: React.FC<ViewListProps> = ({
           </div>
         </div>
 
+        {statusUpdateError ? (
+          <div className="mb-3 bg-red-50 border border-red-200 text-red-800 px-4 py-2 rounded text-sm">
+            {statusUpdateError}
+          </div>
+        ) : null}
+
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -674,13 +711,38 @@ const ViewList: React.FC<ViewListProps> = ({
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <button
-                            onClick={() => toggleTaskStatus(task.id, task.status)}
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(task.status)}`}
-                          >
-                            {getStatusIcon(task.status)}
-                            <span className="ml-1">{getStatusLabel(task.status)}</span>
-                          </button>
+                          <div className="relative inline-block" ref={statusMenuForTaskId === task.id ? statusMenuWrapRef : null}>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setStatusMenuForTaskId((prev) => (prev === task.id ? null : task.id))
+                              }
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(task.status)}`}
+                              title="Change status"
+                            >
+                              {getStatusIcon(task.status)}
+                              <span className="ml-1">{getStatusLabel(task.status)}</span>
+                            </button>
+
+                            {statusMenuForTaskId === task.id ? (
+                              <div className="absolute z-50 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
+                                <button
+                                  type="button"
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                                  onClick={() => setTaskStatus(task.id, task.status, 'in_progress')}
+                                >
+                                  In progress
+                                </button>
+                                <button
+                                  type="button"
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                                  onClick={() => setTaskStatus(task.id, task.status, 'completed')}
+                                >
+                                  Completed
+                                </button>
+                              </div>
+                            ) : null}
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -700,13 +762,38 @@ const ViewList: React.FC<ViewListProps> = ({
                       <h3 className="font-medium text-gray-900 text-sm flex-1 pr-2">
                         {task.title}
                       </h3>
-                      <button
-                        onClick={() => toggleTaskStatus(task.id, task.status)}
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(task.status)} flex-shrink-0`}
-                      >
-                        {getStatusIcon(task.status)}
-                        <span className="ml-1">{getStatusLabel(task.status)}</span>
-                      </button>
+                      <div className="relative inline-block flex-shrink-0" ref={statusMenuForTaskId === task.id ? statusMenuWrapRef : null}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setStatusMenuForTaskId((prev) => (prev === task.id ? null : task.id))
+                          }
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(task.status)}`}
+                          title="Change status"
+                        >
+                          {getStatusIcon(task.status)}
+                          <span className="ml-1">{getStatusLabel(task.status)}</span>
+                        </button>
+
+                        {statusMenuForTaskId === task.id ? (
+                          <div className="absolute right-0 z-50 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden">
+                            <button
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                              onClick={() => setTaskStatus(task.id, task.status, 'in_progress')}
+                            >
+                              In progress
+                            </button>
+                            <button
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                              onClick={() => setTaskStatus(task.id, task.status, 'completed')}
+                            >
+                              Completed
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
                     
                     {task.description && (

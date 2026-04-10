@@ -497,21 +497,43 @@ export const Tasklist: React.FC<TasklistProps> = ({
     }
   };
 
-  const handleStatusChange = (taskId: number, newStatus: string) => {
+  const handleStatusChange = async (taskId: number, newStatus: string) => {
+    // Optimistic update
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
+
+    try {
+      await updateTaskStatus(taskId, newStatus);
+      console.log(`Task ${taskId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Failed to update task status:', error);
+      alert('Failed to update task status. Reverting change.');
+      // Revert if failed
+      fetchTasks();
+    }
   };
 
   // NEW: Handle status change for field officer tasks
-  const handleFoStatusChange = (taskId: number, newStatus: string) => {
+  const handleFoStatusChange = async (taskId: number, newStatus: string) => {
+    // Optimistic update
     setFieldOfficerTasks(prev =>
       prev.map(task =>
         task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
+
+    try {
+      await updateTaskStatus(taskId, newStatus);
+      console.log(`FO Task ${taskId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Failed to update FO task status:', error);
+      alert('Failed to update task status. Reverting change.');
+      // Revert if failed
+      fetchFieldOfficerTasks();
+    }
   };
 
   const handleDownload = () => {
@@ -621,10 +643,7 @@ export const Tasklist: React.FC<TasklistProps> = ({
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center bg-fixed dashboard-bg-bleed"
-      style={{
-        backgroundImage: `url('/Image/Background.png')`
-      }}
+      className="min-h-screen dashboard-bg-bleed"
     >
       <div className="min-h-screen bg-black bg-opacity-40">
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -938,9 +957,20 @@ export const Tasklist: React.FC<TasklistProps> = ({
                             {new Date(task.due_date).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                              {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                            </span>
+                            <div className="flex items-center space-x-2">
+                              <select
+                                value={task.status}
+                                onChange={(e) => handleFoStatusChange(task.id, e.target.value)}
+                                className="text-xs border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                              </select>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
+                                {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                              </span>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -963,6 +993,15 @@ export const Tasklist: React.FC<TasklistProps> = ({
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
                           {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                         </span>
+                        <select
+                          value={task.status}
+                          onChange={(e) => handleFoStatusChange(task.id, e.target.value)}
+                          className="text-xs border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 ml-2"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="completed">Completed</option>
+                        </select>
                       </div>
                       
                       <p className="text-sm text-gray-600 mb-3">{task.description}</p>

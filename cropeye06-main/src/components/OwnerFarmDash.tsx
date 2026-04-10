@@ -807,18 +807,18 @@ const OwnerFarmDash: React.FC = () => {
       const now = new Date();
       now.setHours(0, 0, 0, 0); // Set to midnight for accurate date comparison
       const today = new Date(now);
-      
+
       let filteredData = data.filter((item) => {
         const itemDate = new Date(item.date);
         itemDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
         return itemDate.getTime() === today.getTime();
       });
-      
+
       if (filteredData.length === 0) {
         // If no data for today, get the most recent day
-      const sorted = [...data].sort(
+        const sorted = [...data].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
+        );
         if (sorted.length > 0) {
           const mostRecentDate = new Date(sorted[0].date);
           mostRecentDate.setHours(0, 0, 0, 0);
@@ -829,7 +829,7 @@ const OwnerFarmDash: React.FC = () => {
           });
         }
       }
-      
+
       // If only one data point, duplicate it to create a line representation
       if (filteredData.length === 1) {
         const singlePoint = filteredData[0];
@@ -840,7 +840,7 @@ const OwnerFarmDash: React.FC = () => {
         };
         return [singlePoint, secondPoint];
       }
-      
+
       return filteredData;
     }
 

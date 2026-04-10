@@ -431,8 +431,8 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
               key={button.id}
               onClick={() => setActiveChart(button.id)}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${activeChart === button.id
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-600 hover:text-gray-900"
                 }`}
             >
               {button.label}

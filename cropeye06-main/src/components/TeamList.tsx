@@ -1190,8 +1190,8 @@ const TeamList: React.FC = () => {
                   key={key}
                   onClick={() => setActiveCategory(key)}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeCategory === key
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                 >
                   {CATEGORY_INFO[key].label}{" "}

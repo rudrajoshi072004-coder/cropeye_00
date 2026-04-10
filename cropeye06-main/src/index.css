@@ -42,11 +42,26 @@
   --app-gutter-sm: 16px;
 }
 
-/* Base Typography and Background */
 html,
 body,
 #root {
-  background: var(--bg-main);
+  min-height: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Semi-transparent white overlay to reduce image opacity/intensity */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/Image/Background.png') !important;
+  background-size: cover !important;
+  background-position: bottom center !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+}
+
+.main-background {
+  display: none !important;
 }
 
 /* Prevent tiny width rounding shifts on zoom */
@@ -266,6 +281,7 @@ tbody tr:hover {
   max-width: none;
   box-sizing: border-box;
   overflow-x: clip;
+  background: transparent !important;
 }
 
 @media (max-width: 768px) {
@@ -279,14 +295,6 @@ tbody tr:hover {
 
 /* Dashboard background image with soft overlay */
 .dashboard-bg {
-  background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.60) 25%, rgba(255, 255, 255, 0.40) 50%, rgba(255, 255, 255, 0.30) 100%),
-    url('/Image/Background.png');
-  /* Per layer: gradient fills viewport; photo covers, anchored right, no stretch artifacts */
-  background-size: cover, cover;
-  background-position: center, right center;
-  background-attachment: fixed;
-  background-repeat: no-repeat, no-repeat;
   min-height: 100vh;
 }
 

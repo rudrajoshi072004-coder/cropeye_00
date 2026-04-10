@@ -320,6 +320,20 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
     setIsSidebarOpen(false);
   };
 
+  // Allow other components (e.g. notifications) to request navigation
+  useEffect(() => {
+    const onNav = (ev: Event) => {
+      const ce = ev as CustomEvent<{ menu?: string }>;
+      const menu = ce?.detail?.menu;
+      if (!menu) return;
+      handleMenuSelect(menu);
+    };
+    window.addEventListener("cropeye:navigate", onNav as EventListener);
+    return () => window.removeEventListener("cropeye:navigate", onNav as EventListener);
+    // handleMenuSelect is stable enough for this usage in this app
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleHomeClick = () => {
     setCurrentView(View.Home);
     setIsSidebarOpen(false);
@@ -380,7 +394,9 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
+      <div className="main-background" />
+      <div className="min-h-screen flex flex-col">
       <div className="flex flex-col">
         {/* Header - responsive margin on desktop only */}
         <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:ml-[280px]" : "lg:ml-0"}`}>
@@ -591,8 +607,9 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
           </div>
         </main>
       </div>
-    </div>
-  );
-};
-
-export default App;
+        </div>
+      </>
+    );
+  };
+  
+  export default App;

@@ -1,6 +1,6 @@
 // src/FieldOfficerHomeGrid.tsx
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock, LandPlot, Users, Calendar, Truck, Book } from 'lucide-react';
 import { getFarmersByFieldOfficer, getTasksForUser, getCurrentUser, getFarmsWithFarmerDetails, getRecentFarmers } from '../api';
 import { jwtDecode } from 'jwt-decode';
 import { getAuthToken } from '../utils/auth';
@@ -377,31 +377,31 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
   const items = [
     {
       title: 'ViewFarmerPlot',
-      iconImg: '/Image/crop images/Fields.png',
+      icon: <LandPlot size={48} className="text-green-800" />,
       bgColor: 'bg-green-300',
       hoverColor: 'hover:bg-green-300'
     },
     {
       title: 'User Desk',
-      iconImg: '/Image/crop images/Farmers.png',
+      icon: <Users size={48} className="text-blue-800" />,
       bgColor: 'bg-blue-300',
       hoverColor: 'hover:bg-blue-300'
     },
     {
       title: 'MyTask',
-      iconImg: '/Image/crop images/Tasks.png',
+      icon: <Calendar size={48} className="text-purple-800" />,
       bgColor: 'bg-purple-300',
       hoverColor: 'hover:bg-purple-300'
     },
     {
       title: "Resources Planning",
-      iconImg: '/Image/crop images/location.png',
+      icon: <Truck size={48} className="text-orange-800" />,
       bgColor: "bg-orange-300",
       hoverColor: "hover:bg-orange-300",
     },
     {
       title: 'Plan & Book',
-      iconImg: '/Image/crop images/Events.png',
+      icon: <Book size={48} className="text-yellow-800" />,
       bgColor: 'bg-yellow-300',
       hoverColor: 'hover:bg-yellow-300'
     }
@@ -411,7 +411,7 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
     {
       title: 'Total Farmers',
       value: stats.totalFarmers,
-      iconImg: '/Image/crop images/Farmers.png',
+      icon: <Users size={24} className="text-blue-700" />,
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-200',
       textColor: 'text-blue-700',
@@ -453,12 +453,6 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
   return (
     <div
       className="relative min-h-[calc(100vh-64px)] dashboard-bg-bleed"
-      style={{
-        backgroundImage: "url('/Image/Background.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
       {/* Soft overlay so cards remain readable over the image */}
       <div
@@ -500,12 +494,16 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
             >
               <div className="flex flex-col items-center justify-center space-y-2 sm:space-y-4 h-full">
                 <div className="flex-shrink-0 flex items-center justify-center" style={{ height: '48px', width: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img
-                    src={item.iconImg}
-                    alt={item.title}
-                    className="w-12 h-12 object-contain rounded-2xl"
-                    style={{ maxWidth: '48px', maxHeight: '48px', display: 'block' }}
-                  />
+                  {(item as any).icon ? (
+                    (item as any).icon
+                  ) : (
+                    <img
+                      src={(item as any).iconImg}
+                      alt={item.title}
+                      className="w-12 h-12 object-contain rounded-2xl"
+                      style={{ maxWidth: '48px', maxHeight: '48px', display: 'block' }}
+                    />
+                  )}
                 </div>
                 <span className="text-sm sm:text-base lg:text-lg font-semibold text-gray-800 text-center leading-tight break-words px-1">
                   {item.title === 'ViewFarmerPlot' ? 'View Farmer Plot' : item.title}

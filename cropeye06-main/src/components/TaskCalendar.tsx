@@ -11,7 +11,7 @@ import {
   subMonths,
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
-import { getTasksForUser, addTask, getContactDetails ,getFarmersByFieldOfficer  } from '../api';
+import { getTasksForUser, addTask, getContactDetails, getFarmersByFieldOfficer, updateTaskStatus } from '../api';
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -274,12 +274,23 @@ const fetchContacts = async () => {
     });
   };
 
-  const handleStatusChange = (taskId: number, newStatus: string) => {
+  const handleStatusChange = async (taskId: number, newStatus: string) => {
+    // Optimistic update
     setTasks(prev =>
       prev.map(task =>
         task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
+
+    try {
+      await updateTaskStatus(taskId, newStatus);
+      console.log(`Calendar Task ${taskId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Failed to update task status in calendar:', error);
+      alert('Failed to update task status. Reverting change.');
+      // Revert if failed
+      fetchTasks();
+    }
   };
 
   const getStatusColor = (status: string) => {

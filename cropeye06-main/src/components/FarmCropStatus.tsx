@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Line,
   XAxis,
@@ -46,11 +46,13 @@ import {
   // Filter,
   // RefreshCw,
   Maximize2,
+  CloudSun,
+  Star,
 } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { getCache, setCache } from "../utils/cache";
-import { getEventsBaseUrl } from "../utils/serviceUrls";
+import { getEventsBaseUrl, getGrapesAdminBaseUrl } from "../utils/serviceUrls";
 import { getRecentFarmers } from "../api";
 import { getUserRole } from "../utils/auth";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
@@ -68,6 +70,95 @@ const OTHER_FARMERS_RECOVERY = {
   bottom_quartile: 6.58,
   similar_farms: 7.63,
 };
+
+/** Recovery Rate / canopy vigour distribution chart plot height (px) */
+const RECOVERY_QUALITY_CHART_PLOT_H = 150;
+
+type VigourPixelPct = {
+  poor: number;
+  moderate: number;
+  good: number;
+  excellent: number;
+};
+
+/** Fallback when API is unavailable (matches prior demo proportions). */
+const FALLBACK_VIGOUR_PCT: VigourPixelPct = {
+  poor: 12,
+  moderate: 28,
+  good: 40,
+  excellent: 20,
+};
+
+function parseCanopyVigourPixelSummary(data: unknown): VigourPixelPct | null {
+  if (!data || typeof data !== "object") return null;
+  const ps = (data as { pixel_summary?: Record<string, unknown> })
+    .pixel_summary;
+  if (!ps || typeof ps !== "object") return null;
+  const n = (v: unknown) =>
+    typeof v === "number" && !Number.isNaN(v) ? v : null;
+  const poor = n(ps.poor_vigour_percentage);
+  const moderate = n(ps.moderate_vigour_percentage);
+  const good = n(ps.good_vigour_percentage);
+  const excellent = n(ps.excellent_vigour_percentage);
+  if (
+    poor === null ||
+    moderate === null ||
+    good === null ||
+    excellent === null
+  ) {
+    return null;
+  }
+  return { poor, moderate, good, excellent };
+}
+
+function vigourToBarRows(v: VigourPixelPct): {
+  pctLabel: string;
+  color: string;
+  label: string;
+  heightPct: number;
+}[] {
+  const clamp = (x: number) => Math.min(100, Math.max(0, x));
+  return [
+    {
+      label: "Poor",
+      color: "#e74c3c",
+      pctLabel: `${v.poor.toFixed(v.poor >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.poor),
+    },
+    {
+      label: "Moderate",
+      color: "#f39c12",
+      pctLabel: `${v.moderate.toFixed(v.moderate >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.moderate),
+    },
+    {
+      label: "Good",
+      color: "#4a80e8",
+      pctLabel: `${v.good.toFixed(v.good >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.good),
+    },
+    {
+      label: "Excellent",
+      color: "#57b86a",
+      pctLabel: `${v.excellent.toFixed(v.excellent >= 10 ? 1 : 2)}%`,
+      heightPct: clamp(v.excellent),
+    },
+  ];
+}
+
+function dominantVigourCategory(v: VigourPixelPct): {
+  name: string;
+  pct: number;
+  color: string;
+} {
+  const items: { name: string; pct: number; color: string }[] = [
+    { name: "Poor", pct: v.poor, color: "#e74c3c" },
+    { name: "Moderate", pct: v.moderate, color: "#f39c12" },
+    { name: "Good", pct: v.good, color: "#4a80e8" },
+    { name: "Excellent", pct: v.excellent, color: "#57b86a" },
+  ];
+  return items.reduce((a, b) => (b.pct > a.pct ? b : a));
+}
 
 // Type definitions (keeping the same as original)
 interface LineChartData {
@@ -241,7 +332,7 @@ const OfficerDashboard: React.FC = () => {
   // Fetch farmers list on component mount (only for non-farmer roles)
   useEffect(() => {
     if (!isFarmerRole) {
-    fetchFarmers();
+      fetchFarmers();
     }
   }, []);
 
@@ -797,18 +888,18 @@ const OfficerDashboard: React.FC = () => {
       const now = new Date();
       now.setHours(0, 0, 0, 0); // Set to midnight for accurate date comparison
       const today = new Date(now);
-      
+
       let filteredData = data.filter((item) => {
         const itemDate = new Date(item.date);
         itemDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
         return itemDate.getTime() === today.getTime();
       });
-      
+
       if (filteredData.length === 0) {
         // If no data for today, get the most recent day
-      const sorted = [...data].sort(
+        const sorted = [...data].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
+        );
         if (sorted.length > 0) {
           const mostRecentDate = new Date(sorted[0].date);
           mostRecentDate.setHours(0, 0, 0, 0);
@@ -819,7 +910,7 @@ const OfficerDashboard: React.FC = () => {
           });
         }
       }
-      
+
       // If only one data point, duplicate it to create a line representation
       if (filteredData.length === 1) {
         const singlePoint = filteredData[0];
@@ -830,7 +921,7 @@ const OfficerDashboard: React.FC = () => {
         };
         return [singlePoint, secondPoint];
       }
-      
+
       return filteredData;
     }
 
@@ -841,7 +932,7 @@ const OfficerDashboard: React.FC = () => {
       now.setHours(0, 0, 0, 0); // Set to midnight for accurate date comparison
       const fifteenDaysAgo = new Date(now);
       fifteenDaysAgo.setDate(now.getDate() - 15);
-      
+
       filteredData = data.filter((item) => {
         const itemDate = new Date(item.date);
         itemDate.setHours(0, 0, 0, 0); // Set to midnight for accurate comparison
@@ -917,7 +1008,7 @@ const OfficerDashboard: React.FC = () => {
       now.setHours(0, 0, 0, 0);
       const fifteenDaysAgo = new Date(now);
       fifteenDaysAgo.setDate(now.getDate() - 15);
-      
+
       return result.filter((item) => {
         const weekStartDate = new Date(item.date);
         weekStartDate.setHours(0, 0, 0, 0);
@@ -1042,33 +1133,72 @@ const OfficerDashboard: React.FC = () => {
     },
   ];
 
-  // Recovery Rate Comparison data (matching FarmerDashboard)
-  const recoveryComparisonData = [
-    {
-      name: "Your Farm",
-      value: metrics.recovery || 0,
-      fill: "#10b981",
-      label: "Your Recovery Rate",
-    },
-    {
-      name: "Regional Average",
-      value: OTHER_FARMERS_RECOVERY.regional_average,
-      fill: "#3b82f6",
-      label: "Regional Average",
-    },
-    {
-      name: "Top 25%",
-      value: OTHER_FARMERS_RECOVERY.top_quartile,
-      fill: "#22c55e",
-      label: "Top Quartile",
-    },
-    {
-      name: "Similar Farms",
-      value: OTHER_FARMERS_RECOVERY.similar_farms,
-      fill: "#f59e0b",
-      label: "Similar Farms",
-    },
-  ];
+  const [vigourPixelPct, setVigourPixelPct] = useState<VigourPixelPct | null>(
+    null
+  );
+  const [vigourChartLoading, setVigourChartLoading] = useState(false);
+
+  useEffect(() => {
+    if (!selectedPlotId) {
+      setVigourPixelPct(null);
+      setVigourChartLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const cached = getCache(`canopyVigour_${selectedPlotId}`);
+    if (cached) {
+      const parsed = parseCanopyVigourPixelSummary(cached);
+      if (parsed) {
+        setVigourPixelPct(parsed);
+        setVigourChartLoading(false);
+        return;
+      }
+    }
+
+    setVigourPixelPct(null);
+    setVigourChartLoading(true);
+    (async () => {
+      try {
+        const base = getGrapesAdminBaseUrl().replace(/\/+$/, "");
+        const url = `${base}/grapes/canopy-vigour1?plot_name=${encodeURIComponent(
+          selectedPlotId
+        )}`;
+        const res = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          credentials: "omit",
+          headers: { Accept: "application/json" },
+        });
+        if (cancelled) return;
+        if (!res.ok) {
+          setVigourPixelPct(FALLBACK_VIGOUR_PCT);
+          return;
+        }
+        const data = await res.json();
+        setCache(`canopyVigour_${selectedPlotId}`, data);
+        const parsed = parseCanopyVigourPixelSummary(data);
+        setVigourPixelPct(parsed ?? FALLBACK_VIGOUR_PCT);
+      } catch {
+        if (!cancelled) setVigourPixelPct(FALLBACK_VIGOUR_PCT);
+      } finally {
+        if (!cancelled) setVigourChartLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedPlotId]);
+
+  const recoveryQualityBarRows = useMemo(
+    () => vigourToBarRows(vigourPixelPct ?? FALLBACK_VIGOUR_PCT),
+    [vigourPixelPct]
+  );
+  const dominantRecoveryQuality = useMemo(
+    () => dominantVigourCategory(vigourPixelPct ?? FALLBACK_VIGOUR_PCT),
+    [vigourPixelPct]
+  );
 
   // Time period toggle component
   const TimePeriodToggle: React.FC = () => (
@@ -1304,43 +1434,43 @@ const OfficerDashboard: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 {/* Farmers dropdown: only shown for field officer / manager / owner roles */}
                 {!isFarmerRole && (
-                <div className="flex flex-col flex-1 sm:flex-none">
-                  <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    Farmers ({farmers.length})
-                  </label>
-                  <select
-                    className="px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm w-full sm:w-64"
-                    value={selectedFarmerId}
-                    onChange={(e) => {
-                      setSelectedFarmerId(e.target.value);
-                    }}
-                    disabled={loadingFarmers}
-                  >
-                    {loadingFarmers ? (
-                      <option>Loading farmers...</option>
-                    ) : farmers.length === 0 ? (
-                      <option>No farmers found</option>
-                    ) : (
-                      <>
-                        <option value="">Select a farmer</option>
-                        {farmers.map((farmer, index) => {
-                          const farmerId = String(farmer.id);
-                          const farmerName =
-                            `${farmer.first_name} ${farmer.last_name}`.trim();
-                          const plotsCount = farmer.plots?.length || 0;
+                  <div className="flex flex-col flex-1 sm:flex-none">
+                    <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      Farmers ({farmers.length})
+                    </label>
+                    <select
+                      className="px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm w-full sm:w-64"
+                      value={selectedFarmerId}
+                      onChange={(e) => {
+                        setSelectedFarmerId(e.target.value);
+                      }}
+                      disabled={loadingFarmers}
+                    >
+                      {loadingFarmers ? (
+                        <option>Loading farmers...</option>
+                      ) : farmers.length === 0 ? (
+                        <option>No farmers found</option>
+                      ) : (
+                        <>
+                          <option value="">Select a farmer</option>
+                          {farmers.map((farmer, index) => {
+                            const farmerId = String(farmer.id);
+                            const farmerName =
+                              `${farmer.first_name} ${farmer.last_name}`.trim();
+                            const plotsCount = farmer.plots?.length || 0;
 
-                          return (
-                            <option key={`farmer-${farmerId}`} value={farmerId}>
-                              {farmerName} ({plotsCount} plot
-                              {plotsCount !== 1 ? "s" : ""})
-                            </option>
-                          );
-                        })}
-                      </>
-                    )}
-                  </select>
-                </div>
+                            return (
+                              <option key={`farmer-${farmerId}`} value={farmerId}>
+                                {farmerName} ({plotsCount} plot
+                                {plotsCount !== 1 ? "s" : ""})
+                              </option>
+                            );
+                          })}
+                        </>
+                      )}
+                    </select>
+                  </div>
                 )}
 
                 <div className="flex flex-col flex-1 sm:flex-none">
@@ -1767,48 +1897,122 @@ const OfficerDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Recovery Rate Comparison */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-3">
-                <div className="flex items-center gap-2 mb-2 lg:mb-0">
-                  <Users className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-sm font-semibold text-gray-800">
-                    Recovery Rate Comparison
-                  </h3>
-                </div>
+            {/* Recovery Rate Comparison — synchronized with FarmerDashboard */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-5 flex flex-col overflow-visible">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4 shrink-0">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 shrink-0" />
+                <h3 className="text-sm sm:text-base font-semibold text-gray-800">
+                  Recovery Rate Comparison
+                </h3>
               </div>
-              <div className="h-36 flex items-center justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={recoveryComparisonData}
-                    margin={{ top: 1, right: 5, left: -20, bottom: 5 }}
+
+              <div className="mt-1 flex w-full min-w-0 flex-col gap-4">
+                {/* Plotting area + Y axis */}
+                <div className="flex w-full min-w-0 gap-2">
+                  <div
+                    className="flex shrink-0 flex-col justify-between pt-0.5 text-[9px] font-medium leading-none text-gray-700 sm:text-[10px] text-right"
+                    style={{
+                      height: RECOVERY_QUALITY_CHART_PLOT_H,
+                      width: "1.75rem",
+                    }}
+                    aria-hidden
                   >
-                    <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
-                    <XAxis dataKey="name" tick={{ fontSize: 9 }} height={10} />
-                    <YAxis tick={{ fontSize: 8 }} domain={[0, 10]} />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        `${value.toFixed(1)}%`,
-                        "Recovery Rate",
-                      ]}
-                    />
-                    <Bar dataKey="value" fill="#3b82f6" radius={[3, 3, 0, 0]}>
-                      {recoveryComparisonData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-2 text-center text-xs text-gray-600">
-                <span className="font-semibold text-green-700">
-                  Your Farm: {(metrics.recovery || 0).toFixed(1)}%
-                </span>
-                {" vs "}
-                <span className="font-semibold text-blue-700">
-                  Regional Avg:{" "}
-                  {OTHER_FARMERS_RECOVERY.regional_average.toFixed(1)}%
-                </span>
+                    <span>100%</span>
+                    <span>70%</span>
+                    <span>30%</span>
+                    <span>0%</span>
+                  </div>
+
+                  <div className="min-w-0 flex-1 flex flex-col">
+                    <div
+                      className="relative w-full overflow-visible pl-0.5"
+                      style={{
+                        paddingTop: "1.25rem",
+                        minHeight: RECOVERY_QUALITY_CHART_PLOT_H + 20,
+                      }}
+                    >
+                      {vigourChartLoading && vigourPixelPct === null && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center rounded border border-gray-200 bg-white/80 backdrop-blur-[1px]">
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                        </div>
+                      )}
+                      <div
+                        className="relative box-border w-full overflow-visible border-b-2 border-l-2 border-gray-600"
+                        style={{
+                          height: RECOVERY_QUALITY_CHART_PLOT_H,
+                          marginTop: 0,
+                          opacity: vigourChartLoading && vigourPixelPct === null ? 0.45 : 1,
+                        }}
+                      >
+                        {/* Dashed guides */}
+                        <div className="pointer-events-none absolute inset-0 border-r border-dashed border-gray-300" aria-hidden>
+                          <div className="absolute left-0 right-0 top-0 border-t border-dashed border-gray-300" />
+                          <div className="absolute left-0 right-0 border-t border-dashed border-gray-300" style={{ bottom: "70%" }} />
+                          <div className="absolute left-0 right-0 border-t border-dashed border-gray-300" style={{ bottom: "30%" }} />
+                        </div>
+
+                        {/* Bars */}
+                        <div
+                          className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-1.5 px-1"
+                          style={{ height: RECOVERY_QUALITY_CHART_PLOT_H }}
+                        >
+                          {recoveryQualityBarRows.map((b) => {
+                            const rawH = (b.heightPct / 100) * RECOVERY_QUALITY_CHART_PLOT_H;
+                            const barHeightPx = b.heightPct > 0 && rawH < 2 ? 2 : rawH;
+                            return (
+                              <div key={b.label} className="flex min-h-0 min-w-0 flex-1 flex-col justify-end">
+                                <div
+                                  className="flex w-full items-start justify-center rounded-t-[3px] pt-1 shadow-sm"
+                                  style={{
+                                    height: barHeightPx,
+                                    minHeight: 0,
+                                    backgroundColor: b.color,
+                                  }}
+                                >
+                                  <span className="text-center text-[9px] font-bold leading-tight text-white sm:text-[10px]">
+                                    {b.pctLabel}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Icons + category labels */}
+                    <div className="mt-2 grid w-full grid-cols-4 gap-1 px-1">
+                      <div className="flex flex-col items-center justify-end gap-1">
+                        <Leaf className="h-4 w-4 text-[#e74c3c] sm:h-5 sm:w-5" strokeWidth={2} />
+                        <span className="w-full text-center text-[9px] font-semibold leading-tight text-[#e74c3c] sm:text-[10px]">Poor</span>
+                      </div>
+                      <div className="flex flex-col items-center justify-end gap-1">
+                        <CloudSun className="h-4 w-4 text-[#f39c12] sm:h-5 sm:w-5" strokeWidth={2} />
+                        <span className="w-full text-center text-[9px] font-semibold leading-tight text-[#f39c12] sm:text-[10px]">Mod.</span>
+                      </div>
+                      <div className="flex flex-col items-center justify-end gap-1">
+                        <div className="flex items-center justify-center gap-0.5">
+                          <Leaf className="h-3 w-3 text-[#4a80e8]" strokeWidth={2} />
+                          <Leaf className="h-3 w-3 text-[#57b86a]" strokeWidth={2} />
+                        </div>
+                        <span className="w-full text-center text-[9px] font-semibold leading-tight text-[#4a80e8] sm:text-[10px]">Good</span>
+                      </div>
+                      <div className="flex flex-col items-center justify-end gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-500 sm:h-5 sm:w-5" strokeWidth={2} />
+                        <span className="w-full text-center text-[9px] font-semibold leading-tight text-[#57b86a] sm:text-[10px]">Exc.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="mt-2 text-center text-xs text-gray-600">
+                  Your Farm Quality:{" "}
+                  <span className="font-bold" style={{ color: dominantRecoveryQuality.color }}>
+                    {dominantRecoveryQuality.name} (
+                    {dominantRecoveryQuality.pct.toFixed(dominantRecoveryQuality.pct >= 10 ? 1 : 2)}
+                    %)
+                  </span>
+                </p>
               </div>
             </div>
           </div>

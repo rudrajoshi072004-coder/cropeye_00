@@ -22,12 +22,12 @@ export function getRedirectURL(industryName: string | null | undefined): string 
 
   const grapesUrl = toAbsoluteAppUrl(
     (import.meta.env.VITE_GRAPES_APP_URL as string | undefined) ||
-      (typeof window !== "undefined" && !import.meta.env.DEV ? "/grapes/" : "http://localhost:3001"),
+    (typeof window !== "undefined" && !import.meta.env.DEV ? "/grapes/" : "http://localhost:3001"),
   );
   // Dev: sugarcane UI is cropeye07-main — run `npm run dev` there (port 3002). Override with VITE_SUGARCANE_APP_URL.
   const sugarcaneUrl = toAbsoluteAppUrl(
     (import.meta.env.VITE_SUGARCANE_APP_URL as string | undefined) ||
-      (typeof window !== "undefined" && !import.meta.env.DEV ? "/sugarcan/" : "http://localhost:3002"),
+    (typeof window !== "undefined" && !import.meta.env.DEV ? "/sugarcan/" : "http://localhost:3002"),
   );
 
   // Accept "grapes", "grapse", "grape", "grap..." (common typo variants)

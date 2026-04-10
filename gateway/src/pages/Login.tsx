@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Satellite, Leaf, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { API_BASE_URL, getRedirectURL } from "../config";
 import { getIndustry, getToken, logout, setIndustry, setToken } from "../auth/auth";
 
@@ -233,6 +234,15 @@ export default function LoginPage() {
                       )}
                     </button>
                   </div>
+                </div>
+
+                <div className="flex items-center justify-end">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-semibold text-emerald-700 hover:text-emerald-800 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
 
                 <button

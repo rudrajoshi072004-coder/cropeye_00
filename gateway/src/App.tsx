@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/Login";
+import ForgotPasswordPage from "./pages/ForgotPassword";
+import ResetPasswordPage from "./pages/ResetPassword";
 
 function LandingRedirect() {
   // IMPORTANT: Always render login at /login/.
@@ -15,6 +17,8 @@ export default function App() {
       <Route path="/" element={<LandingRedirect />} />
       {/* Backward compatibility */}
       <Route path="/login" element={<Navigate to="/" replace />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

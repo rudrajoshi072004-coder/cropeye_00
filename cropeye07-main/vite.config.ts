@@ -56,6 +56,12 @@ export default defineConfig(({ mode }) => ({
   
   // Disable dev source maps completely
   server: {
+    host: "0.0.0.0",
+    port: 3002,
+    strictPort: true,
+    hmr: {
+      port: 3002,
+    },
     sourcemapIgnoreList: () => {
       return true; // Ignore all source maps in dev too
     },
@@ -65,14 +71,13 @@ export default defineConfig(({ mode }) => ({
       'Pragma': 'no-cache',
       'Expires': '0',
     },
-    host: "0.0.0.0",
-    port: 3002,
-    strictPort: false,
-    hmr: {
-      port: 3002,
-    },
     // Proxy API requests to avoid CORS issues in development
     proxy: {
+      '/api/analysis-timeline': {
+        target: 'https://cropeye-database-production.up.railway.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/analysis-timeline/, ''),
+      },
       '/api/dev-plot': {
         target: 'https://admin-cropeye.up.railway.app',
         changeOrigin: true,

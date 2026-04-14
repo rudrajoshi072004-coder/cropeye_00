@@ -4,8 +4,6 @@ import {
   getRefreshToken,
   setAuthToken,
   setRefreshToken,
-  clearAuthData,
-  clearAllLocalStorage,
 } from "./auth";
 import axios from "axios";
 import { gatewayLogout } from "./gatewayAuth";
@@ -117,9 +115,6 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     // If refresh token is invalid/expired, clear all storage (no cache left)
     if (error.response?.status === 401 || error.response?.status === 403) {
       console.warn("Refresh token is invalid, clearing all storage");
-      clearAllLocalStorage();
-
-      // Redirect to centralized login
       gatewayLogout();
     }
 

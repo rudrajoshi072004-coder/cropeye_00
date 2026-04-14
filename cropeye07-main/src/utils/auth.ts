@@ -1,12 +1,22 @@
 import { clearAllAppCache } from "../components/utils/cache";
 
 // Authentication utility functions
-// Gateway-aligned storage keys
 export const AUTH_TOKEN_KEY = 'access_token';
 export const REFRESH_TOKEN_KEY = 'refresh_token'; // Add refresh token key
 export const USER_ROLE_KEY = 'role';
 export const USER_DATA_KEY = 'userData';
 export const IS_AUTHENTICATED_KEY = 'isAuthenticated';
+
+// Token helpers (gateway-aligned API)
+export const getAccessToken = (): string | null => getAuthToken();
+export const setTokens = (access: string, refresh?: string): void => {
+  setAuthToken(access);
+  if (refresh) setRefreshToken(refresh);
+};
+export const clearTokens = (): void => {
+  removeAuthToken();
+  removeRefreshToken();
+};
 
 // Get authentication token from localStorage
 export const getAuthToken = (): string | null => {

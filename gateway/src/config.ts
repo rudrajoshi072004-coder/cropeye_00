@@ -35,10 +35,10 @@ export function getRedirectURL(industryName: string | null | undefined): string 
     return grapesUrl; // cropeye06 (or /grapes behind a reverse proxy)
   }
 
-  if (name.includes("sugarcane")) {
+  // Accept "sugarcane", "sugar cane" and close variants
+  if (name.includes("sugarcane") || name.includes("sugar cane") || (name.includes("sugar") && name.includes("cane"))) {
     return sugarcaneUrl; // cropeye07 (deployed at /sugarcan/ behind nginx)
   }
 
   return null;
 }
-

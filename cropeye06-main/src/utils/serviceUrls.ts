@@ -53,17 +53,14 @@ export function getGrapesAdminBaseUrl(): string {
   return GRAPES_ADMIN_PROD.replace(/\/+$/, "");
 }
 
-const NOTIFICATIONS_PROD =
-  "https://cropeye-backend.up.railway.app";
-
 /**
  * Notifications service — `GET /api/notifications/`.
+ * - Dev/Prod default: same-origin `/api/backend` (proxied by Vite/nginx).
+ * - Override: `VITE_NOTIFICATIONS_BASE_URL`
  * - Override: VITE_NOTIFICATIONS_BASE_URL
- * - Default: devtunnels URL provided for this project
  */
 export function getNotificationsBaseUrl(): string {
   const override = (import.meta.env.VITE_NOTIFICATIONS_BASE_URL as string | undefined)?.trim();
   if (override && override.length > 0) return override.replace(/\/+$/, "");
-  return NOTIFICATIONS_PROD.replace(/\/+$/, "");
+  return "/api/backend";
 }
-

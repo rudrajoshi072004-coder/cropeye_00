@@ -1,10 +1,22 @@
 // Weather Service for fetching current weather data
-// Centralized Weather API Base URL
-export const WEATHER_API_BASE = "https://weather-cropeye.up.railway.app";
+const resolveWeatherBase = (overrideKey: string, fallback: string): string => {
+  const override = (import.meta.env[overrideKey] as string | undefined)?.trim();
+  if (override && override.length > 0) return override.replace(/\/+$/, "");
+  return fallback.replace(/\/+$/, "");
+};
 
-/** Current forecast + rain alerts (Railway) — see https://currentforecast-production.up.railway.app/docs */
-export const FORECAST_WEATHER_API_BASE =
-  "https://currentforecast-production.up.railway.app";
+// Default to same-origin proxy paths to avoid hosted CORS issues.
+// Can be overridden via env when needed.
+export const WEATHER_API_BASE = resolveWeatherBase(
+  "VITE_WEATHER_API_BASE_URL",
+  "/api/weather"
+);
+
+/** Current forecast + rain alerts */
+export const FORECAST_WEATHER_API_BASE = resolveWeatherBase(
+  "VITE_FORECAST_WEATHER_API_BASE_URL",
+  "/api/forecast-weather"
+);
 
 export type ForecastPeriodPrediction = {
   rain_alert?: string;
@@ -143,7 +155,7 @@ export const fetchForecastCurrentWeather = async (
   if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
     throw new Error("Invalid coordinates for forecast weather");
   }
-  const apiUrl = `${FORECAST_WEATHER_API_BASE}/current-weather?lat=${lat}&lon=${lon}`;
+  const apiUrl = `${FORECAST_WEATHER_API_BASE.replace(/\/+$/, "")}/current-weather?lat=${lat}&lon=${lon}`;
   const response = await fetchWithRetry(apiUrl, {
     method: "GET",
     headers: {
@@ -180,7 +192,7 @@ export const fetchCurrentWeather = async (
     throw new Error(errorMsg);
   }
 
-  const apiUrl = `${WEATHER_API_BASE}/current-weather?lat=${lat}&lon=${lon}`;
+  const apiUrl = `${WEATHER_API_BASE.replace(/\/+$/, "")}/current-weather?lat=${lat}&lon=${lon}`;
   
   console.log(`🌤️ Weather API Request:`, {
     url: apiUrl,

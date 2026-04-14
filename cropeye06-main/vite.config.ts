@@ -197,6 +197,13 @@ export default defineConfig(({ mode }) => ({
         },
       },
       // Proxy for backend API (main API server)
+      '/api/backend/ws': {
+        target: 'https://cropeye-backend.up.railway.app',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api\/backend\/ws/, '/ws'),
+      },
+      // Proxy for backend REST API (main API server)
       '/api/backend': {
         target: 'https://cropeye-backend.up.railway.app',
         changeOrigin: true,
@@ -232,6 +239,18 @@ export default defineConfig(({ mode }) => ({
             }
           });
         },
+      },
+      // Proxy for weather API (current weather)
+      '/api/weather': {
+        target: 'https://weather-cropeye.up.railway.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/weather/, ''),
+      },
+      // Proxy for forecast weather API (alerts + 24h/48h predictions)
+      '/api/forecast-weather': {
+        target: 'https://currentforecast-production.up.railway.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/forecast-weather/, ''),
       },
       // Soil NPK / required-n / analyze-npk (cropeye-grapes-main-production)
       '/api/grapes-main': {

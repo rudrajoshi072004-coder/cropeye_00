@@ -265,7 +265,6 @@ const FarmerInfoBar: React.FC = () => {
         const n = new Notification(title, {
           body: message,
           tag: `notif-${alertId}`,
-          silent: true,
         });
         window.setTimeout(() => n.close(), 6000);
       }
@@ -409,7 +408,6 @@ const FarmerInfoBar: React.FC = () => {
         const n = new Notification(title, {
           body: notif.message,
           tag: `notif-${notif.id}`,
-          silent: true, // we play our own sound
         });
         window.setTimeout(() => n.close(), 6000);
       }

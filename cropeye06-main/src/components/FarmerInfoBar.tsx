@@ -8,9 +8,6 @@ import {
   type ForecastCurrentWeather,
   type ForecastPeriodPrediction,
 } from '../services/weatherService';
-import { AlertFilter, AlertFilterTabs } from './notifications/AlertFilterTabs';
-import { AlertList } from './notifications/AlertList';
-import { mapBackendNotificationToAlert } from '../utils/alertMapper';
 
 type NotificationRow = {
   id: number;
@@ -216,8 +213,6 @@ const FarmerInfoBar: React.FC = () => {
   const reconnectTimerRef = useRef<number | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  const [alertFilter, setAlertFilter] = useState<AlertFilter>('All');
-
   // Format current date
   const getCurrentDate = () => {
     const today = new Date();
@@ -248,10 +243,6 @@ const FarmerInfoBar: React.FC = () => {
     [displayItems]
   );
   
-  const mappedAlerts = useMemo(() => {
-    return displayItems.map(mapBackendNotificationToAlert);
-  }, [displayItems]);
-
   const forecastLatLon = useMemo(
     () =>
       getFirstPlotLatLon(profile?.plots) ?? {
@@ -720,29 +711,39 @@ const FarmerInfoBar: React.FC = () => {
                   </div>
                 ) : null}
 
-                <div className="flex flex-col bg-white">
-                  <AlertFilterTabs currentFilter={alertFilter} onFilterChange={setAlertFilter} />
-                  <div className="relative">
-                    {loading ? (
-                      <div className="notif-empty">Loading…</div>
-                    ) : (
-                      <AlertList
-                        alerts={mappedAlerts}
-                        filter={alertFilter}
-                        onRead={(id) => {
-                          const item = items.find(i => i.id === id);
-                          if (item && (isTaskLikeNotification(item) || isTaskFromFieldOfficer(item))) {
+                <div className="notif-list">
+                  {loading ? (
+                    <div className="notif-empty">Loading…</div>
+                  ) : displayItems.length === 0 ? (
+                    <div className="notif-empty">No notifications</div>
+                  ) : (
+                    displayItems.map((n) => {
+                      const shouldNavigate =
+                        isTaskLikeNotification(n) || isTaskFromFieldOfficer(n);
+                      return (
+                        <button
+                          key={n.id}
+                          type="button"
+                          className="notif-item notif-item-click"
+                          onClick={() => {
+                            if (!shouldNavigate) return;
                             window.dispatchEvent(
                               new CustomEvent("cropeye:navigate", {
                                 detail: { menu: "ViewList" },
                               })
                             );
                             setOpen(false);
-                          }
-                        }}
-                      />
-                    )}
-                  </div>
+                          }}
+                          title={shouldNavigate ? "Open My Task Checklist" : undefined}
+                        >
+                          <div className="notif-item-msg">{n.message}</div>
+                          <div className="notif-item-meta">
+                            {new Date(n.created_at).toLocaleString()}
+                          </div>
+                        </button>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             ) : null}

@@ -4,6 +4,7 @@ import { useAppContext } from "../context/AppContext";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import budData from "./bud.json";
 import { fetchWeatherForecast, extractNumericValue } from "../services/weatherForecastService";
+import { fetchComputeEtJson } from "../services/computeEtFetch";
 import { Sun } from "lucide-react";
 
 const IrrigationSchedule: React.FC = () => {
@@ -240,9 +241,7 @@ const IrrigationSchedule: React.FC = () => {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 7);
 
-        const apiUrl = `https://sef-cropeye.up.railway.app/plots/${plotName}/compute-et/`;
-
-        const response = await fetch(apiUrl, {
+        const data = (await fetchComputeEtJson(plotName, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -250,14 +249,7 @@ const IrrigationSchedule: React.FC = () => {
             start_date: startDate.toISOString().split("T")[0],
             end_date: currentDate,
           }),
-        });
-
-        if (!response.ok) {
-          const txt = await response.text();
-          throw new Error(`ET API ${response.status}: ${txt}`);
-        }
-
-        const data = await response.json();
+        })) as Record<string, unknown>;
         const et = data.et_24hr ?? data.ET_mean_mm_per_day ?? data.et ?? 0;
         const finalEt = Number(et) > 0 ? Number(et) : 0.1;
 

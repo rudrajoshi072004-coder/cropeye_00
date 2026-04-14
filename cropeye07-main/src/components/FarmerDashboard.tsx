@@ -36,6 +36,7 @@ import { getCache, setCache } from "../utils/cache";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { useAppContext } from "../context/AppContext";
 import CommonSpinner from "./CommanSpinner";
+import { useI18nLite } from "../i18nLite.ts";
 
 // Type definitions
 interface PieChartWithNeedleProps {
@@ -196,6 +197,7 @@ const OTHER_FARMERS_RECOVERY = {
 };
 
 const FarmerDashboard: React.FC = () => {
+  const { t } = useI18nLite();
   const { profile, loading: profileLoading } = useFarmerProfile();
   const { selectedPlotName, setSelectedPlotName } = useAppContext();
 
@@ -251,10 +253,30 @@ const FarmerDashboard: React.FC = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const lineStyles: LineStyles = {
-    growth: { color: "#22c55e", label: "Growth Index" },
-    stress: { color: "#ef4444", label: "Stress Index" },
-    water: { color: "#3b82f6", label: "Water Index" },
-    moisture: { color: "#f59e0b", label: "Moisture Index" },
+    growth: {
+      color: "#22c55e",
+      label: t("farmerDashboard.lineStyles.growth", {
+        defaultValue: "Growth Index",
+      }),
+    },
+    stress: {
+      color: "#ef4444",
+      label: t("farmerDashboard.lineStyles.stress", {
+        defaultValue: "Stress Index",
+      }),
+    },
+    water: {
+      color: "#3b82f6",
+      label: t("farmerDashboard.lineStyles.water", {
+        defaultValue: "Water Index",
+      }),
+    },
+    moisture: {
+      color: "#f59e0b",
+      label: t("farmerDashboard.lineStyles.moisture", {
+        defaultValue: "Moisture Index",
+      }),
+    },
   };
 
   useEffect(() => {
@@ -651,9 +673,13 @@ const FarmerDashboard: React.FC = () => {
   };
 
   const getStressSeverityLabel = (stress: number): string => {
-    if (stress < 0.1) return "High";
-    if (stress < 0.15) return "Medium";
-    return "Low";
+    if (stress < 0.1)
+      return t("farmerDashboard.stressLevels.high", { defaultValue: "High" });
+    if (stress < 0.15)
+      return t("farmerDashboard.stressLevels.medium", {
+        defaultValue: "Medium",
+      });
+    return t("farmerDashboard.stressLevels.low", { defaultValue: "Low" });
   };
 
   const CustomStressDot: React.FC<CustomStressDotProps> = (props) => {
@@ -711,7 +737,9 @@ const FarmerDashboard: React.FC = () => {
               displayValue = `${Number(entry.value).toFixed(
                 4
               )} (${getStressSeverityLabel(entry.value)})`;
-              displayLabel = "NDRE Stress Level";
+              displayLabel = t("farmerDashboard.tooltip.ndreStressLevel", {
+                defaultValue: "NDRE Stress Level",
+              });
             } else if (lineStyles[entry.dataKey as keyof LineStyles]) {
               const value = entry.value;
               const numericValue =
@@ -787,7 +815,11 @@ const FarmerDashboard: React.FC = () => {
       {showNDREEvents && (
         <div className="flex items-center gap-1 ml-1 px-2 py-1 bg-orange-100 rounded-md border border-orange-300">
           <div className="w-2 h-2 rounded-full bg-orange-500 border border-orange-600"></div>
-          <span className="text-orange-800 font-semibold text-xs">Stress</span>
+          <span className="text-orange-800 font-semibold text-xs">
+            {t("farmerDashboard.chartLegend.stress", {
+              defaultValue: "Stress",
+            })}
+          </span>
         </div>
       )}
     </div>
@@ -798,12 +830,16 @@ const FarmerDashboard: React.FC = () => {
 
   const biomassData = [
     {
-      name: "Total Biomass",
+      name: t("farmerDashboard.biomassData.totalBiomass", {
+        defaultValue: "Total Biomass",
+      }),
       value: totalBiomass,
       fill: "#3b82f6",
     },
     {
-      name: "Underground Biomass",
+      name: t("farmerDashboard.biomassData.undergroundBiomass", {
+        defaultValue: "Underground Biomass",
+      }),
       value: currentBiomass,
       fill: "#10b981",
     },
@@ -811,28 +847,44 @@ const FarmerDashboard: React.FC = () => {
 
   const recoveryComparisonData = [
     {
-      name: "Your Farm",
+      name: t("farmerDashboard.recoveryComparison.yourFarm", {
+        defaultValue: "Your Farm",
+      }),
       value: metrics.recovery || 0,
       fill: "#10b981",
-      label: "Your Recovery Rate",
+      label: t("farmerDashboard.recoveryComparison.yourRecoveryRateLabel", {
+        defaultValue: "Your Recovery Rate",
+      }),
     },
     {
-      name: "Regional Average",
+      name: t("farmerDashboard.recoveryComparison.regionalAverage", {
+        defaultValue: "Regional Average",
+      }),
       value: OTHER_FARMERS_RECOVERY.regional_average,
       fill: "#3b82f6",
-      label: "Regional Average",
+      label: t("farmerDashboard.recoveryComparison.regionalAverage", {
+        defaultValue: "Regional Average",
+      }),
     },
     {
-      name: "Top 25%",
+      name: t("farmerDashboard.recoveryComparison.top25Percent", {
+        defaultValue: "Top 25%",
+      }),
       value: OTHER_FARMERS_RECOVERY.top_quartile,
       fill: "#22c55e",
-      label: "Top Quartile",
+      label: t("farmerDashboard.recoveryComparison.topQuartileLabel", {
+        defaultValue: "Top Quartile",
+      }),
     },
     {
-      name: "Similar Farms",
+      name: t("farmerDashboard.recoveryComparison.similarFarms", {
+        defaultValue: "Similar Farms",
+      }),
       value: OTHER_FARMERS_RECOVERY.similar_farms,
       fill: "#f59e0b",
-      label: "Similar Farms",
+      label: t("farmerDashboard.recoveryComparison.similarFarmsLabel", {
+        defaultValue: "Similar Farms",
+      }),
     },
   ];
 
@@ -850,11 +902,15 @@ const FarmerDashboard: React.FC = () => {
         <div className="text-center bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 max-w-md">
           <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-800 mb-2">
-            No Plots Found
+            {t("farmerDashboard.noPlotsFoundTitle", {
+              defaultValue: "No Plots Found",
+            })}
           </h3>
           <p className="text-gray-600">
-            No farm plots are registered to your account. Please contact your
-            field officer to register your farm plot.
+            {t("farmerDashboard.noPlotsFoundDescription", {
+              defaultValue:
+                "No farm plots are registered to your account. Please contact your field officer to register your farm plot.",
+            })}
           </p>
         </div>
       </div>
@@ -868,8 +924,12 @@ const FarmerDashboard: React.FC = () => {
         <button
           onClick={() => setIsChatbotOpen(true)}
           className="fixed bottom-6 right-6 z-[99998] bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-full shadow-2xl hover:shadow-green-500/50 transition-all duration-300 hover:scale-110 animate-pulse"
-          aria-label="Open Chatbot"
-          title="Open CropEye Assistant"
+          aria-label={t("farmerDashboard.chatbot.openChatbotAria", {
+            defaultValue: "Open Chatbot",
+          })}
+          title={t("farmerDashboard.chatbot.openCropEyeAssistantTitle", {
+            defaultValue: "Open CropEye Assistant",
+          })}
         >
           <MessageCircle className="w-6 h-6" />
         </button>
@@ -882,7 +942,11 @@ const FarmerDashboard: React.FC = () => {
         {profile && !profileLoading && (
           <div className="bg-white rounded-lg shadow-md p-4 mb-4">
             <div className="flex items-center gap-4 flex-wrap">
-              <label className="font-semibold text-gray-700">Select Plot:</label>
+              <label className="font-semibold text-gray-700">
+                {t("farmerDashboard.labels.selectPlot", {
+                  defaultValue: "Select Plot:",
+                })}
+              </label>
               <select
                 value={selectedPlotName || ""}
                 onChange={(e) => {
@@ -963,11 +1027,15 @@ const FarmerDashboard: React.FC = () => {
                   {metrics.area?.toFixed(2) || "-"}
                 </div>
                 <div className="text-sm font-semibold text-green-600">
-                  acre
+                  {t("farmerDashboard.units.acre", { defaultValue: "acre" })}
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 font-medium">Field Area</p>
+            <p className="text-xs text-gray-600 font-medium">
+              {t("farmerDashboard.cards.fieldArea", {
+                defaultValue: "Field Area",
+              })}
+            </p>
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 border border-emerald-200 hover:shadow-xl transition-all duration-300">
@@ -980,7 +1048,9 @@ const FarmerDashboard: React.FC = () => {
               </div>
             </div>
             <p className="text-xs text-gray-600 font-medium mt-7">
-              Crop Status
+              {t("farmerDashboard.cards.cropStatus", {
+                defaultValue: "Crop Status",
+              })}
             </p>
           </div>
 
@@ -998,11 +1068,15 @@ const FarmerDashboard: React.FC = () => {
                   )}
                 </div>
                 <div className="text-sm font-semibold text-orange-600">
-                  Days
+                  {t("farmerDashboard.cards.days", { defaultValue: "Days" })}
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 font-medium">Days to Harvest</p>
+            <p className="text-xs text-gray-600 font-medium">
+              {t("farmerDashboard.cards.daysToHarvest", {
+                defaultValue: "Days to Harvest",
+              })}
+            </p>
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 border border-blue-200 hover:shadow-xl transition-all duration-300">
@@ -1019,19 +1093,27 @@ const FarmerDashboard: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between text-xl text-gray-600">
-              <p className="text-xs text-gray-600 font-medium">Sugar Content</p>
+              <p className="text-xs text-gray-600 font-medium">
+                {t("farmerDashboard.cards.sugarContent", {
+                  defaultValue: "Sugar Content",
+                })}
+              </p>
               <div className="flex gap-4">
                 <div className="text-center">
                   <div className="font-semibold text-red-600">
                     {metrics.brixMax || "-"}
                   </div>
-                  <div className="text-gray-500">Max</div>
+                  <div className="text-gray-500">
+                    {t("farmerDashboard.labels.max", { defaultValue: "Max" })}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="font-semibold text-green-600">
                     {metrics.brixMin || "-"}
                   </div>
-                  <div className="text-gray-500">Min</div>
+                  <div className="text-gray-500">
+                    {t("farmerDashboard.labels.min", { defaultValue: "Min" })}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1044,7 +1126,9 @@ const FarmerDashboard: React.FC = () => {
             <div className="flex items-center gap-2 mb-2 lg:mb-0">
               <LineChartIcon className="w-5 h-5 text-blue-600" />
               <h3 className="text-lg font-bold text-gray-800">
-                Field Indices Analysis
+                {t("farmerDashboard.charts.fieldIndicesAnalysis", {
+                  defaultValue: "Field Indices Analysis",
+                })}
               </h3>
             </div>
             <TimePeriodToggle />
@@ -1139,7 +1223,9 @@ const FarmerDashboard: React.FC = () => {
 
                   let goodRange: [number, number] = [0.3, 0.6];
                   let badRange: [number, number] = [-0.1, 0.1];
-                  let labelText = "Average";
+                  let labelText = t("farmerDashboard.labels.average", {
+                    defaultValue: "Average",
+                  });
 
                   if (visibleCount === 1) {
                     const selectedIndex = Object.keys(visibleLines).find(
@@ -1181,7 +1267,9 @@ const FarmerDashboard: React.FC = () => {
 
                     goodRange = [avgGoodMin, avgGoodMax] as [number, number];
                     badRange = [avgBadMin, avgBadMax] as [number, number];
-                    labelText = "Average";
+                    labelText = t("farmerDashboard.labels.average", {
+                      defaultValue: "Average",
+                    });
                   }
 
                   return (
@@ -1232,7 +1320,9 @@ const FarmerDashboard: React.FC = () => {
                             style={{ fontSize: "10px" }}
                           >
                             <tspan x="79%" dy="0">
-                              Average
+                              {t("farmerDashboard.labels.average", {
+                                defaultValue: "Average",
+                              })}
                             </tspan>
                             <tspan x="79%" dy="12">
                               Good ({goodRange[0].toFixed(2)} -{" "}
@@ -1399,7 +1489,11 @@ const FarmerDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600">Organic Carbon Density</p>
+            <p className="text-xs text-gray-600">
+              {t("farmerDashboard.cards.organicCarbonDensity", {
+                defaultValue: "Organic Carbon Density",
+              })}
+            </p>
           </div>
 
           <button
@@ -1415,11 +1509,15 @@ const FarmerDashboard: React.FC = () => {
                     {metrics.stressCount || "0"}
                   </div>
                   <div className="text-xs font-semibold text-red-600">
-                    Events
+                    {t("farmerDashboard.labels.events", { defaultValue: "Events" })}
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-600">Stress Events</p>
+              <p className="text-xs text-gray-600">
+                {t("farmerDashboard.cards.stressEvents", {
+                  defaultValue: "Stress Events",
+                })}
+              </p>
             </div>
           </button>
 
@@ -1431,11 +1529,15 @@ const FarmerDashboard: React.FC = () => {
                   {metrics.irrigationEvents || "-"}
                 </div>
                 <div className="text-xs font-semibold text-cyan-600">
-                  Events
+                  {t("farmerDashboard.labels.events", { defaultValue: "Events" })}
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600">Irrigation Events</p>
+            <p className="text-xs text-gray-600">
+              {t("farmerDashboard.cards.irrigationEvents", {
+                defaultValue: "Irrigation Events",
+              })}
+            </p>
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-purple-200 hover:shadow-xl transition-all duration-300">
@@ -1446,11 +1548,15 @@ const FarmerDashboard: React.FC = () => {
                   {totalBiomass?.toFixed(1) || "-"}
                 </div>
                 <div className="text-xs font-semibold text-purple-600">
-                  T/acre
+                  {t("farmerDashboard.units.tPerAcre", { defaultValue: "T/acre" })}
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600">Total Biomass</p>
+            <p className="text-xs text-gray-600">
+              {t("farmerDashboard.cards.totalBiomass", {
+                defaultValue: "Total Biomass",
+              })}
+            </p>
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-yellow-200 hover:shadow-xl transition-all duration-300">
@@ -1460,10 +1566,16 @@ const FarmerDashboard: React.FC = () => {
                 <div className="text-lg font-bold text-gray-800">
                   {metrics.soilPH?.toFixed(2) || "-"}
                 </div>
-                <div className="text-xs font-semibold text-yellow-600">pH</div>
+                <div className="text-xs font-semibold text-yellow-600">
+                  {t("farmerDashboard.labels.ph", { defaultValue: "pH" })}
+                </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600">Soil pH Level</p>
+            <p className="text-xs text-gray-600">
+              {t("farmerDashboard.cards.soilPHLevel", {
+                defaultValue: "Soil pH Level",
+              })}
+            </p>
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-3 border border-green-200 hover:shadow-xl transition-all duration-300">
@@ -1473,10 +1585,16 @@ const FarmerDashboard: React.FC = () => {
                 <div className="text-lg font-bold text-gray-800">
                   {metrics.recovery?.toFixed(1) || "-"}
                 </div>
-                <div className="text-xs font-semibold text-green-600">%</div>
+                <div className="text-xs font-semibold text-green-600">
+                  {t("farmerDashboard.labels.percent", { defaultValue: "%" })}
+                </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600">Recovery Rate</p>
+            <p className="text-xs text-gray-600">
+              {t("farmerDashboard.cards.recoveryRate", {
+                defaultValue: "Recovery Rate",
+              })}
+            </p>
           </div>
         </div>
 
@@ -1489,50 +1607,79 @@ const FarmerDashboard: React.FC = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Target className="w-5 h-5 text-purple-600" />
                 <h3 className="text-sm font-semibold text-gray-800">
-                  Sugarcane Yield Projection
+                  {t("farmerDashboard.cards.sugarcaneYieldProjection", {
+                    defaultValue: "Sugarcane Yield Projection",
+                  })}
                 </h3>
               </div>
               <div className="h-48 sm:h-56 md:h-64 flex flex-col items-center justify-center relative flex-grow">
                 <PieChartWithNeedle
                   value={metrics.sugarYieldMean || 0}
                   max={metrics.sugarYieldMax || 400}
-                  title="Sugarcane Yield Forecast"
-                  unit=" T/acre"
+                  title={t("farmerDashboard.cards.sugarcaneYieldForecast", {
+                    defaultValue: "Sugarcane Yield Forecast",
+                  })}
+                  unit={` ${t("farmerDashboard.units.tPerAcre", {
+                    defaultValue: "T/acre",
+                  })}`}
                   width={260}
                   height={130}
                 />
               </div>
               <p className="text-sm text-gray-700 font-medium text-center mb-2 mt-2">
-                Sugarcane Yield Forecast
+                {t("farmerDashboard.cards.sugarcaneYieldForecast", {
+                  defaultValue: "Sugarcane Yield Forecast",
+                })}
               </p>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded bg-red-500"></div>
                     <span className="text-red-700 font-semibold">
-                      min: {(metrics.sugarYieldMin || 0).toFixed(1)} T/acre
+                      {t("farmerDashboard.labels.minWithColon", {
+                        defaultValue: "min:",
+                      })}{" "}
+                      {(metrics.sugarYieldMin || 0).toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded bg-purple-500"></div>
                     <span className="text-purple-700 font-semibold">
-                      mean: {(metrics.sugarYieldMean || 0).toFixed(1)}{" "}
-                      T/acre
+                      {t("farmerDashboard.labels.meanWithColon", {
+                        defaultValue: "mean:",
+                      })}{" "}
+                      {(metrics.sugarYieldMean || 0).toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded bg-green-500"></div>
                     <span className="text-green-700 font-semibold">
-                      max: {(metrics.sugarYieldMax || 0).toFixed(1)} T/acre
+                      {t("farmerDashboard.labels.maxWithColon", {
+                        defaultValue: "max:",
+                      })}{" "}
+                      {(metrics.sugarYieldMax || 0).toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </span>
                   </div>
                 </div>
                 <div className="mt-1 text-xs text-gray-500">
-                  Performance:{" "}
+                  {t("farmerDashboard.labels.performance", {
+                    defaultValue: "Performance:",
+                  })}{" "}
                   {metrics.sugarYieldMax
                     ? (((metrics.sugarYieldMean || 0) / metrics.sugarYieldMax) * 100).toFixed(1)
                     : "0.0"}
-                  % of optimal yield
+                  {t("farmerDashboard.labels.optimalYieldPercentSuffix", {
+                    defaultValue: "% of optimal yield",
+                  })}
                 </div>
               </div>
             </div>
@@ -1542,7 +1689,9 @@ const FarmerDashboard: React.FC = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Activity className="w-5 h-5 text-green-600" />
                 <h3 className="text-sm font-semibold text-gray-800">
-                  Biomass Performance
+                  {t("farmerDashboard.charts.biomassPerformance", {
+                    defaultValue: "Biomass Performance",
+                  })}
                 </h3>
               </div>
               <div className="h-48 sm:h-56 md:h-64 flex flex-col items-center justify-center relative flex-grow">
@@ -1570,13 +1719,18 @@ const FarmerDashboard: React.FC = () => {
                       dominantBaseline="middle"
                       className="text-base sm:text-lg font-semibold fill-blue-600"
                     >
-                      {totalBiomass.toFixed(1)} T/acre
+                      {totalBiomass.toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </text>
                     <Tooltip
                       wrapperStyle={{ zIndex: 50 }}
                       contentStyle={{ fontSize: "12px" }}
                       formatter={(value: number, name: string) => [
-                        `${value.toFixed(1)} T/acre`,
+                        `${value.toFixed(1)} ${t("farmerDashboard.units.tPerAcre", {
+                          defaultValue: "T/acre",
+                        })}`,
                         name,
                       ]}
                     />
@@ -1584,20 +1738,34 @@ const FarmerDashboard: React.FC = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-gray-700 font-medium text-center mb-2 mt-2">
-                Biomass Distribution Chart
+                {t("farmerDashboard.charts.biomassDistributionChart", {
+                  defaultValue: "Biomass Distribution Chart",
+                })}
               </p>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 text-xs flex-wrap">
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded bg-blue-500"></div>
                     <span className="text-blue-700 font-semibold">
-                      Total: {totalBiomass.toFixed(1)} T/acre
+                      {t("farmerDashboard.biomassDistribution.total", {
+                        defaultValue: "Total:",
+                      })}{" "}
+                      {totalBiomass.toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded bg-green-500"></div>
                     <span className="text-green-700 font-semibold">
-                      Underground: {currentBiomass.toFixed(1)} T/acre
+                      {t("farmerDashboard.biomassDistribution.underground", {
+                        defaultValue: "Underground:",
+                      })}{" "}
+                      {currentBiomass.toFixed(1)}{" "}
+                      {t("farmerDashboard.units.tPerAcre", {
+                        defaultValue: "T/acre",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -1610,7 +1778,9 @@ const FarmerDashboard: React.FC = () => {
             <div className="flex items-center gap-2 mb-3">
               <Users className="w-5 h-5 text-blue-600" />
               <h3 className="text-sm font-semibold text-gray-800">
-                Recovery Rate Comparison
+                  {t("farmerDashboard.charts.recoveryRateComparison", {
+                    defaultValue: "Recovery Rate Comparison",
+                  })}
               </h3>
             </div>
             <div className="h-48 sm:h-56 md:h-64 flex flex-col items-center justify-center relative flex-grow">
@@ -1625,7 +1795,9 @@ const FarmerDashboard: React.FC = () => {
                   <Tooltip
                     formatter={(value: number) => [
                       `${value.toFixed(1)}%`,
-                      "Recovery Rate",
+                      t("farmerDashboard.tooltip.recoveryRateLabel", {
+                        defaultValue: "Recovery Rate",
+                      }),
                     ]}
                   />
                   <Bar dataKey="value" fill="#3b82f6" radius={[3, 3, 0, 0]}>
@@ -1637,20 +1809,27 @@ const FarmerDashboard: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <p className="text-sm text-gray-700 font-medium text-center mb-2 mt-2">
-              Recovery Rate Comparison
+              {t("farmerDashboard.charts.recoveryRateComparison", {
+                defaultValue: "Recovery Rate Comparison",
+              })}
             </p>
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 text-xs flex-wrap">
                 <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded bg-green-500"></div>
                   <span className="text-green-700 font-semibold">
-                    Your Farm: {(metrics.recovery || 0).toFixed(1)}%
+                    {t("farmerDashboard.labels.yourFarm", {
+                      defaultValue: "Your Farm:",
+                    })}{" "}
+                    {(metrics.recovery || 0).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded bg-blue-500"></div>
                   <span className="text-blue-700 font-semibold">
-                    Regional Avg:{" "}
+                    {t("farmerDashboard.labels.regionalAvg", {
+                      defaultValue: "Regional Avg:",
+                    })}{" "}
                     {OTHER_FARMERS_RECOVERY.regional_average.toFixed(1)}%
                   </span>
                 </div>

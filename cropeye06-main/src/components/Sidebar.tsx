@@ -350,48 +350,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
     >
-      {/* Farmer Illustration Background Layer - behind all buttons */}
-      <div 
-        className="absolute inset-0 pointer-events-none sidebar-farmer-bg"
-        style={{
-          zIndex: 1,
-          overflow: 'visible',
-        }}
-      >
-        <img
-          src="/Image/farmer_illustration.png"
-          alt="Farmer Background"
-          className="absolute"
-          style={{
-            bottom: 0,
-            left: 0,
-            right: 0,
-            opacity: 0.85,
-            height: '80%',
-            width: '100%',
-            maxWidth: '100%',
-            minHeight: '500px',
-            objectFit: 'cover',
-            objectPosition: 'left bottom',
-            filter: 'none',
-            display: 'block',
-          }}
-          onLoad={() => {
-            console.log('✅ Farmer illustration loaded successfully');
-          }}
-          onError={(e) => {
-            console.error('❌ Failed to load farmer_illustration.png:', e);
-            console.error('Image path attempted: /Image/farmer_illustration.png');
-          }}
-        />
-        {/* Top fade gradient overlay - blends image with sky-blue sidebar background */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, #e0e7ff 0%, #e0e7ff 15%, rgba(224, 231, 255, 0.8) 25%, rgba(224, 231, 255, 0.4) 35%, transparent 50%)',
-            zIndex: 2,
-          }}
-        />
+      {/* Stable Background Illustration Layer */}
+      <div className={`sidebar-background-stable ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="sidebar-bg-overlay" />
       </div>
 
       {/* CONTENT LAYER - All buttons and navigation */}

@@ -35,6 +35,7 @@
 
   /* Glassmorphism & Premium UI */
   --sidebar-w: 280px;
+  --sidebar-bg-scale: 110%; /* Controls background illustration scaling */
 
   /* Layout stability */
   --app-max-w: 1440px;
@@ -52,8 +53,8 @@ body,
 }
 
 body {
-  /* Semi-transparent white overlay to reduce image opacity/intensity */
-  background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/Image/Background.png') !important;
+  /* Adjusted white overlay to 40% to make background image slightly more visible */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url('/Image/Background.png') !important;
   background-size: cover !important;
   background-position: bottom center !important;
   background-attachment: fixed !important;
@@ -417,35 +418,44 @@ tbody tr:hover {
 /* Premium Sidebar Glassmorphism */
 .sidebar-glass {
   background: linear-gradient(180deg, #e0e7ff 0%, #ffffff 100%) !important;
-  /* Background image removed - using farmer_illustration.png in component instead */
-  border-right: 1px solid var(--glass-border) !important;
-  position: relative;
-  overflow: visible;
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  position: fixed;
   left: 0 !important;
   margin-left: 0 !important;
 }
 
-.sidebar-glass::before {
-  content: "";
+/* Stable Sidebar Background Layer - Fixed position for zoom stability */
+.sidebar-background-stable {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--sidebar-w);
+  max-width: 85vw;
+  z-index: 1; /* Behind content layer */
+  background-image: url('/Image/farmer_illustration.png');
+  background-size: var(--sidebar-bg-scale, 110%);
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+/* Gradient overlay for the background illustration */
+.sidebar-bg-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.05);
-  /* Minimal overlay - farmer image is above this layer so it stays sharp */
-  backdrop-filter: blur(0px) saturate(100%);
-  -webkit-backdrop-filter: blur(0px) saturate(100%);
-  z-index: 0;
   pointer-events: none;
-}
-
-/* Ensure all sidebar content is above the glass overlay */
-.sidebar-glass > div:not(.sidebar-farmer-bg) {
-  position: relative;
-  z-index: 10;
-}
-
-/* Farmer illustration background - above blur, behind buttons */
-.sidebar-farmer-bg {
-  z-index: 1 !important;
+  background: linear-gradient(to bottom, 
+    #e0e7ff 0%, 
+    #e0e7ff 15%, 
+    rgba(224, 231, 255, 0.8) 25%, 
+    rgba(224, 231, 255, 0.4) 35%, 
+    transparent 50%
+  );
+  z-index: 2;
 }
 
 .sidebar-item-active {

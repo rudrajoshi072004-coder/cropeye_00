@@ -6,7 +6,7 @@ import { useAppContext } from "../../../context/AppContext";
 import { useFarmerProfile } from "../../../hooks/useFarmerProfile";
 
 const WaterUptakeCard: React.FC = () => {
-  const { appState } = useAppContext();
+  const { appState, getCached, setCached } = useAppContext();
 
   const irrigationSchedule = appState.irrigationScheduleData || [];
   const todayData = irrigationSchedule.find((day: any) => day.isToday);
@@ -41,6 +41,14 @@ const WaterUptakeCard: React.FC = () => {
         
         // Calculate current end date in YYYY-MM-DD format
         const currentEndDate = new Date().toISOString().split('T')[0];
+        const cacheKey = `waterUptakeEfficiency_${plotName}_${currentEndDate}`;
+        const cached = getCached(cacheKey);
+        if (cached && typeof cached.efficiency === 'number') {
+          setEfficiency(cached.efficiency);
+          setError(null);
+          setLoading(false);
+          return;
+        }
         
         // Use proxy in development to avoid CORS issues, direct URL in production
         // const baseUrl = import.meta.env.DEV 
@@ -91,6 +99,7 @@ const WaterUptakeCard: React.FC = () => {
         });
 
         setEfficiency(totalEfficiency);
+        setCached(cacheKey, { efficiency: totalEfficiency });
         setError(null);
         setLoading(false);
       } catch (err: any) {

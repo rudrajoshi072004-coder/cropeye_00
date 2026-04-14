@@ -476,6 +476,22 @@ export const PestDisease: React.FC = () => {
                           {weed.when && <li className="break-words"><span className="font-semibold">When:</span> {weed.when}</li>}
                           {weed.where && <li className="break-words"><span className="font-semibold">Where:</span> {weed.where}</li>}
                           {weed.why && <li className="break-words"><span className="font-semibold">Why:</span> {weed.why}</li>}
+                          
+                          {weed.identification && weed.identification.length > 0 && (
+                            <li className="break-words">
+                              <span className="font-semibold">Identification:</span> {weed.identification.join(', ')}
+                            </li>
+                          )}
+                          {weed.symptoms && weed.symptoms.length > 0 && (
+                            <li className="break-words">
+                              <span className="font-semibold">Symptoms:</span> {weed.symptoms.join(', ')}
+                            </li>
+                          )}
+                          {weed["Organic Control"] && weed["Organic Control"].length > 0 && (
+                            <li className="break-words">
+                              <span className="font-semibold">Organic Control:</span> {weed["Organic Control"].join(', ')}
+                            </li>
+                          )}
                         </ul>
                       </div>
                       <div className="w-full mt-2 xs:mt-3 pest-disease-image-container">

@@ -454,15 +454,6 @@ const FieldOfficerHomeGrid: React.FC<FieldOfficerHomeGridProps> = ({ onMenuClick
     <div
       className="relative min-h-[calc(100vh-64px)] dashboard-bg-bleed"
     >
-      {/* Soft overlay so cards remain readable over the image */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(to bottom, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.88) 55%, rgba(255,255,255,0.0) 100%)',
-        }}
-      />
-
       <div className="relative flex flex-col gap-4 sm:gap-8 p-4 sm:p-6">
         {/* Main Action Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">

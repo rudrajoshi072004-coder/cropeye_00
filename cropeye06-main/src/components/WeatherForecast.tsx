@@ -18,8 +18,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
+import { useFarmerProfile } from "../hooks/useFarmerProfile";
 import { extractNumericValue, testParsing, fetchWeatherForecast } from "../services/weatherForecastService";
-import { getFarmerMyProfile } from "../api";
 import "./WeatherForecast.css";
 
 
@@ -32,7 +32,8 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
   lat: propLat, 
   lon: propLon 
 }) => {
-  const { appState, setAppState, setCached, selectedPlotName } = useAppContext();
+  const { appState, setAppState, getCached, setCached, selectedPlotName } = useAppContext();
+  const { profile } = useFarmerProfile();
   const chartData = appState.weatherChartData || [];
   const selectedDay = appState.weatherSelectedDay || null;
   const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
@@ -55,14 +56,18 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
 
   // Fetch farmer coordinates from profile - update when plot selection changes
   useEffect(() => {
-    const fetchFarmerCoordinates = async () => {
+    const updateFarmerCoordinates = () => {
+      if (propLat && propLon) {
+        setFarmerCoordinates({ lat: propLat, lon: propLon });
+        setHasFetchedWeather(false);
+        setLoadingCoordinates(false);
+        return;
+      }
+
       try {
         setLoadingCoordinates(true);
-        
-        const response = await getFarmerMyProfile();
-        const profileData = response.data;
-        
-        if (!profileData?.plots || profileData.plots.length === 0) {
+
+        if (!profile?.plots || profile.plots.length === 0) {
           setFarmerCoordinates(null);
           setLoadingCoordinates(false);
           return;
@@ -71,7 +76,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
         // Get coordinates from the selected plot (or first plot if no selection)
         let selectedPlot = null;
         if (selectedPlotName) {
-          selectedPlot = profileData.plots.find((p: any) => 
+          selectedPlot = profile.plots.find((p: any) => 
             p.fastapi_plot_id === selectedPlotName ||
             `${p.gat_number}_${p.plot_number}` === selectedPlotName
           );
@@ -79,7 +84,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
         
         // Fallback to first plot if selected plot not found
         if (!selectedPlot) {
-          selectedPlot = profileData.plots[0];
+          selectedPlot = profile.plots[0];
         }
         
         if (selectedPlot?.coordinates?.location) {
@@ -101,12 +106,8 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
       }
     };
 
-    // Fetch coordinates when plot selection changes
-    if (selectedPlotName || !farmerCoordinates) {
-      fetchFarmerCoordinates();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPlotName]); // Update when selectedPlotName changes (farmerCoordinates intentionally excluded)
+    updateFarmerCoordinates();
+  }, [profile, propLat, propLon, selectedPlotName]);
 
   // Determine which coordinates to use - memoize to prevent unnecessary recalculations
   const lat = useMemo(() => {
@@ -134,18 +135,16 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
       testParsing();
     }
     
-    // Clear cache to force fresh data fetch
-    localStorage.removeItem(cacheKey);
-    
-    // const cached = getCached(cacheKey);
-    // if (cached) {
-    //   setAppState((prev: any) => ({
-    //     ...prev,
-    //     weatherChartData: cached,
-    //     weatherSelectedDay: cached[0],
-    //   }));
-    //   return;
-    // }
+    const cached = getCached(cacheKey);
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      setAppState((prev: any) => ({
+        ...prev,
+        weatherChartData: cached,
+        weatherSelectedDay: cached[0],
+      }));
+      setHasFetchedWeather(true);
+      return;
+    }
         
         // Mark as fetching to prevent multiple calls
         fetchingRef.current = true;

@@ -1,24 +1,46 @@
+const CACHE_STORE_KEY = "__cropeyeSessionCache__";
+
+function getCacheStore() {
+  const globalScope = globalThis as typeof globalThis & {
+    [CACHE_STORE_KEY]?: Record<string, { data: any; timestamp: number }>;
+  };
+
+  if (!globalScope[CACHE_STORE_KEY]) {
+    globalScope[CACHE_STORE_KEY] = {};
+  }
+
+  return globalScope[CACHE_STORE_KEY]!;
+}
+
 export function setCache(key, data) {
-  const payload = {
+  const store = getCacheStore();
+  store[key] = {
     data,
     timestamp: Date.now(),
   };
-  localStorage.setItem(key, JSON.stringify(payload));
 }
 
 export function getCache(key, maxAgeMs = 10 * 60 * 1000) {
-  // default 10 min
-  const raw = localStorage.getItem(key);
-  if (!raw) return null;
-  try {
-    const { data, timestamp } = JSON.parse(raw);
-    if (Date.now() - timestamp > maxAgeMs) {
-      localStorage.removeItem(key);
-      return null;
-    }
-    return data;
-  } catch {
-    localStorage.removeItem(key);
+  const store = getCacheStore();
+  const payload = store[key];
+  if (!payload) return null;
+
+  if (Date.now() - payload.timestamp > maxAgeMs) {
+    delete store[key];
     return null;
   }
+
+  return payload.data;
+}
+
+export function removeCache(key) {
+  const store = getCacheStore();
+  delete store[key];
+}
+
+export function clearAllCache() {
+  const globalScope = globalThis as typeof globalThis & {
+    [CACHE_STORE_KEY]?: Record<string, { data: any; timestamp: number }>;
+  };
+  globalScope[CACHE_STORE_KEY] = {};
 }

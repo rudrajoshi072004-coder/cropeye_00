@@ -3,7 +3,6 @@ import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { DashboardGrid } from "./components/DashboardGrid";
 import { jwtDecode } from "jwt-decode";
-import { getAuthToken } from "./utils/auth";
 
 import OwnerFarmDash from "./components/OwnerFarmDash"; // Import for Owner
 import OwnerHarvestDash from "./components/OwnerHarvestDash"; // Import for Owner
@@ -121,7 +120,7 @@ const App: React.FC<AppProps> = ({ userRole, onLogout }) => {
 
   // NEW: Get user from JWT token
   useEffect(() => {
-    const token = getAuthToken();
+    const token = localStorage.getItem("token");
 
     if (token) {
       try {

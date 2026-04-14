@@ -4,7 +4,10 @@
  * to improve user experience and prevent repeated API calls
  */
 
-import { setCache } from '../components/utils/cache';
+import { getCache, setCache } from '../components/utils/cache';
+import { getFarmerMyProfile } from '../api';
+import { fetchCurrentWeather } from './weatherService';
+import { extractNumericValue, fetchWeatherForecast } from './weatherForecastService';
 import { getGrapesMainBaseUrl } from '../utils/serviceUrls';
 import { normalizeNpkFromApi } from '../utils/npkNormalize';
 
@@ -19,6 +22,12 @@ interface PlotData {
   fastapi_plot_id?: string;
   gat_number?: string;
   plot_number?: string;
+  coordinates?: {
+    location?: {
+      latitude?: number;
+      longitude?: number;
+    };
+  };
   farms?: Array<{
     plantation_date?: string;
     crop_type?: {
@@ -26,6 +35,8 @@ interface PlotData {
     };
   }>;
 }
+
+const PROFILE_CACHE_KEY = 'farmer_my_profile_v1';
 
 /**
  * Get current date in YYYY-MM-DD format
@@ -36,24 +47,6 @@ const getCurrentEndDate = (): string => {
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
-};
-
-/**
- * Get cache utility
- */
-const getCache = (key: string, maxAgeMs: number = 30 * 60 * 1000): any => {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return null;
-    const { data, timestamp } = JSON.parse(raw);
-    if (Date.now() - timestamp > maxAgeMs) {
-      localStorage.removeItem(key);
-      return null;
-    }
-    return data;
-  } catch {
-    return null;
-  }
 };
 
 /**
@@ -72,6 +65,72 @@ const cacheData = (key: string, data: any): void => {
  */
 const getPlotName = (plot: PlotData): string => {
   return plot.fastapi_plot_id || `${plot.gat_number}_${plot.plot_number}` || '';
+};
+
+const getPlotCoordinates = (plot: PlotData): { lat: number; lon: number } | null => {
+  const lat = plot.coordinates?.location?.latitude;
+  const lon = plot.coordinates?.location?.longitude;
+
+  if (typeof lat === 'number' && typeof lon === 'number') {
+    return { lat, lon };
+  }
+
+  return null;
+};
+
+const buildWeatherChartDays = (rawData: any): any[] => {
+  const rawList = Array.isArray(rawData)
+    ? rawData
+    : Array.isArray(rawData?.data)
+      ? rawData.data
+      : [];
+
+  const apiDataByDate = new Map<string, any>();
+  rawList.forEach((item: any) => {
+    const dateStr = item.date || item.Date;
+    const iso = dateStr ? String(dateStr).split('T')[0] : new Date().toISOString().split('T')[0];
+    apiDataByDate.set(iso, item);
+  });
+
+  const today = new Date();
+  const days: any[] = [];
+
+  for (let i = 1; i <= 7; i++) {
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + i);
+    const iso = futureDate.toISOString().split('T')[0];
+    const apiData = apiDataByDate.get(iso) || {};
+
+    days.push({
+      date: futureDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+      temperature: extractNumericValue(apiData.temperature_max),
+      humidity: extractNumericValue(apiData.humidity_max),
+      rainfall: extractNumericValue(apiData.precipitation),
+      wind: extractNumericValue(apiData.wind_speed_max),
+      fullDate: iso,
+    });
+  }
+
+  return days;
+};
+
+const getFarmerProfileData = async (): Promise<any | null> => {
+  const cached = getCache(PROFILE_CACHE_KEY, 10 * 60 * 1000);
+  if (cached) {
+    return cached;
+  }
+
+  try {
+    const response = await getFarmerMyProfile();
+    const profileData = response?.data || null;
+    if (profileData) {
+      cacheData(PROFILE_CACHE_KEY, profileData);
+    }
+    return profileData;
+  } catch (error) {
+    console.warn('Failed to preload farmer profile:', error);
+    return null;
+  }
 };
 
 /**
@@ -291,6 +350,38 @@ const fetchBrixData = async (
     }
   } catch (error) {
     console.warn(`Failed to preload Brix data for ${plotName}:`, error);
+  }
+};
+
+const fetchBrixTimeSeriesData = async (
+  plotName: string,
+  context?: AppContextType
+): Promise<void> => {
+  try {
+    const cacheKey = `brixTimeSeries_${plotName}`;
+    if (getCache(cacheKey)) return;
+
+    const baseUrl = 'https://cropeye-grapes-events-production.up.railway.app';
+    const url = `${baseUrl}/grapes/brix-time-series?plot_name=${encodeURIComponent(plotName)}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'omit',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      cacheData(cacheKey, data);
+      if (context) {
+        context.setApiData('brixTimeSeries', plotName, data);
+      }
+    }
+  } catch (error) {
+    console.warn(`Failed to preload brix time series for ${plotName}:`, error);
   }
 };
 
@@ -529,6 +620,7 @@ const fetchIrrigationData = async (
         });
         if (response.ok) {
           const data = await response.json();
+          cacheData(`soilMoistureStack_${plotName}`, data);
           if (data.soil_moisture_stack && Array.isArray(data.soil_moisture_stack)) {
             const weekData = data.soil_moisture_stack.map((item: any) => ({
               date: item.day,
@@ -546,6 +638,149 @@ const fetchIrrigationData = async (
     }
   } catch (error) {
     console.warn(`Failed to preload Irrigation data for ${plotName}:`, error);
+  }
+};
+
+const fetchWaterUptakeEfficiencyData = async (plotName: string): Promise<void> => {
+  try {
+    const endDate = getCurrentEndDate();
+    const cacheKey = `waterUptakeEfficiency_${plotName}_${endDate}`;
+    if (getCache(cacheKey)) return;
+
+    const url = `https://cropeye-grapes-sef-production.up.railway.app/wateruptake?plot_name=${encodeURIComponent(plotName)}&end_date=${endDate}&days_back=7`;
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'omit',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const pixelSummary = data?.pixel_summary || {};
+      const adequate = pixelSummary?.adequat_pixel_percentage ?? 0;
+      const excellent = pixelSummary?.excellent_pixel_percentage ?? 0;
+      cacheData(cacheKey, {
+        efficiency: Math.round(adequate + excellent),
+      });
+    }
+  } catch (error) {
+    console.warn(`Failed to preload water uptake efficiency for ${plotName}:`, error);
+  }
+};
+
+const fetchGrapesScheduleData = async (plotName: string): Promise<void> => {
+  try {
+    const cacheKey = `grapesSchedule_${plotName}`;
+    if (getCache(cacheKey)) return;
+
+    const baseUrl = 'https://cropeye-grapes-admin-production.up.railway.app';
+    const response = await fetch(`${baseUrl}/grapes-schedule/${encodeURIComponent(plotName)}`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'omit',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      cacheData(cacheKey, data);
+    }
+  } catch (error) {
+    console.warn(`Failed to preload grapes schedule for ${plotName}:`, error);
+  }
+};
+
+const fetchRiskAssessmentData = async (plotName: string): Promise<void> => {
+  try {
+    const assessmentKey = `riskAssessment_${plotName}`;
+    const pestDetectionKey = `pestDetectionData_${plotName}`;
+
+    if (getCache(assessmentKey) && getCache(pestDetectionKey)) return;
+
+    const url = `https://cropeye-grapes-admin-production.up.railway.app/risk-assessment?plot_name=${encodeURIComponent(plotName)}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'default',
+      credentials: 'omit',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) return;
+
+    const body = await response.json();
+    if (!body?.risk) return;
+
+    cacheData(assessmentKey, {
+      stage: 'API',
+      current_conditions: {
+        month: '—',
+        temperature: '—',
+        humidity: '—',
+      },
+      pests: {
+        High: [...(body.risk?.pests?.High || [])],
+        Moderate: [...(body.risk?.pests?.Moderate || [])],
+        Low: [...(body.risk?.pests?.Low || [])],
+      },
+      diseases: {
+        High: [...(body.risk?.diseases?.High || [])],
+        Moderate: [...(body.risk?.diseases?.Moderate || [])],
+        Low: [...(body.risk?.diseases?.Low || [])],
+      },
+      weeds: {
+        High: [...(body.risk?.weeds?.High || [])],
+        Moderate: [...(body.risk?.weeds?.Moderate || [])],
+        Low: [...(body.risk?.weeds?.Low || [])],
+      },
+    });
+
+    cacheData(pestDetectionKey, {
+      fungi_affected_pixel_percentage: Number(body.pixel_data?.fungi) || 0,
+      chewing_affected_pixel_percentage: Number(body.pixel_data?.chewing) || 0,
+      sucking_affected_pixel_percentage: Number(body.pixel_data?.sucking) || 0,
+      SoilBorn_affected_pixel_percentage: Number(body.pixel_data?.soilborne) || 0,
+    });
+  } catch (error) {
+    console.warn(`Failed to preload risk assessment for ${plotName}:`, error);
+  }
+};
+
+const fetchWeatherDataForPlot = async (plot: PlotData): Promise<void> => {
+  const coordinates = getPlotCoordinates(plot);
+  if (!coordinates) return;
+
+  const { lat, lon } = coordinates;
+  const currentWeatherCacheKey = `weather_${lat}_${lon}`;
+  if (!getCache(currentWeatherCacheKey)) {
+    try {
+      const weatherData = await fetchCurrentWeather(lat, lon, true);
+      cacheData(currentWeatherCacheKey, {
+        data: weatherData,
+        timestamp: Date.now(),
+      });
+    } catch (error) {
+      console.warn(`Failed to preload current weather for ${getPlotName(plot)}:`, error);
+    }
+  }
+
+  const forecastCacheKey = `weatherChartData_${lat}_${lon}`;
+  if (!getCache(forecastCacheKey)) {
+    try {
+      const forecastData = await fetchWeatherForecast(lat, lon, true);
+      cacheData(forecastCacheKey, buildWeatherChartDays(forecastData));
+    } catch (error) {
+      console.warn(`Failed to preload weather forecast for ${getPlotName(plot)}:`, error);
+    }
   }
 };
 
@@ -575,12 +810,17 @@ const preloadPlotData = async (
     fetchSoilMoistureData(plotName, endDate, context),
     fetchPestData(plotName, endDate, context),
     fetchBrixData(plotName, endDate, context),
+    fetchBrixTimeSeriesData(plotName, context),
     // FarmerDashboard data
     fetchFarmerDashboardData(plotName, context),
     // Fertilizer/Soil Analysis data
     fetchFertilizerData(plotName, plantationDate || '2025-01-01', crop, context),
     // Irrigation data
     fetchIrrigationData(plotName, context),
+    fetchWaterUptakeEfficiencyData(plotName),
+    fetchGrapesScheduleData(plotName),
+    fetchRiskAssessmentData(plotName),
+    fetchWeatherDataForPlot(plot),
   ]);
 
   // Log results
@@ -608,6 +848,8 @@ export const preloadAllFarmerData = async (
   }
 
   console.log(`🚀 Starting COMPLETE preload for ${plots.length} plot(s) - ALL endpoints...`);
+
+  await getFarmerProfileData();
 
   // Get plantation dates and crops for each plot
   const plotPromises = plots.map(async (plot) => {

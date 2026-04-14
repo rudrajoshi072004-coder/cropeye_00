@@ -23,11 +23,146 @@ import {
 import { useAppContext } from "../context/AppContext";
 import { getUserRole, getUserData } from "../utils/auth";
 import { useFarmerProfile } from "../hooks/useFarmerProfile";
+import GoogleTranslateWidget from "./GoogleTranslateWidget";
 
 interface HeaderProps {
   toggleSidebar: () => void;
   isSidebarOpen: boolean;
 }
+
+/** Stable component (must not be defined inside Header) — avoids remount thrash that breaks React + Google Translate DOM. */
+type WeatherMarqueeContentProps = {
+  weather: WeatherServiceData | null;
+  userRole: string | null;
+  farmerProfileData: { plots?: unknown[] } | null | undefined;
+};
+
+const WeatherMarqueeContent: React.FC<WeatherMarqueeContentProps> = ({
+  weather,
+  userRole,
+  farmerProfileData,
+}) => {
+  const getLocationText = () => {
+    if (
+      userRole === "farmer" &&
+      farmerProfileData &&
+      Array.isArray(farmerProfileData.plots) &&
+      farmerProfileData.plots.length > 0
+    ) {
+      return "Farm Location";
+    }
+    return "Current Location";
+  };
+
+  return (
+    <div className="weather-marquee-item">
+      {weather && (
+        <>
+          <div className="weather-item weather-location ">
+            <MapPin className="weather-icon" size={18} />
+            <span className="weather-text">{getLocationText()}</span>
+          </div>
+
+          <div className="weather-item weather-condition bg-yellow-200 text-blue-600">
+            <span className="weather-icon-text text-black-600">
+              {getWeatherIcon(
+                weather.temperature_c,
+                weather.humidity,
+                weather.precip_mm,
+              )}
+            </span>
+            <span className="weather-text">
+              {getWeatherCondition(
+                weather.temperature_c,
+                weather.humidity,
+                weather.precip_mm,
+              )}
+            </span>
+          </div>
+
+          <div className="weather-item weather-temp ">
+            <Thermometer className="weather-icon" size={18} />
+            <span className="weather-text">
+              {formatTemperature(weather.temperature_c)}
+            </span>
+          </div>
+
+          <div className="weather-item weather-humidity">
+            <Cloud className="weather-icon" size={18} />
+            <span className="weather-text">
+              {formatHumidity(weather.humidity)}
+            </span>
+          </div>
+
+          <div className="weather-item weather-wind">
+            <Wind className="weather-icon" size={18} />
+            <span className="weather-text">
+              {formatWindSpeed(weather.wind_kph)}
+            </span>
+          </div>
+
+          {weather.precip_mm > 0 && (
+            <div className="weather-item weather-precipitation">
+              <Droplet className="weather-icon" size={18} />
+              <span className="weather-text">
+                {formatPrecipitation(weather.precip_mm)}
+              </span>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+type LocationPermissionPromptProps = {
+  locationPermission: "granted" | "denied" | "prompt" | "loading";
+  onAllow: () => void;
+  onDeny: () => void;
+};
+
+const LocationPermissionPrompt: React.FC<LocationPermissionPromptProps> = ({
+  locationPermission,
+  onAllow,
+  onDeny,
+}) => (
+  <div className="location-prompt-overlay">
+    <div className="location-prompt-modal">
+      <div className="location-prompt-header">
+        <Navigation className="location-prompt-icon" size={24} />
+        <h3>Location Access Required</h3>
+      </div>
+      <div className="location-prompt-content">
+        <p>
+          To show weather data for your current location, we need access to your
+          device&apos;s location.
+        </p>
+        <p>
+          This helps us provide accurate weather information for your area.
+        </p>
+      </div>
+      <div className="location-prompt-actions">
+        <button
+          type="button"
+          onClick={onAllow}
+          disabled={locationPermission === "loading"}
+          className="location-prompt-allow-btn"
+        >
+          {locationPermission === "loading"
+            ? "Getting Location..."
+            : "Allow Location"}
+        </button>
+        <button
+          type="button"
+          onClick={onDeny}
+          className="location-prompt-deny-btn"
+        >
+          Use Default Location
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
 export const Header: React.FC<HeaderProps> = ({
   toggleSidebar,
@@ -176,7 +311,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         // Get location based on user role
         const locationData = await getLocationForUser();
-        const { latitude, longitude, source } = locationData;
+        const { latitude, longitude } = locationData;
 
         // Check cache first
         const cacheKey = `weather_${latitude}_${longitude}`;
@@ -229,131 +364,12 @@ export const Header: React.FC<HeaderProps> = ({
     farmerProfileLoading,
   ]);
 
-  const WeatherMarqueeContent = () => {
-    // Determine location source text based on user role and data
-    const getLocationText = () => {
-      if (
-        userRole === "farmer" &&
-        farmerProfileData &&
-        farmerProfileData.plots &&
-        farmerProfileData.plots.length > 0
-      ) {
-        return "Farm Location";
-      }
-      return "Current Location";
-    };
-
-    return (
-      <div className="weather-marquee-item">
-        {weather && (
-          <>
-            {/* Location Info */}
-            <div className="weather-item weather-location ">
-              <MapPin className="weather-icon" size={18} />
-              <span className="weather-text">{getLocationText()}</span>
-            </div>
-
-            {/* Weather Icon and Condition */}
-            <div className="weather-item weather-condition bg-yellow-200 text-blue-600">
-              <span className="weather-icon-text text-black-600">
-                {getWeatherIcon(
-                  weather.temperature_c,
-                  weather.humidity,
-                  weather.precip_mm
-                )}
-              </span>
-              <span className="weather-text">
-                {getWeatherCondition(
-                  weather.temperature_c,
-                  weather.humidity,
-                  weather.precip_mm
-                )}
-              </span>
-            </div>
-
-            {/* Temperature */}
-            <div className="weather-item weather-temp ">
-              <Thermometer className="weather-icon" size={18} />
-              <span className="weather-text">
-                {formatTemperature(weather.temperature_c)}
-              </span>
-            </div>
-
-            {/* Humidity */}
-            <div className="weather-item weather-humidity">
-              <Cloud className="weather-icon" size={18} />
-              <span className="weather-text">
-                {formatHumidity(weather.humidity)}
-              </span>
-            </div>
-
-            {/* Wind Speed */}
-            <div className="weather-item weather-wind">
-              <Wind className="weather-icon" size={18} />
-              <span className="weather-text">
-                {formatWindSpeed(weather.wind_kph)}
-              </span>
-            </div>
-
-            {/* Precipitation */}
-            {weather.precip_mm > 0 && (
-              <div className="weather-item weather-precipitation">
-                <Droplet className="weather-icon" size={18} />
-                <span className="weather-text">
-                  {formatPrecipitation(weather.precip_mm)}
-                </span>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    );
-  };
-
-  // Location Permission Prompt Component
-  const LocationPermissionPrompt = () => (
-    <div className="location-prompt-overlay">
-      <div className="location-prompt-modal">
-        <div className="location-prompt-header">
-          <Navigation className="location-prompt-icon" size={24} />
-          <h3>Location Access Required</h3>
-        </div>
-        <div className="location-prompt-content">
-          <p>
-            To show weather data for your current location, we need access to
-            your device's location.
-          </p>
-          <p>
-            This helps us provide accurate weather information for your area.
-          </p>
-        </div>
-        <div className="location-prompt-actions">
-          <button
-            onClick={requestLocationPermission}
-            disabled={locationPermission === "loading"}
-            className="location-prompt-allow-btn"
-          >
-            {locationPermission === "loading"
-              ? "Getting Location..."
-              : "Allow Location"}
-          </button>
-          <button
-            onClick={() => {
-              setShowLocationPrompt(false);
-              setLocationPermission("denied");
-            }}
-            className="location-prompt-deny-btn"
-          >
-            Use Default Location
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <>
-      <header className="header-container bg-blue-100">
+      <header
+        className="header-container bg-blue-100 notranslate"
+        translate="no"
+      >
         {/* Main Header Section */}
         <div className="header-main">
           {/* Left side - Menu Button */}
@@ -385,23 +401,40 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               ) : (
                 <div className="marquee-content">
-                  <WeatherMarqueeContent />
-                  {/* Duplicate content for seamless loop */}
-                  <WeatherMarqueeContent />
+                  <WeatherMarqueeContent
+                    weather={weather}
+                    userRole={userRole}
+                    farmerProfileData={farmerProfileData}
+                  />
+                  <WeatherMarqueeContent
+                    weather={weather}
+                    userRole={userRole}
+                    farmerProfileData={farmerProfileData}
+                  />
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right side - Fixed Logo */}
+          {/* Right side - Google Translate + Logo */}
           <div className="logo-container">
+            <GoogleTranslateWidget />
             <img src="/icons/Cropeye-new.png" alt="CropEye Logo" className="logo-image" />
           </div>
         </div>
       </header>
 
       {/* Location Permission Prompt */}
-      {showLocationPrompt && <LocationPermissionPrompt />}
+      {showLocationPrompt && (
+        <LocationPermissionPrompt
+          locationPermission={locationPermission}
+          onAllow={requestLocationPermission}
+          onDeny={() => {
+            setShowLocationPrompt(false);
+            setLocationPermission("denied");
+          }}
+        />
+      )}
     </>
   );
 };

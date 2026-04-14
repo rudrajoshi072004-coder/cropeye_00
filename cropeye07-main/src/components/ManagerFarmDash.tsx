@@ -1167,11 +1167,11 @@ const ManagerFarmDash: React.FC = () => {
                   {
                     endpoint: `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backend.up.railway.app/api"}/farms/recent-farmers/`,
                     method: "GET",
-                    bearerToken: localStorage.getItem("access_token") || localStorage.getItem("token")
+                    bearerToken: localStorage.getItem("token")
                       ? "✅ Present"
                       : "❌ Missing",
                     tokenPreview:
-                      (localStorage.getItem("access_token") || localStorage.getItem("token"))?.substring(0, 30) + "...",
+                      localStorage.getItem("token")?.substring(0, 30) + "...",
                     totalFarmers: farmersForSelectedOfficer.length,
                     selectedFarmer: selectedFarmerId,
                     selectedPlot: selectedPlotId,

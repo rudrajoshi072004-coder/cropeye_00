@@ -6,8 +6,10 @@ import {
 import {
   getChatbotResponse,
   detectLanguage,
+  getWelcomeMessageByChatLocale,
   type Language,
   type UserRole,
+  type ChatLocaleCode,
 } from "../services/ruleBasedChatbot";
 import { useAppContext } from "../context/AppContext";
 import { getUserRole, getUserData } from "../utils/auth";
@@ -15,7 +17,94 @@ import { getUserRole, getUserData } from "../utils/auth";
 // ── Backend API ────────────────────────────────────────────────────────────────
 const CHATBOT_API_URL = "https://cropeye-chatbot.up.railway.app";
 
-type ChatLanguage = "en" | "hi" | "mr";
+type ChatLanguage = ChatLocaleCode;
+
+/** Avoid speaking a numeric-only `response` when the real text is in another field. */
+function extractBotTextFromApiPayload(data: Record<string, unknown>): string | null {
+  const tryString = (v: unknown): string | null => {
+    if (v == null) return null;
+    if (typeof v === "string") {
+      const s = v.trim();
+      return s.length ? s : null;
+    }
+    return null;
+  };
+  const fromNested = (v: unknown): string | null => {
+    if (!v || typeof v !== "object" || Array.isArray(v)) return null;
+    const o = v as Record<string, unknown>;
+    return (
+      tryString(o.text) ||
+      tryString(o.message) ||
+      tryString(o.answer) ||
+      tryString(o.content) ||
+      tryString(o.final_output)
+    );
+  };
+  for (const key of [
+    "final_output",
+    "response",
+    "text",
+    "message",
+    "answer",
+    "content",
+    "output",
+  ] as const) {
+    const s = tryString(data[key]);
+    if (s) return s;
+  }
+  const nested = fromNested(data.response);
+  if (nested) return nested;
+  if (typeof data.response === "string") {
+    const s = data.response.trim();
+    if (s) return s;
+  }
+  return null;
+}
+
+function deepFindNarrationText(data: Record<string, unknown>): string | null {
+  const skipKeys = new Set([
+    "audio_base64",
+    "speak_text",
+    "audio",
+    "embedding",
+    "trace",
+    "debug",
+  ]);
+  let best: string | null = null;
+  const looksLikeBase64Blob = (s: string) =>
+    /^[A-Za-z0-9+/=\r\n]+$/.test(s) && s.replace(/\s/g, "").length > 120;
+  const visit = (v: unknown, depth: number) => {
+    if (depth > 8 || v == null) return;
+    if (typeof v === "string") {
+      const s = v.trim();
+      if (s.length < 4 || looksLikeBase64Blob(s)) return;
+      const letterOrScript = /[^\d\s.,()%°℃°C–\-+/:]/.test(s);
+      if (!letterOrScript && s.length < 24) return;
+      if (!best || s.length > best.length) best = s;
+      return;
+    }
+    if (Array.isArray(v)) {
+      for (const item of v) visit(item, depth + 1);
+      return;
+    }
+    if (typeof v !== "object") return;
+    for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+      if (skipKeys.has(k)) continue;
+      visit(val, depth + 1);
+    }
+  };
+  visit(data, 0);
+  return best;
+}
+
+/** Non-empty server MP3 payload (backend `/voicebot/*` → `audio_base64`). */
+function getAudioBase64FromPayload(data: Record<string, unknown> | null | undefined): string | null {
+  if (!data) return null;
+  const raw = data.audio_base64;
+  if (typeof raw !== "string") return null;
+  const s = raw.trim();
+  return s.length ? s : null;
+}
 
 interface Message {
   id: string;
@@ -42,7 +131,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
   const [isRecording, setIsRecording]     = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
-  const [hasAutoWelcomed, setHasAutoWelcomed] = useState(false);
   const [isMinimized, setIsMinimized]     = useState(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
 
@@ -50,7 +138,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
   const [isInitialized, setIsInitialized]   = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError]           = useState<string | null>(null);
-  const [chatLanguage, setChatLanguage]     = useState<ChatLanguage>("mr");
+  /** Farmer only: true only after `/initialize-plot` succeeds for the current plot (backend requires this before /chat and /voicebot). */
+  const [farmerBackendReady, setFarmerBackendReady] = useState(false);
+  const [chatLanguage, setChatLanguage]     = useState<ChatLanguage | null>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [showReportModal, setShowReportModal]       = useState(false);
   const [reportContent, setReportContent]           = useState<string>("");
@@ -59,13 +149,21 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
   // ── Refs ───────────────────────────────────────────────────────────────────
   const messagesEndRef        = useRef<HTMLDivElement>(null);
   const recognitionRef        = useRef<any>(null);
-  const autoWelcomeTimerRef   = useRef<NodeJS.Timeout | null>(null);
+  /** One welcome per chatbot open, after user picks a language. */
+  const welcomedThisOpenRef   = useRef(false);
   const lastBotMessageRef     = useRef<string>("");
+  /** Text last used for TTS fallback / replay — prefers API `speak_text` when present. */
+  const lastBotSpeakTextRef   = useRef<string>("");
   const mediaRecorderRef      = useRef<MediaRecorder | null>(null);
   const backendAudioRef       = useRef<HTMLAudioElement | null>(null);
   // Tracks which plotId was last successfully initialized so we don't
   // call /initialize-plot again when the chatbot is simply closed & reopened
   const initializedPlotRef    = useRef<string | null>(null);
+  /** Latest plot id each render — avoids stale closure when profile/context updates right after open. */
+  const latestPlotIdRef       = useRef<string | null>(null);
+  /** Bumped on each init start; completions with an older seq are ignored (plot changed or superseded). */
+  const plotInitSeqRef        = useRef(0);
+  const plotInitAbortRef      = useRef<AbortController | null>(null);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   // Use same role detection as the auth system:
@@ -84,9 +182,30 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
     return "/chat/field_officer"; // owner fallback
   };
 
+  /** Voice pipeline (after STT) — matches standalone `chatbot_same_logic.html`. */
+  const getVoiceEndpoint = (): string => {
+    if (isFarmerRole)       return "/voicebot/farmer";
+    if (isFieldOfficerRole) return "/voicebot/field-officer";
+    if (isManagerRole)      return "/voicebot/manager";
+    return "/voicebot/field-officer";
+  };
+
+  const releaseDictationMic = useCallback(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        /* ignore */
+      }
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+  }, []);
+
   // Fall back to localStorage so the chatbot finds the plot even if context
   // hasn't been populated yet (profile still loading in FarmerDashboard)
   const plotId = selectedPlotName || localStorage.getItem("selectedPlot") || null;
+  latestPlotIdRef.current = plotId;
 
   // ── Add message ────────────────────────────────────────────────────────────
   const addMessage = useCallback((text: string, isUser: boolean, language?: Language) => {
@@ -110,7 +229,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
     }
     return () => {
       recognitionRef.current?.stop();
-      autoWelcomeTimerRef.current && clearTimeout(autoWelcomeTimerRef.current);
       window.speechSynthesis.cancel();
     };
   }, []);
@@ -121,104 +239,125 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
 
     if (!isFarmerRole) {
       setIsInitialized(true);
+      setFarmerBackendReady(true);
       return;
     }
 
-    const currentPlot = plotId || "__no_plot__";
-
-    if (initializedPlotRef.current === currentPlot) {
-      // Same plot already initialized in a previous open — skip API call
+    if (plotId && initializedPlotRef.current === plotId) {
+      // Same plot already initialized successfully — skip API call
       setIsInitialized(true);
+      setFarmerBackendReady(true);
       return;
     }
 
-    // New plot or first open — call the API
-    if (!isInitializing) {
-      setIsInitialized(false);
-      initializePlot();
+    if (!plotId && initializedPlotRef.current === "__no_plot__") {
+      setIsInitialized(true);
+      setFarmerBackendReady(false);
+      return;
     }
+
+    // New plot or first open — call the API (dedupe / stale handling is inside initializePlot)
+    setIsInitialized(false);
+    initializePlot();
+
+    return () => {
+      plotInitAbortRef.current?.abort();
+    };
   }, [isOpen, isFarmerRole, plotId]);
 
   // ── Reset on close ─────────────────────────────────────────────────────────
   useEffect(() => {
     if (!isOpen) {
-      setHasAutoWelcomed(false);
+      welcomedThisOpenRef.current = false;
+      setChatLanguage(null);
       // Do NOT reset isInitialized — the ref already tracks which plot is
       // initialized so the next open will skip the API call for the same plot
       setInitError(null);
     }
   }, [isOpen]);
 
-  // ── Auto-welcome ───────────────────────────────────────────────────────────
+  // ── Welcome after user picks a language (text only — no voice API / TTS) ─
   useEffect(() => {
-    if (isOpen && !hasAutoWelcomed && !isMinimized && isInitialized) {
-      autoWelcomeTimerRef.current = setTimeout(async () => {
-        const welcome = getChatbotResponse("hello", activeRole);
-        addMessage(welcome.text, false, "marathi");
-        await speakText(welcome.text);
-        setHasAutoWelcomed(true);
-      }, 3000);
-    }
-    return () => { autoWelcomeTimerRef.current && clearTimeout(autoWelcomeTimerRef.current); };
-  }, [isOpen, hasAutoWelcomed, isMinimized, isInitialized]);
+    if (!isOpen || isMinimized || !isInitialized || chatLanguage == null) return;
+    if (welcomedThisOpenRef.current) return;
+    welcomedThisOpenRef.current = true;
+
+    const welcome = getWelcomeMessageByChatLocale(chatLanguage);
+    addMessage(welcome.text, false, welcome.language);
+  }, [isOpen, isMinimized, isInitialized, chatLanguage, addMessage]);
 
   // ── Plot Initialization (farmer only) ─────────────────────────────────────
   const initializePlot = async () => {
-    const currentPlot = plotId || "__no_plot__";
+    const pid =
+      (latestPlotIdRef.current || localStorage.getItem("selectedPlot") || "").trim() || null;
 
-    if (!plotId) {
-      // No plot available — open in static fallback mode so farmer can still chat
-      initializedPlotRef.current = currentPlot;
+    if (!pid) {
+      plotInitAbortRef.current?.abort();
+      plotInitSeqRef.current += 1;
+      initializedPlotRef.current = "__no_plot__";
+      setFarmerBackendReady(false);
+      setInitError(null);
       setIsInitialized(true);
+      setIsInitializing(false);
       return;
     }
+
+    plotInitSeqRef.current += 1;
+    const seq = plotInitSeqRef.current;
+    plotInitAbortRef.current?.abort();
+    const ac = new AbortController();
+    plotInitAbortRef.current = ac;
+
+    setFarmerBackendReady(false);
     setIsInitializing(true);
     setInitError(null);
-    try {
+
+    const runOnce = async (): Promise<void> => {
       const res = await fetch(`${CHATBOT_API_URL}/initialize-plot`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plot_id: plotId }),
+        body: JSON.stringify({ plot_id: pid }),
+        signal: ac.signal,
       });
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      initializedPlotRef.current = currentPlot; // remember — skip next time
+      if (data.error) throw new Error(String(data.error));
+    };
+
+    try {
+      try {
+        await runOnce();
+      } catch (firstErr: any) {
+        if (firstErr?.name === "AbortError") throw firstErr;
+        const msg = String(firstErr?.message || "");
+        const retryable =
+          /Server error: 502|Server error: 503|Server error: 504|Failed to fetch|NetworkError/i.test(
+            msg,
+          );
+        if (retryable) {
+          await new Promise((r) => setTimeout(r, 700));
+          if (seq !== plotInitSeqRef.current || ac.signal.aborted) return;
+          await runOnce();
+        } else {
+          throw firstErr;
+        }
+      }
+
+      if (seq !== plotInitSeqRef.current) return;
+      initializedPlotRef.current = pid;
+      setFarmerBackendReady(true);
       setIsInitialized(true);
     } catch (err: any) {
+      if (err?.name === "AbortError") return;
+      if (seq !== plotInitSeqRef.current) return;
       console.error("[Chatbot] Init failed:", err);
       setInitError(err.message || "Initialization failed. Please try again.");
-      // Still let farmer chat using static fallback; mark as initialized
-      initializedPlotRef.current = currentPlot;
+      setFarmerBackendReady(false);
       setIsInitialized(true);
     } finally {
-      setIsInitializing(false);
-    }
-  };
-
-  // ── Backend Audio Playback ─────────────────────────────────────────────────
-  const playBackendAudio = (audioBase64: string) => {
-    try {
-      const byteStr = atob(audioBase64);
-      const arr = new Uint8Array(byteStr.length);
-      for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
-      const blob = new Blob([arr], { type: "audio/mpeg" });
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      backendAudioRef.current = audio;
-      setIsPlayingAudio(true);
-      audio.play().catch(() => {
-        console.warn("[Chatbot] Backend audio failed, falling back to TTS");
-        setIsPlayingAudio(false);
-      });
-      audio.addEventListener("ended", () => {
-        URL.revokeObjectURL(url);
-        setIsPlayingAudio(false);
-        backendAudioRef.current = null;
-      });
-    } catch (err) {
-      console.error("[Chatbot] Backend audio error:", err);
-      setIsPlayingAudio(false);
+      if (seq === plotInitSeqRef.current) {
+        setIsInitializing(false);
+      }
     }
   };
 
@@ -251,14 +390,25 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
       const voices = availableVoices.length ? availableVoices : window.speechSynthesis.getVoices();
       const utterance = new SpeechSynthesisUtterance(cleaned);
 
-      let voice =
-        voices.find((v) => v.lang === "mr-IN") ||
-        voices.find((v) => v.lang.startsWith("mr-")) ||
-        voices.find((v) => v.lang === "hi-IN") ||
-        voices.find((v) => v.lang.includes("-IN"));
+      const langPref =
+        chatLanguage === "en"
+          ? { exact: "en-IN" as const, prefix: "en-", fallback: "en-US" as const }
+          : chatLanguage === "hi"
+            ? { exact: "hi-IN" as const, prefix: "hi-", fallback: "hi-IN" as const }
+            : { exact: "mr-IN" as const, prefix: "mr-", fallback: "mr-IN" as const };
 
-      if (voice) { utterance.voice = voice; utterance.lang = voice.lang; }
-      else utterance.lang = "mr-IN";
+      const voice =
+        voices.find((v) => v.lang === langPref.exact) ||
+        voices.find((v) => v.lang.startsWith(langPref.prefix)) ||
+        voices.find((v) => v.lang.includes("-IN")) ||
+        voices[0];
+
+      if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+      } else {
+        utterance.lang = langPref.fallback;
+      }
 
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
@@ -272,6 +422,86 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
     });
   };
 
+  // ── Backend MP3 (edge-tts, etc.) — same behaviour as `chatbot_same_logic.html`
+  const playBackendAudio = (audioBase64: string) => {
+    const fallbackTts = () => {
+      const t =
+        lastBotSpeakTextRef.current?.trim() || lastBotMessageRef.current?.trim();
+      if (t) void speakText(t);
+    };
+    try {
+      releaseDictationMic();
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        /* ignore */
+      }
+
+      const cleanedBase64 = String(audioBase64 || "")
+        .trim()
+        .replace(/^data:audio\/[^;]+;base64,/, "")
+        .replace(/\s/g, "");
+
+      if (!cleanedBase64) throw new Error("Empty audio_base64");
+
+      const byteStr = atob(cleanedBase64);
+      const arr = new Uint8Array(byteStr.length);
+      for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+      const blob = new Blob([arr], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
+
+      try {
+        backendAudioRef.current?.pause();
+      } catch {
+        /* ignore */
+      }
+      const audio = new Audio(url);
+      backendAudioRef.current = audio;
+      setIsPlayingAudio(true);
+
+      window.setTimeout(() => {
+        if (!backendAudioRef.current) return;
+        backendAudioRef.current.play().catch(() => {
+          console.warn("[Chatbot] Backend audio playback failed, fallback to TTS");
+          setIsPlayingAudio(false);
+          backendAudioRef.current = null;
+          fallbackTts();
+        });
+      }, 180);
+
+      audio.addEventListener("ended", () => {
+        setIsPlayingAudio(false);
+        backendAudioRef.current = null;
+        URL.revokeObjectURL(url);
+      });
+    } catch (err) {
+      console.error("[Chatbot] Backend audio error:", err);
+      setIsPlayingAudio(false);
+      backendAudioRef.current = null;
+      fallbackTts();
+    }
+  };
+
+  /**
+   * Prefer server MP3 (`audio_base64`) when the API returns it (`main.py` voice routes).
+   * If missing, browser TTS uses `speak_text` when present (normalized for Edge TTS), else display text.
+   */
+  const playVoiceOrSpeakFallback = (
+    data: Record<string, unknown> | null,
+    displayText: string,
+  ) => {
+    const b64 = getAudioBase64FromPayload(data);
+    if (b64) {
+      playBackendAudio(b64);
+      return;
+    }
+    const speakSrc =
+      typeof data?.speak_text === "string" && data.speak_text.trim()
+        ? data.speak_text.trim()
+        : displayText;
+    void speakText(speakSrc);
+  };
+
   const pauseAudio = () => {
     backendAudioRef.current?.pause();
     window.speechSynthesis.cancel();
@@ -280,15 +510,40 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
   };
 
   const playAudio = () => {
-    if (lastBotMessageRef.current) {
+    const replay =
+      lastBotSpeakTextRef.current?.trim() || lastBotMessageRef.current?.trim();
+    if (replay) {
       setIsAudioPaused(false);
-      speakText(lastBotMessageRef.current);
+      void speakText(replay);
     }
   };
 
   // ── Send text message via API ──────────────────────────────────────────────
   const sendTextMessageWithText = async (message: string) => {
     if (!message.trim() || isLoading) return;
+    if (chatLanguage == null) {
+      addMessage("Please select a chat language from the menu above first.", false, "english");
+      return;
+    }
+
+    if (isFarmerRole) {
+      if (!plotId) {
+        addMessage(
+          "Please select a farm plot from the dashboard first. The assistant needs your plot to load farm data.",
+          false,
+          "english",
+        );
+        return;
+      }
+      if (!farmerBackendReady) {
+        addMessage(
+          "Farm context is not ready. Wait for the plot to finish loading, or tap Retry in the bar above.",
+          false,
+          "english",
+        );
+        return;
+      }
+    }
 
     const detectedLang = detectLanguage(message);
     addMessage(message, true, detectedLang);
@@ -329,41 +584,175 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
       //   manager       → plain string
       const rawData = await res.text();
       let botText: string;
+      let parsedForAudio: Record<string, unknown> | null = null;
       try {
-        const data = JSON.parse(rawData);
-        if (data.error) throw new Error(data.error);
+        const data = JSON.parse(rawData) as Record<string, unknown>;
+        parsedForAudio = data;
+        if (data.error) {
+          const errStr = String(data.error);
+          if (
+            isFarmerRole &&
+            /initialize-plot|farm context|not initialized/i.test(errStr)
+          ) {
+            setFarmerBackendReady(false);
+            initializedPlotRef.current = null;
+            setInitError(errStr);
+            addMessage(
+              "Farm context was lost or not loaded. Tap Retry above to run plot setup again, then send your message.",
+              false,
+              "english",
+            );
+            return;
+          }
+          throw new Error(errStr);
+        }
 
         // Handle "still loading" status (farmer only)
         if (isFarmerRole && data.status && data.status !== "ready") {
-          addMessage(data.message || "Plot data still loading. Please wait a moment...", false, "english");
+          const waitMsg =
+            typeof data.message === "string" && data.message.trim()
+              ? data.message.trim()
+              : "Plot data still loading. Please wait a moment...";
+          addMessage(waitMsg, false, "english");
           return;
         }
 
-        botText = data.response || data.final_output || rawData || "No response received.";
+        const extracted =
+          extractBotTextFromApiPayload(data) ||
+          deepFindNarrationText(data);
+        botText = extracted || rawData || "No response received.";
       } catch {
         // Plain string response (manager)
+        parsedForAudio = null;
         botText = rawData.replace(/^"|"$/g, "") || "No response received.";
       }
 
       // ── Show message first, then speak ──────────────────────────────────
       addMessage(botText, false);
       lastBotMessageRef.current = botText;
+      lastBotSpeakTextRef.current =
+        typeof parsedForAudio?.speak_text === "string" && parsedForAudio.speak_text.trim()
+          ? parsedForAudio.speak_text.trim()
+          : botText;
 
       // Small delay so React renders the bubble before TTS/audio starts
       await new Promise((r) => setTimeout(r, 150));
 
-      try {
-        const data = JSON.parse(rawData);
-        if (data.audio_base64) {
-          playBackendAudio(data.audio_base64);
-        } else {
-          await speakText(botText);
-        }
-      } catch {
-        await speakText(botText);
-      }
+      playVoiceOrSpeakFallback(parsedForAudio, botText);
     } catch (err: any) {
       console.warn("[Chatbot] API failed, using static fallback:", err.message);
+      const fallback = getChatbotResponse(message, activeRole);
+      addMessage(fallback.text, false, fallback.language);
+      await speakText(fallback.text);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /** After browser STT: `/voicebot/...` with `include_audio: true` (same as `chatbot_same_logic.html`). */
+  const sendVoiceMessageWithText = async (message: string) => {
+    if (!message.trim() || isLoading) return;
+    if (chatLanguage == null) {
+      addMessage("Please select a chat language from the menu above first.", false, "english");
+      return;
+    }
+
+    if (isFarmerRole) {
+      if (!plotId) {
+        addMessage(
+          "Please select a farm plot from the dashboard first. The assistant needs your plot to load farm data.",
+          false,
+          "english",
+        );
+        return;
+      }
+      if (!farmerBackendReady) {
+        addMessage(
+          "Farm context is not ready. Wait for the plot to finish loading, or tap Retry in the bar above.",
+          false,
+          "english",
+        );
+        return;
+      }
+    }
+
+    const detectedLang = detectLanguage(message);
+    addMessage(message, true, detectedLang);
+    releaseDictationMic();
+    await new Promise((r) => setTimeout(r, 220));
+    setIsLoading(true);
+
+    const userData = getUserData();
+    const userId: number | undefined = userData?.id;
+
+    try {
+      const endpoint = getVoiceEndpoint();
+      const payload: Record<string, unknown> = {
+        message,
+        include_audio: true,
+        language: chatLanguage,
+      };
+      if (plotId) payload.plot_id = plotId;
+      if (userId != null) {
+        payload.user_id = userId;
+      }
+
+      const res = await fetch(`${CHATBOT_API_URL}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error(`Voice API ${res.status}`);
+
+      const data = (await res.json()) as Record<string, unknown>;
+      if (data.error) {
+        const errStr = String(data.error);
+        if (
+          isFarmerRole &&
+          /initialize-plot|farm context|not initialized/i.test(errStr)
+        ) {
+          setFarmerBackendReady(false);
+          initializedPlotRef.current = null;
+          setInitError(errStr);
+          addMessage(
+            "Farm context was lost or not loaded. Tap Retry above to run plot setup again.",
+            false,
+            "english",
+          );
+          return;
+        }
+        throw new Error(errStr);
+      }
+
+      if (isFarmerRole && data.status && data.status !== "ready") {
+        addMessage(
+          String(data.message || "Plot data still loading. Please wait a moment..."),
+          false,
+          "english",
+        );
+        return;
+      }
+
+      const extracted =
+        extractBotTextFromApiPayload(data) || deepFindNarrationText(data);
+      const botText =
+        extracted ||
+        (typeof data.response === "string" ? data.response.trim() : "") ||
+        "No response received.";
+
+      addMessage(botText, false);
+      lastBotMessageRef.current = botText;
+      lastBotSpeakTextRef.current =
+        typeof data.speak_text === "string" && data.speak_text.trim()
+          ? data.speak_text.trim()
+          : botText;
+
+      await new Promise((r) => setTimeout(r, 150));
+
+      playVoiceOrSpeakFallback(data, botText);
+    } catch (err: any) {
+      console.warn("[Chatbot] Voice API failed:", err.message);
       const fallback = getChatbotResponse(message, activeRole);
       addMessage(fallback.text, false, fallback.language);
       await speakText(fallback.text);
@@ -380,7 +769,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
   };
 
   // ── Voice input via browser Speech Recognition ────────────────────────────
-  // Uses browser built-in STT (most reliable) → sends transcribed text via /chat endpoint
+  // STT → `/voicebot/...` with `include_audio: true` (same as `chatbot_same_logic.html`).
   const startVoiceRecording = () => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
@@ -391,16 +780,26 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
       return;
     }
 
+    if (chatLanguage == null) {
+      addMessage("Please select a chat language first, then use voice input.", false, "english");
+      return;
+    }
+
     // Stop any existing session first
     if (recognitionRef.current) {
       try { recognitionRef.current.abort(); } catch { /* ignore */ }
       recognitionRef.current = null;
     }
 
-    const langMap: Record<ChatLanguage, string> = { mr: "mr-IN", hi: "hi-IN", en: "en-US" };
+    const langMap: Record<ChatLanguage, string> = {
+      mr: "mr-IN",
+      hi: "hi-IN",
+      en: "en-US",
+      kn: "kn-IN",
+    };
 
     const recognition = new SR();
-    recognition.continuous      = true;   // keep listening until user clicks stop
+    recognition.continuous      = false; // releases mic sooner; avoids overlap with TTS playback
     recognition.interimResults  = true;
     recognition.maxAlternatives = 1;
     recognition.lang            = langMap[chatLanguage] || "mr-IN";
@@ -456,11 +855,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
       setIsRecording(false);
       recognitionRef.current = null;
       const text = finalTranscript.trim();
+      setInputText("");
+      await new Promise((r) => setTimeout(r, 200));
       if (text) {
-        setInputText("");
-        await sendTextMessageWithText(text);
-      } else {
-        setInputText("");
+        await sendVoiceMessageWithText(text);
       }
     };
 
@@ -518,10 +916,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
     backendAudioRef.current?.pause();
     setMessages([]);
     setInputText("");
-    setHasAutoWelcomed(false);
     setIsPlayingAudio(false);
     setIsAudioPaused(false);
     lastBotMessageRef.current = "";
+    lastBotSpeakTextRef.current = "";
   };
 
   // ── Early return ───────────────────────────────────────────────────────────
@@ -529,7 +927,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="fixed bottom-6 right-6 z-[99999]">
+    <div
+      className="fixed bottom-6 right-6 z-[99999] notranslate"
+      translate="no"
+    >
       {isMinimized ? (
         <div
           className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-full shadow-2xl cursor-pointer hover:scale-110 transition-all duration-300 animate-bounce relative"
@@ -544,7 +945,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
           )}
         </div>
       ) : (
-        <div className="w-96 h-[680px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 overflow-hidden">
+        <div className="w-96 h-[580px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 overflow-hidden">
 
           {/* ── Header ── */}
           <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-3 rounded-t-2xl">
@@ -562,13 +963,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
                 <div className="flex items-center gap-1 bg-white/20 rounded-full px-2 py-1">
                   <Globe className="w-3 h-3" />
                   <select
-                    value={chatLanguage}
-                    onChange={(e) => setChatLanguage(e.target.value as ChatLanguage)}
-                    className="bg-transparent text-white text-xs outline-none cursor-pointer"
+                    value={chatLanguage ?? ""}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setChatLanguage(v === "" ? null : (v as ChatLanguage));
+                    }}
+                    className="bg-transparent text-white text-xs outline-none cursor-pointer max-w-[9rem]"
                     title="Chat Language"
                   >
+                    <option value="" className="text-gray-800">Select language…</option>
                     <option value="mr" className="text-gray-800">मराठी</option>
                     <option value="hi" className="text-gray-800">हिंदी</option>
+                    <option value="kn" className="text-gray-800">ಕನ್ನಡ</option>
                     <option value="en" className="text-gray-800">English</option>
                   </select>
                 </div>
@@ -597,11 +1003,36 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
               </div>
             </div>
 
-            {/* Plot info bar */}
+            {/* Plot info bar — farmers need /initialize-plot success (farmerBackendReady) */}
             {plotId && (
               <div className="mt-1 text-[10px] text-green-100 flex items-center gap-1">
-                <span className={`w-1.5 h-1.5 rounded-full ${isInitialized ? "bg-green-300" : "bg-yellow-300"}`} />
-                Plot: {plotId} • {isInitialized ? "Ready" : "Initializing..."}
+                <span
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                    isInitializing
+                      ? "bg-yellow-300 animate-pulse"
+                      : isFarmerRole
+                        ? farmerBackendReady
+                          ? "bg-green-300"
+                          : initError
+                            ? "bg-orange-300"
+                            : "bg-yellow-300"
+                        : isInitialized
+                          ? "bg-green-300"
+                          : "bg-yellow-300"
+                  }`}
+                />
+                Plot: {plotId} •{" "}
+                {isInitializing
+                  ? "Initializing…"
+                  : isFarmerRole
+                    ? farmerBackendReady
+                      ? "Ready"
+                      : initError
+                        ? "Setup failed — Retry"
+                        : "Syncing plot…"
+                    : isInitialized
+                      ? "Ready"
+                      : "Initializing…"}
               </div>
             )}
           </div>
@@ -647,7 +1078,15 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
                       </div>
                       <p className="font-medium">Ask me about your farm!</p>
                       <p className="text-xs mt-1 text-green-600 animate-pulse">
-                        {chatLanguage === "mr" ? "मराठी" : chatLanguage === "hi" ? "हिंदी" : "English"} mode
+                        {chatLanguage == null
+                          ? "Choose a language above to begin"
+                          : chatLanguage === "mr"
+                            ? "मराठी mode"
+                            : chatLanguage === "hi"
+                              ? "हिंदी mode"
+                              : chatLanguage === "kn"
+                                ? "ಕನ್ನಡ mode"
+                                : "English mode"}
                       </p>
                     </div>
                   )}
@@ -715,21 +1154,25 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
                       onChange={(e) => setInputText(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && sendTextMessage()}
                       placeholder={
-                        chatLanguage === "mr"
-                          ? "प्रश्न विचारा..."
-                          : chatLanguage === "hi"
-                          ? "प्रश्न पूछें..."
-                          : "Ask a question..."
+                        chatLanguage == null
+                          ? "Select language first…"
+                          : chatLanguage === "mr"
+                            ? "प्रश्न विचारा..."
+                            : chatLanguage === "hi"
+                              ? "प्रश्न पूछें..."
+                              : chatLanguage === "kn"
+                                ? "ಪ್ರಶ್ನೆ ಕೇಳಿ..."
+                                : "Ask a question..."
                       }
                       className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
-                      disabled={isLoading || isRecording}
+                      disabled={isLoading || isRecording || chatLanguage == null}
                     />
                   </div>
 
                   {/* Mic */}
                   <button
                     onClick={isRecording ? stopVoiceRecording : startVoiceRecording}
-                    disabled={isLoading}
+                    disabled={isLoading || chatLanguage == null}
                     className={`p-2.5 rounded-full transition-all hover:scale-110 ${
                       isRecording
                         ? "bg-red-500 text-white animate-pulse shadow-lg"
@@ -744,7 +1187,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
                   {inputText.trim() && (
                     <button
                       onClick={sendTextMessage}
-                      disabled={isLoading || isRecording}
+                      disabled={isLoading || isRecording || chatLanguage == null}
                       className="p-2.5 bg-green-600 text-white rounded-full hover:bg-green-700 disabled:opacity-50 transition-all hover:scale-110 shadow-md"
                       title="Send"
                     >
@@ -804,6 +1247,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose, userRole }) => {
                 >
                   <option value="mr">मराठी</option>
                   <option value="hi">हिंदी</option>
+                  <option value="kn">ಕನ್ನಡ</option>
                   <option value="en">English</option>
                 </select>
                 <button

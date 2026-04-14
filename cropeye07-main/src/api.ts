@@ -5,7 +5,6 @@ import {
   isValidToken,
   getRefreshToken,
   setRefreshToken,
-  clearAllLocalStorage,
   getUserRole,
 } from "./utils/auth";
 import { checkAndRefreshToken, isTokenExpired } from "./utils/tokenManager";
@@ -153,9 +152,6 @@ api.interceptors.response.use(
             // Refresh failed - clear all storage and redirect to login
             processQueue(refreshError, null);
             isRefreshing = false;
-            clearAllLocalStorage();
-
-            // Redirect to centralized login
             gatewayLogout();
 
             return Promise.reject(refreshError);
@@ -164,9 +160,6 @@ api.interceptors.response.use(
           // No refresh token - clear all storage and redirect
           processQueue(error, null);
           isRefreshing = false;
-          clearAllLocalStorage();
-
-          // Redirect to centralized login
           gatewayLogout();
         }
       }
@@ -864,6 +857,8 @@ export const calculatePolygonArea = (
 };
 
 // Get farmer profile using the dedicated my-profile endpoint
+let farmerMyProfileInFlight: ReturnType<typeof api.get> | null = null;
+
 export const getFarmerMyProfile = () => {
   // Check if token exists and is valid before making the call
   const token = getAuthToken();
@@ -877,7 +872,13 @@ export const getFarmerMyProfile = () => {
     (error as any).isSilent = true; // Mark as silent to prevent console logging
     return Promise.reject(error);
   }
-  return api.get("/farms/my-profile/");
+  if (farmerMyProfileInFlight) {
+    return farmerMyProfileInFlight;
+  }
+  farmerMyProfileInFlight = api.get("/farms/my-profile/").finally(() => {
+    farmerMyProfileInFlight = null;
+  });
+  return farmerMyProfileInFlight;
 };
 
 // Farmer profile API function - uses existing endpoints
@@ -1064,17 +1065,37 @@ export const getFarmerProfile = async () => {
   }
 };
 
-// All-in-one farmer registration API for field officers
-// Note: This endpoint should NOT require authentication since users are registering for the first time
-// The payload shape can vary slightly depending on how plots are converted,
-// so we keep the type broad here and rely on runtime validation on the backend.
-export const registerFarmerAllInOne = async (data: any) => {
+/** POST /farms/register-farmer/ as multipart/form-data (field names match Django). */
+const postRegisterFarmerMultipart = (formData: FormData) =>
+  api.post("/farms/register-farmer/", formData, {
+    transformRequest: [
+      (data, headers) => {
+        if (data instanceof FormData && headers) {
+          const h = headers as { delete?: (k: string) => void };
+          h.delete?.("Content-Type");
+        }
+        return data;
+      },
+    ],
+  });
+
+/**
+ * Single plot registration: JSON parts as strings + optional file `farm_document`.
+ * Backend: farmer, plot, farm, irrigation as JSON strings; FILES["farm_document"] optional.
+ */
+export const registerFarmerAllInOne = async (
+  structured: {
+    farmer: any;
+    plot: any;
+    farm: any;
+    irrigation: any;
+  },
+  options?: { farmDocument?: File | null },
+) => {
   try {
-    // Check if user is authenticated - registration endpoint REQUIRES authentication
     const token = getAuthToken();
     const userRole = getUserRole();
 
-    // Registration endpoint requires authentication (Field Officers/Admins register farmers)
     if (!token || !isValidToken(token)) {
       const errorMsg =
         "Authentication required. Please login as a Field Officer or Admin to register farmers.";
@@ -1087,14 +1108,13 @@ export const registerFarmerAllInOne = async (data: any) => {
       throw error;
     }
 
-    // Check role permissions - only Field Officers, Managers, and Admins can register farmers
-    const allowedRoles = ['fieldofficer', 'manager', 'admin', 'owner'];
+    const allowedRoles = ["fieldofficer", "manager", "admin", "owner"];
     if (!userRole || !allowedRoles.includes(userRole.toLowerCase())) {
-      const errorMsg = `Access denied. Only Field Officers, Managers, and Admins can register farmers. Your current role: ${userRole || 'unknown'}. Please login with an authorized account.`;
+      const errorMsg = `Access denied. Only Field Officers, Managers, and Admins can register farmers. Your current role: ${userRole || "unknown"}. Please login with an authorized account.`;
       const error = new Error(errorMsg);
       (error as any).response = {
         status: 403,
-        data: { 
+        data: {
           detail: errorMsg,
           message: errorMsg,
         },
@@ -1103,8 +1123,17 @@ export const registerFarmerAllInOne = async (data: any) => {
       throw error;
     }
 
-    // Use authenticated API for registration
-    const response = await api.post("/farms/register-farmer/", data);
+    const fd = new FormData();
+    fd.append("farmer", JSON.stringify(structured.farmer));
+    fd.append("plot", JSON.stringify(structured.plot));
+    fd.append("farm", JSON.stringify(structured.farm));
+    fd.append("irrigation", JSON.stringify(structured.irrigation));
+    const file = options?.farmDocument;
+    if (file) {
+      fd.append("farm_document", file);
+    }
+
+    const response = await postRegisterFarmerMultipart(fd);
     return response;
   } catch (error: any) {
     // Provide better error messages
@@ -1134,127 +1163,16 @@ export const registerFarmerAllInOne = async (data: any) => {
   }
 };
 
-// Convert plot data to the new bulk API format (multiple plots in one request)
-const convertToBulkFormat = (formData: any, plots: any[]) => {
-  const plotsData = plots.map((plot, index) => {
-    // Calculate center coordinates for location
-    const coordinates = plot.geometry?.coordinates?.[0];
-
-    if (!coordinates || coordinates.length === 0) {
-      throw new Error(
-        `Plot ${
-          index + 1
-        } is missing boundary coordinates. Please redraw the plot.`,
-      );
-    }
-
-    const centerLng =
-      coordinates.reduce((sum: number, coord: number[]) => sum + coord[0], 0) /
-      coordinates.length;
-    const centerLat =
-      coordinates.reduce((sum: number, coord: number[]) => sum + coord[1], 0) /
-      coordinates.length;
-
-    return {
-      plot: {
-        gat_number: plot.Group_Gat_No || plot.GroupGatNo || "",
-        plot_number: plot.Gat_No_Id || plot.GatNoId || "",
-        village: plot.village || formData.district,
-        taluka: formData.taluka,
-        district: formData.district,
-        state: formData.state,
-        country: "India",
-        pin_code: plot.pin_code || "422605",
-        location: {
-          type: "Point" as const,
-          coordinates: [centerLng, centerLat] as [number, number],
-        },
-        boundary: {
-          type: "Polygon" as const,
-          coordinates: [
-            coordinates.map((coord: number[]) => [coord[0], coord[1]]),
-          ] as [[[number, number]]],
-        },
-      },
-      farm: {
-        address: `${plot.village || formData.district}, ${formData.taluka}, ${
-          formData.district
-        }`,
-        area_size: plot.area?.ha?.toString() || plot.area_size || "1.0",
-        spacing_a: plot.spacing_A || plot.spacing_a || "3.0",
-        spacing_b: plot.spacing_B || plot.spacing_b || "1.5",
-        soil_type_name: plot.soil_Type || plot.soil_type_name || "Black Soil",
-        ...(plot.crop_type_id != null
-          ? { crop_type_id: plot.crop_type_id }
-          : {
-              crop_type_name:
-                plot.crop_Type || plot.crop_type_name || "Sugarcane",
-              plantation_type: toApiPlantationType(plot.plantation_Type),
-            }),
-        ...(plot.crop_variety && plot.crop_variety.trim()
-          ? { crop_variety: plot.crop_variety.trim() }
-          : {}),
-        plantation_date: plot.plantation_Date || "2024-01-15",
-        planting_method: toApiPlantingMethod(plot.plantation_Method),
-      },
-      irrigation: {
-        irrigation_type_name:
-          plot.irrigation_Type || plot.irrigation_type_name || "drip",
-        status: true,
-        ...(plot.irrigation_Type === "drip" ||
-        plot.irrigation_type_name === "drip"
-          ? {
-              flow_rate_lph:
-                parseFloat(plot.flow_Rate || plot.flow_rate_lph) || 2.0,
-              emitters_count:
-                parseInt(plot.emitters || plot.emitters_count) || 120,
-            }
-          : plot.irrigation_Type === "flood" ||
-              plot.irrigation_type_name === "flood"
-            ? {
-                motor_horsepower:
-                  parseFloat(plot.motor_Horsepower || plot.motor_horsepower) ||
-                  7.5,
-                pipe_width_inches:
-                  parseFloat(plot.pipe_Width || plot.pipe_width_inches) || 4.0,
-                distance_motor_to_plot_m:
-                  parseFloat(
-                    plot.distance_From_Motor || plot.distance_motor_to_plot_m,
-                  ) || 50.0,
-              }
-            : {}),
-      },
-    };
-  });
-
-  return {
-    farmer: {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      phone_number: formData.phone_number,
-      address: formData.address,
-      village: formData.district,
-      taluka: formData.taluka,
-      district: formData.district,
-      state: formData.state,
-      aadhaar_number: formData.aadhar_card || null,
-      last_year_yield: formData.last_year_yield,
-    },
-    plots: plotsData,
-  };
-};
-
-// Simplified farmer registration - uses ONLY all-in-one API for ALL users
-// Now handles MULTIPLE plots - tries bulk endpoint first, falls back to individual submissions
+/**
+ * Multipart registration per plot (matches POST /api/farms/register-farmer/).
+ * Optional `formData.documents`: first file is sent as `farm_document` on the first plot only
+ * (backend expects a single file field name `farm_document`).
+ */
 export const registerFarmerAllInOneOnly = async (
   formData: any,
   plots: any[],
 ) => {
   try {
-    // Check if user is authenticated - registration endpoint REQUIRES authentication
     const token = getAuthToken();
     const userRole = getUserRole();
 
@@ -1270,14 +1188,13 @@ export const registerFarmerAllInOneOnly = async (
       throw error;
     }
 
-    // Check role permissions - only Field Officers, Managers, and Admins can register farmers
-    const allowedRoles = ['fieldofficer', 'manager', 'admin', 'owner'];
+    const allowedRoles = ["fieldofficer", "manager", "admin", "owner"];
     if (!userRole || !allowedRoles.includes(userRole.toLowerCase())) {
-      const errorMsg = `Access denied. Only Field Officers, Managers, and Admins can register farmers. Your current role: ${userRole || 'unknown'}. Please login with an authorized account.`;
+      const errorMsg = `Access denied. Only Field Officers, Managers, and Admins can register farmers. Your current role: ${userRole || "unknown"}. Please login with an authorized account.`;
       const error = new Error(errorMsg);
       (error as any).response = {
         status: 403,
-        data: { 
+        data: {
           detail: errorMsg,
           message: errorMsg,
         },
@@ -1286,37 +1203,23 @@ export const registerFarmerAllInOneOnly = async (
       throw error;
     }
 
-    // Try bulk registration first (all plots in one request)
-    try {
-      const bulkPayload = convertToBulkFormat(formData, plots);
-      const response = await api.post("/farms/register-farmer/", bulkPayload);
-      return response;
-    } catch (bulkError: any) {
-      // If bulk endpoint doesn't exist or fails, fall back to individual submissions
-      if (
-        bulkError.response?.status === 404 ||
-        bulkError.response?.status === 405
-      ) {
-        // Convert form data and plots to all-in-one format (returns array of payloads)
-        const allInOneDataArray = convertToAllInOneFormat(formData, plots);
+    const docList = formData?.documents as FileList | null | undefined;
+    const farmDocument =
+      docList && docList.length > 0 ? docList[0] : null;
 
-        // Submit each plot separately
-        const results = [];
-        for (let i = 0; i < allInOneDataArray.length; i++) {
-          const plotData = allInOneDataArray[i];
-          const result = await registerFarmerAllInOne(plotData);
-          results.push(result);
-
-          // Small delay between submissions to avoid overwhelming the server
-          if (i < allInOneDataArray.length - 1) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          }
-        }
-        return results;
+    const allInOneDataArray = convertToAllInOneFormat(formData, plots);
+    const results = [];
+    for (let i = 0; i < allInOneDataArray.length; i++) {
+      const plotPayload = allInOneDataArray[i];
+      const result = await registerFarmerAllInOne(plotPayload, {
+        farmDocument: i === 0 ? farmDocument : null,
+      });
+      results.push(result);
+      if (i < allInOneDataArray.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
-      // Re-throw if it's a different error (like validation or auth)
-      throw bulkError;
     }
+    return results.length === 1 ? results[0] : results;
   } catch (error: any) {
     // Enhance error messages for 403 and 401 errors
     if (error.response?.status === 403 || error.response?.status === 401 || error.requiresAuth) {
@@ -1404,7 +1307,11 @@ const convertSinglePlotToAllInOneFormat = (formData: any, plot: any) => {
       role_id: 1,
       industry_id: null,
       aadhaar_number: formData.aadhar_card || null,
-      last_year_yield: formData.last_year_yield,
+      sugarcane_type: formData.sugarcane_type || "old",
+      last_year_yield:
+        formData.sugarcane_type === "new"
+          ? null
+          : formData.last_year_yield || null,
     },
     plot: {
       gat_number: plot.Group_Gat_No || plot.GroupGatNo || "",
@@ -1518,7 +1425,9 @@ export const refreshApiEndpoints = async () => {
     "https://admin-cropeye.up.railway.app/refresh-from-django",
     "https://main-cropeye.up.railway.app/refresh-from-django",
     "https://events-cropeye.up.railway.app/refresh-from-django",
-    "https://SEF-cropeye.up.railway.app/refresh-from-django",
+    "https://sef-cropeye.up.railway.app/refresh-from-django",
+    "https://cropeye-database-production.up.railway.app/refresh-from-django",
+    "https://incredible-magic-production-bd49.up.railway.app/trigger-new-plot"
   ];
 
   const refreshPromises = refreshEndpoints.map((endpoint) =>

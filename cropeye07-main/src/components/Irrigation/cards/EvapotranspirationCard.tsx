@@ -3,6 +3,7 @@ import { Waves } from "lucide-react";
 import "../Irrigation.css";
 import { useAppContext } from "../../../context/AppContext";
 import { useFarmerProfile } from "../../../hooks/useFarmerProfile";
+import { fetchComputeEtJson } from "../../../services/computeEtFetch";
 
 interface HourlyETRecord {
   time: string;
@@ -96,9 +97,7 @@ const EvapotranspirationCard: React.FC = () => {
       setError(null);
 
       // Use POST request with empty body as per API specification
-      const url = `https://sef-cropeye.up.railway.app/plots/${plotName}/compute-et/`;
-      
-      const response = await fetch(url, {
+      const data = (await fetchComputeEtJson(plotName, {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -106,15 +105,7 @@ const EvapotranspirationCard: React.FC = () => {
         headers: {
           "accept": "application/json",
         },
-        // Empty body as per curl command (-d '')
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unable to read error response');
-        throw new Error(`HTTP ${response.status} ${response.statusText} - ${errorText}`);
-      }
-
-      const data: ETResponse = await response.json();
+      })) as ETResponse;
 
       // Extract ET value from ET_mean_mm_per_day (primary field from API response)
       const etValueExtracted = data.ET_mean_mm_per_day ?? 2.5;

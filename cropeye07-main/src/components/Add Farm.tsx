@@ -191,9 +191,12 @@ function calculateAreaMetricsFromGeometry(geometry: any) {
   };
 }
 
+/** Recenters only when `latlng` changes — avoids resetting the view on every parent re-render (e.g. after finishing a draw). */
 function RecenterMap({ latlng }: { latlng: [number, number] }) {
   const map = useMap();
-  map.setView(latlng, 17);
+  useEffect(() => {
+    map.setView(latlng, 17);
+  }, [latlng[0], latlng[1], map]);
   return null;
 }
 
@@ -833,9 +836,16 @@ function AddFarm() {
         featureGroupRef.current.addLayer(layer);
       }
 
-      // Add a label to the plot
+      // Fit map to the drawn polygon. (Do not call setCenter here — that would retrigger
+      // RecenterMap and override fitBounds with a fixed zoom Level.)
       const bounds = layer.getBounds();
       const center = bounds.getCenter();
+      const mapInstance = (layer as L.Layer & { _map?: L.Map })._map;
+      if (mapInstance) {
+        mapInstance.fitBounds(bounds, { padding: [28, 28], maxZoom: 19 });
+      }
+
+      // Add a label to the plot
       const plotNumber = plots.length + 1;
 
       // Create a marker with plot info
@@ -2302,10 +2312,6 @@ The farmer can now login with Email credentials to access the dashboard and moni
                     onChange={handleFileChange}
                     className="block w-full text-xs sm:text-sm text-gray-500 file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                   />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Uploaded as <code className="text-gray-700">farm_document</code> on submit
-                    (first file only if you select several; sent with the first plot request).
-                  </p>
                 </div>
               </div>
 

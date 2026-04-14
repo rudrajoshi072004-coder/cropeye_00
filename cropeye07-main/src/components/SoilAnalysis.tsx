@@ -216,24 +216,6 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
 
         let soilDataToSet: ApiSoilData | null = null;
 
-        // Some soil grids come back with hyphenated keys (e.g. `bdod_0-5cm_mean`).
-        // Normalize them once so the rest of the component can keep using underscore keys.
-        const soilStatsRaw: any = Array.isArray((data as any)?.soil_statistics)
-          ? (data as any).soil_statistics[0]
-          : (data as any)?.soil_statistics;
-        const normalizedExtra: Partial<ApiSoilData> = {
-          bdod_0_5cm_mean:
-            (data as any)?.bdod_0_5cm_mean ??
-            (data as any)?.["bdod_0-5cm_mean"] ??
-            soilStatsRaw?.bdod_0_5cm_mean ??
-            soilStatsRaw?.["bdod_0-5cm_mean"],
-          soc_0_5cm_mean:
-            (data as any)?.soc_0_5cm_mean ??
-            (data as any)?.["soc_0-5cm_mean"] ??
-            soilStatsRaw?.soc_0_5cm_mean ??
-            soilStatsRaw?.["soc_0-5cm_mean"],
-        };
-
         if (data && data.npk_analysis) {
           const npkAnalysis = data.npk_analysis;
           const estimatedUptake = npkAnalysis.estimated_npk_uptake_perAcre;
@@ -271,11 +253,10 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
             vv_backscatter_db: data.vv_backscatter_db || 0,
             vh_backscatter_db: data.vh_backscatter_db || 0,
           };
-          soilDataToSet = { ...soilDataToSet, ...normalizedExtra };
         }
 
         if (data && data.soil_statistics) {
-          const soilStats = soilStatsRaw || data.soil_statistics;
+          const soilStats = data.soil_statistics;
           const soilStatsData = {
             ph: soilStats.phh2o || 0,
             cec: soilStats.cation_exchange_capacity || 0,
@@ -293,7 +274,6 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
           soilDataToSet = {
             ...soilDataToSet,
             ...soilStatsData,
-            ...normalizedExtra,
           };
         }
 
@@ -319,7 +299,6 @@ const SoilAnalysis: React.FC<SoilAnalysisProps> = ({
             vv_backscatter_db: data?.vv_backscatter_db || 0,
             vh_backscatter_db: data?.vh_backscatter_db || 0,
           };
-          soilDataToSet = { ...soilDataToSet, ...normalizedExtra };
         }
 
         // 🔥 CRITICAL: Override nitrogen, phosphorus, potassium with soilN, soilP, soilK

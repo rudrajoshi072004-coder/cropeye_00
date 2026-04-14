@@ -206,7 +206,7 @@ const FertilizerTable: React.FC = () => {
     loading: profileLoading,
     error: profileError,
   } = useFarmerProfile();
-  const { selectedPlotName } = useAppContext();
+  const { getCached, selectedPlotName, setCached } = useAppContext();
 
   // Helper function to calculate months since plantation
   const calculateMonthsSincePlantation = (plantationDate: string): number => {
@@ -410,6 +410,34 @@ const FertilizerTable: React.FC = () => {
     return sevenDaysData;
   };
 
+  const applyScheduleResponse = (parsed: unknown): boolean => {
+    const next = extractScheduleDaysArray(parsed);
+    if (next === undefined) {
+      return false;
+    }
+
+    if (next.length === 0) {
+      setApiScheduleCompleted(true);
+      setData([]);
+      setGrapesScheduleMeta(null);
+      setGrapesScheduleV2(false);
+      setLocalError(null);
+      setNoFertilizerRequired(false);
+      setPlantationType(null);
+      setMonthsCompleted(null);
+      return true;
+    }
+
+    const v2 = isGrapesScheduleV2Rows(parsed, next);
+    setGrapesScheduleV2(v2);
+    setGrapesScheduleMeta(v2 ? extractGrapesScheduleMeta(parsed) : null);
+    setApiScheduleCompleted(false);
+    setData(mapGrapesScheduleNext7ToEntries(next, v2));
+    setLocalError(null);
+    setNoFertilizerRequired(false);
+    return true;
+  };
+
   useEffect(() => {
     // Wait for profile to load
     if (profileLoading) {
@@ -450,6 +478,15 @@ const FertilizerTable: React.FC = () => {
       setNoFertilizerRequired(false);
 
       try {
+        const scheduleCacheKey = `grapesSchedule_${String(plotToUse)}`;
+        const cachedSchedule = getCached(scheduleCacheKey);
+        if (cachedSchedule !== undefined && applyScheduleResponse(cachedSchedule)) {
+          if (!cancelled) {
+            setScheduleFetchLoading(false);
+          }
+          return;
+        }
+
         const base = getGrapesAdminBaseUrl();
         const url = `${base.replace(/\/+$/, "")}/grapes-schedule/${encodeURIComponent(String(plotToUse))}`;
         const controller = new AbortController();
@@ -477,36 +514,15 @@ const FertilizerTable: React.FC = () => {
           let parsed: unknown;
           try {
             parsed = await res.json();
+            setCached(scheduleCacheKey, parsed);
           } catch {
             console.warn(
               "FertilizerTable: grapes-schedule returned non-JSON body, using legacy bud.json"
             );
             parsed = undefined;
           }
-          const next = extractScheduleDaysArray(parsed);
-          if (next !== undefined) {
-            if (next.length === 0) {
-              if (!cancelled) {
-                setApiScheduleCompleted(true);
-                setData([]);
-                setGrapesScheduleMeta(null);
-                setGrapesScheduleV2(false);
-                setLocalError(null);
-                setNoFertilizerRequired(false);
-                setPlantationType(null);
-                setMonthsCompleted(null);
-                setScheduleFetchLoading(false);
-              }
-              return;
-            }
+          if (applyScheduleResponse(parsed)) {
             if (!cancelled) {
-              const v2 = isGrapesScheduleV2Rows(parsed, next);
-              setGrapesScheduleV2(v2);
-              setGrapesScheduleMeta(v2 ? extractGrapesScheduleMeta(parsed) : null);
-              setApiScheduleCompleted(false);
-              setData(mapGrapesScheduleNext7ToEntries(next, v2));
-              setLocalError(null);
-              setNoFertilizerRequired(false);
               setScheduleFetchLoading(false);
             }
             return;

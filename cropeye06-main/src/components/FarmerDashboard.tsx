@@ -2444,7 +2444,7 @@ const FarmerDashboard: React.FC = () => {
                 <div className="text-xs font-semibold text-green-600">%</div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto relative z-10">Recovery Rate</p>
+            <p className="text-xs text-gray-600 mt-auto relative z-10">Stress Events</p>
           </div>
         </div>
 

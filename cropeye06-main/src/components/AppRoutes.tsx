@@ -22,6 +22,8 @@ import { initializeTokenRefresh } from "../utils/tokenManager";
 import { USE_MOCK_AUTH } from "../config/authConfig";
 import { setNavigationCallback, resetRedirectFlag } from "../utils/navigation";
 import { GATEWAY_URL } from "../utils/gatewayAuth";
+import { clearAllCache } from "../components/utils/cache";
+import { useAppContext } from "../context/AppContext";
 
 const getGatewayOrigin = () => {
   try {
@@ -74,6 +76,7 @@ export type UserRole =
 
 const AppRoutesContent: React.FC = () => {
   const navigate = useNavigate();
+  const { clearApiCache } = useAppContext();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -325,14 +328,8 @@ const AppRoutesContent: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Clear API cache from localStorage
-    try {
-      localStorage.removeItem('apiDataCache');
-      localStorage.removeItem('apiDataCacheTimestamp');
-      console.log('✅ API cache cleared on logout');
-    } catch (error) {
-      console.warn('Failed to clear API cache on logout:', error);
-    }
+    clearApiCache();
+    clearAllCache();
     
     // Clear ALL localStorage data (auth, cache, app state, etc.)
     clearAllLocalStorage();

@@ -31,7 +31,6 @@ const isOnGatewayPath = () => {
 export function requireGatewayAuth(): void {
   const token = getAuthToken();
   if (!token) {
-    // In prod we serve all apps under same origin, so use pathname check.
     if (window.location.origin !== getGatewayOrigin() || !isOnGatewayPath()) {
       window.location.assign(getGatewayLoginUrl(true));
     }
@@ -40,7 +39,5 @@ export function requireGatewayAuth(): void {
 
 export function gatewayLogout(): void {
   clearAllLocalStorage();
-  // Always redirect unless we're already on gateway login.
   if (!isOnGatewayPath()) window.location.assign(getGatewayLoginUrl(true));
 }
-

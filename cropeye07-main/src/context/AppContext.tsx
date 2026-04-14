@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef } from "react";
 import { getCache, setCache, clearAllAppCache } from "../components/utils/cache";
 
 // Define a generic cache type
@@ -41,18 +41,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   });
   const [globalCache, setGlobalCache] = useState<GlobalCache>({});
+  const globalCacheRef = useRef<GlobalCache>(globalCache);
+  globalCacheRef.current = globalCache;
 
-  // Helper to get from cache (context first, then localStorage)
-  const getCached = (key: string, maxAgeMs?: number) => {
-    if (globalCache[key]) return globalCache[key];
+  // Stable helpers so effects that list them do not re-run every render.
+  const getCached = useCallback((key: string, maxAgeMs?: number) => {
+    const mem = globalCacheRef.current[key];
+    if (mem !== undefined && mem !== null) return mem;
     return getCache(key, maxAgeMs);
-  };
+  }, []);
 
-  // Helper to set cache (context and localStorage)
-  const setCached = (key: string, data: any) => {
-    setGlobalCache((prev) => ({ ...prev, [key]: data }));
+  const setCached = useCallback((key: string, data: any) => {
+    setGlobalCache((prev) => {
+      const next = { ...prev, [key]: data };
+      globalCacheRef.current = next;
+      return next;
+    });
     setCache(key, data);
-  };
+  }, []);
 
   // Global plot selection handler
   const setSelectedPlotName = (plotName: string | null) => {
@@ -65,11 +71,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Clear all in-memory state and cache (used on logout so Soil Analysis, Fertilizer, etc. don't show previous user's data)
-  const clearAppStateOnLogout = () => {
+  const clearAppStateOnLogout = useCallback(() => {
     setAppState({ selectedPlotName: null });
+    globalCacheRef.current = {};
     setGlobalCache({});
     clearAllAppCache();
-  };
+  }, []);
 
   return (
     <AppContext.Provider

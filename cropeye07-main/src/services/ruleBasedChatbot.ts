@@ -4,7 +4,41 @@
  * No specific values/indices revealed - generic responses only
  */
 
-export type Language = 'marathi' | 'hindi' | 'english';
+export type Language = 'marathi' | 'hindi' | 'english' | 'kannada';
+
+/** Chat header `language` values sent to the API: mr | hi | en | kn */
+export type ChatLocaleCode = 'mr' | 'hi' | 'en' | 'kn';
+
+/**
+ * Static greeting after language selection — text only (no TTS in the chatbot).
+ */
+export const getWelcomeMessageByChatLocale = (
+  locale: ChatLocaleCode,
+): { text: string; language: Language } => {
+  switch (locale) {
+    case 'mr':
+      return {
+        text: 'तुमच्या स्मार्ट शेती सहाय्यकामध्ये तुमचं स्वागत आहे.\nमी तुम्हाला पिकांचे दर, हवामान माहिती आणि शेतीसंबंधित सल्ला देण्यासाठी येथे आहे. 🌱\nआज मी तुमची कशी मदत करू शकतो?',
+        language: 'marathi',
+      };
+    case 'hi':
+      return {
+        text: 'आपके स्मार्ट खेती सहायक में आपका स्वागत है।\nमैं आपको फसल के दाम, मौसम की जानकारी और खेती से जुड़ी सलाह देने के लिए यहाँ हूँ। 🌱\nआज मैं आपकी कैसे मदद कर सकता हूँ?',
+        language: 'hindi',
+      };
+    case 'kn':
+      return {
+        text: 'ನಿಮ್ಮ ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಸಹಾಯಕಕ್ಕೆ ಸ್ವಾಗತ.\nನಾನು ಬೆಳೆ ಬೆಲೆ, ಹವಾಮಾನ ಮಾಹಿತಿ ಮತ್ತು ಕೃಷಿ ಸಲಹೆ ನೀಡಲು ಇಲ್ಲಿ ಇದ್ದೇನೆ. 🌱\nಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?',
+        language: 'kannada',
+      };
+    case 'en':
+    default:
+      return {
+        text: "Welcome to your smart farming assistant.\nI'm here to help you with crop prices, weather updates, and farming advice. 🌱\nHow can I assist you today?",
+        language: 'english',
+      };
+  }
+};
 export type UserRole = 'farmer' | 'manager' | 'fieldofficer' | 'owner' | 'admin';
 
 export interface ChatRule {
@@ -226,7 +260,7 @@ export const CHATBOT_RULES: ChatRule[] = [
 /**
  * Detect language from text
  */
-export const detectLanguage = (text: string): Language => {
+export const detectLanguage = (text: string): 'marathi' | 'hindi' | 'english' => {
   const devanagariPattern = /[\u0900-\u097F]/;
   
   if (devanagariPattern.test(text)) {
@@ -293,7 +327,7 @@ export const getChatbotResponse = (query: string, userRole?: UserRole): { text: 
 /**
  * Get TTS language code - Always returns Indian Marathi
  */
-export const getTTSLanguageCode = (language: Language): string => {
+export const getTTSLanguageCode = (_language: Language): string => {
   // Always use Indian Marathi (mr-IN) for speech
   return 'mr-IN';
 };

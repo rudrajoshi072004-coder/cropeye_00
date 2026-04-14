@@ -178,7 +178,12 @@ const SoilMoistureCard: React.FC<SoilMoistureCardProps> = ({
     try {
       setLoading(true);
       setError(null);
-      const stack = await fetchSoilMoistureStack(plotName);
+      const rawCacheKey = `soilMoistureStack_${plotName}`;
+      const cachedStack = getCached(rawCacheKey);
+      const stack = cachedStack || await fetchSoilMoistureStack(plotName);
+      if (!cachedStack) {
+        setCached(rawCacheKey, stack);
+      }
       console.log(`✅ SoilMoistureCard: Received stack data:`, stack);
       
       const arr = Array.isArray(stack.soil_moisture_stack) ? stack.soil_moisture_stack : [];

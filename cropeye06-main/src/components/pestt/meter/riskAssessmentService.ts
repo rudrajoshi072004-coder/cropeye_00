@@ -230,10 +230,42 @@ export function resolveDiseaseRecord(name: string): Disease {
 /** Resolve API weed name to weedsData row or stub. */
 export function resolveWeedRecord(name: string): Weed {
   const t = name.trim();
+  const normalize = (v: string) =>
+    v
+      .toLowerCase()
+      .replace(/[–—-]/g, ' ')
+      .replace(/\(.*?\)/g, ' ')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const aliases: Record<string, string> = {
+    'congress grass': 'congress grass',
+    'gajar gavat': 'congress grass',
+    'pigweed': 'math',
+    'math': 'math',
+    'doob grass': 'hararali',
+    'harali': 'hararali',
+    'hararali': 'hararali',
+    'dudhi': 'dudhi',
+    'chiktya': 'chiktya',
+  };
+
   const exact = weedsData.find((w) => w.name === t);
   if (exact) return exact;
   const ci = weedsData.find((w) => w.name.toLowerCase() === t.toLowerCase());
   if (ci) return ci;
+  const normalizedInput = normalize(t);
+  if (normalizedInput) {
+    const normalizedExact = weedsData.find((w) => normalize(w.name) === normalizedInput);
+    if (normalizedExact) return normalizedExact;
+
+    const aliasHit = Object.entries(aliases).find(([k]) => normalizedInput.includes(k))?.[1];
+    if (aliasHit) {
+      const aliasMatch = weedsData.find((w) => normalize(w.name).includes(aliasHit));
+      if (aliasMatch) return aliasMatch;
+    }
+  }
   const partial = weedsData.find(
     (w) =>
       t.toLowerCase().includes(w.name.toLowerCase()) ||
@@ -244,6 +276,14 @@ export function resolveWeedRecord(name: string): Weed {
       })
   );
   if (partial) return partial;
+  if (normalizedInput) {
+    const inputTokens = normalizedInput.split(' ').filter((x) => x.length >= 4);
+    const tokenMatch = weedsData.find((w) => {
+      const wn = normalize(w.name);
+      return inputTokens.some((tok) => wn.includes(tok));
+    });
+    if (tokenMatch) return tokenMatch;
+  }
   return createStubWeed(t);
 }
 

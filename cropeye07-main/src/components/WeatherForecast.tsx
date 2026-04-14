@@ -31,7 +31,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
   lat: propLat, 
   lon: propLon 
 }) => {
-  const { appState, setAppState, setCached, selectedPlotName } = useAppContext();
+  const { appState, setAppState, setCached, selectedPlotName, getCached } = useAppContext();
   const chartData = appState.weatherChartData || [];
   const selectedDay = appState.weatherSelectedDay || null;
   const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
@@ -58,8 +58,11 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
       try {
         setLoadingCoordinates(true);
         
-        const response = await getFarmerMyProfile();
-        const profileData = response.data;
+        let profileData = getCached("farmerProfile", 10 * 60 * 1000);
+        if (!profileData?.plots?.length) {
+          const response = await getFarmerMyProfile();
+          profileData = response.data;
+        }
         
         if (!profileData?.plots || profileData.plots.length === 0) {
           setFarmerCoordinates(null);

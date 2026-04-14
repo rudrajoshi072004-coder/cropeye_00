@@ -8,6 +8,9 @@ import {
   type ForecastCurrentWeather,
   type ForecastPeriodPrediction,
 } from '../services/weatherService';
+import { AlertFilter, AlertFilterTabs } from './notifications/AlertFilterTabs';
+import { AlertList } from './notifications/AlertList';
+import { mapBackendNotificationToAlert } from '../utils/alertMapper';
 
 type NotificationRow = {
   id: number;
@@ -24,6 +27,7 @@ type ToastItem = {
   id: number;
   message: string;
   created_at: string;
+  title?: string;
 };
 
 function isFromFieldOfficer(n: NotificationRow): boolean {
@@ -108,6 +112,58 @@ function temperatureStressLabel(temp: number | undefined): string {
   return 'No heat or frost stress';
 }
 
+function playNotificationSound(audioCtxRef: React.MutableRefObject<AudioContext | null>) {
+  try {
+    const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as
+      | typeof AudioContext
+      | undefined;
+    if (Ctx) {
+      const ctx = audioCtxRef.current ?? new Ctx();
+      audioCtxRef.current = ctx;
+      void ctx.resume?.();
+      const now = ctx.currentTime;
+
+      const playBeep = (startAt: number, freq: number) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'square';
+        o.frequency.value = freq;
+        g.gain.value = 0.0001;
+        o.connect(g);
+        g.connect(ctx.destination);
+        g.gain.setValueAtTime(0.0001, startAt);
+        g.gain.exponentialRampToValueAtTime(0.25, startAt + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.30);
+        o.start(startAt);
+        o.stop(startAt + 0.32);
+      };
+
+      playBeep(now, 880);
+      playBeep(now + 0.38, 988);
+    }
+  } catch {
+    // ignore
+  }
+}
+
+function isBrowserNotificationSupported(): boolean {
+  if (typeof window === 'undefined' || !('Notification' in window)) return false;
+  // Browser notifications are only allowed on secure origins in production.
+  return window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+}
+
+async function ensureNotificationPermission(): Promise<NotificationPermission | 'unsupported'> {
+  if (!isBrowserNotificationSupported()) return 'unsupported';
+  if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+    return Notification.permission;
+  }
+  try {
+    return await Notification.requestPermission();
+  } catch {
+    return Notification.permission;
+  }
+}
+
 function ForecastPeriodRows({
   title,
   prediction,
@@ -160,6 +216,8 @@ const FarmerInfoBar: React.FC = () => {
   const reconnectTimerRef = useRef<number | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
+  const [alertFilter, setAlertFilter] = useState<AlertFilter>('All');
+
   // Format current date
   const getCurrentDate = () => {
     const today = new Date();
@@ -189,6 +247,10 @@ const FarmerInfoBar: React.FC = () => {
     () => displayItems.filter((n) => !n.is_read).length,
     [displayItems]
   );
+  
+  const mappedAlerts = useMemo(() => {
+    return displayItems.map(mapBackendNotificationToAlert);
+  }, [displayItems]);
 
   const forecastLatLon = useMemo(
     () =>
@@ -198,6 +260,98 @@ const FarmerInfoBar: React.FC = () => {
       },
     [profile?.plots]
   );
+
+  // Initial alert notification on login
+  const alertTriggeredRef = useRef(false);
+  const permissionPromptAttachedRef = useRef(false);
+
+  const showLoginAlert = (title: string, message: string) => {
+    const alertId = Date.now();
+    playNotificationSound(audioCtxRef);
+
+    try {
+      if (isBrowserNotificationSupported() && Notification.permission === 'granted') {
+        const n = new Notification(title, {
+          body: message,
+          tag: `notif-${alertId}`,
+          silent: true,
+        });
+        window.setTimeout(() => n.close(), 6000);
+      }
+    } catch {
+      // ignore notification failures
+    }
+
+    setToasts((prev) => {
+      const next: ToastItem[] = [
+        { id: alertId, message, created_at: new Date().toISOString(), title },
+        ...prev,
+      ].slice(0, 3);
+      return next;
+    });
+
+    window.setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== alertId));
+    }, 8000);
+  };
+
+  // Ask notification permission on first user interaction (works better in deployed browsers).
+  useEffect(() => {
+    if (permissionPromptAttachedRef.current) return;
+    if (!isBrowserNotificationSupported()) return;
+    if (Notification.permission !== 'default') return;
+
+    permissionPromptAttachedRef.current = true;
+    const askPermissionOnce = () => {
+      void ensureNotificationPermission();
+      document.removeEventListener('click', askPermissionOnce);
+      document.removeEventListener('keydown', askPermissionOnce);
+      permissionPromptAttachedRef.current = false;
+    };
+
+    document.addEventListener('click', askPermissionOnce, { once: true });
+    document.addEventListener('keydown', askPermissionOnce, { once: true });
+
+    return () => {
+      document.removeEventListener('click', askPermissionOnce);
+      document.removeEventListener('keydown', askPermissionOnce);
+      permissionPromptAttachedRef.current = false;
+    };
+  }, []);
+  
+  useEffect(() => {
+    if (alertTriggeredRef.current) return;
+
+    let cancelled = false;
+    
+    fetchForecastCurrentWeather(forecastLatLon.lat, forecastLatLon.lon)
+      .then((data) => {
+        if (cancelled) return;
+        alertTriggeredRef.current = true;
+        
+        let alertMsg = `Today's Weather: ${data.temperature_c ?? '--'}°C, Humidity: ${data.humidity ?? '--'}%. Click to view.`;
+        
+        if (data.rain_alert || data.next_24h_prediction?.morning?.rain_alert) {
+          alertMsg = `Rain Expected! Temp: ${data.temperature_c ?? '--'}°C, Humidity: ${data.humidity ?? '--'}%. Click to view.`;
+        } else if ((data.temperature_c && data.temperature_c >= 35) || (data.temperature_c && data.temperature_c <= 2) || (data.humidity && data.humidity > 80)) {
+          alertMsg = `Extreme Weather (${data.temperature_c ?? '--'}°C, ${data.humidity ?? '--'}%). Click to view.`;
+        }
+        
+        showLoginAlert("Weather Alert", alertMsg);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        alertTriggeredRef.current = true;
+        showLoginAlert(
+          "Weather Alert",
+          "Weather update is temporarily unavailable. Open alerts to view latest notifications."
+        );
+      });
+      
+    return () => {
+      cancelled = true;
+    };
+  }, [forecastLatLon.lat, forecastLatLon.lon]);
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -254,44 +408,12 @@ const FarmerInfoBar: React.FC = () => {
   };
 
   const pushIncomingNotification = (notif: NotificationRow) => {
-    // Sound (loud double-beep). Works without any audio file.
-    try {
-      const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as
-        | typeof AudioContext
-        | undefined;
-      if (Ctx) {
-        const ctx = audioCtxRef.current ?? new Ctx();
-        audioCtxRef.current = ctx;
-        void ctx.resume?.();
-        const now = ctx.currentTime;
-
-        const playBeep = (startAt: number, freq: number) => {
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'square';
-          o.frequency.value = freq;
-          g.gain.value = 0.0001;
-          o.connect(g);
-          g.connect(ctx.destination);
-          g.gain.setValueAtTime(0.0001, startAt);
-          // Louder + slightly longer than before
-          g.gain.exponentialRampToValueAtTime(0.25, startAt + 0.02);
-          g.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.30);
-          o.start(startAt);
-          o.stop(startAt + 0.32);
-        };
-
-        // Two quick beeps
-        playBeep(now, 880);
-        playBeep(now + 0.38, 988);
-      }
-    } catch {
-      // ignore sound failures (autoplay restrictions, etc.)
-    }
+    // Sound
+    playNotificationSound(audioCtxRef);
 
     // Native browser notification (permission required)
     try {
-      if ('Notification' in window && Notification.permission === 'granted') {
+      if (isBrowserNotificationSupported() && Notification.permission === 'granted') {
         const title = notif.task_title ? `Task assigned: ${notif.task_title}` : 'New notification';
         const n = new Notification(title, {
           body: notif.message,
@@ -474,7 +596,7 @@ const FarmerInfoBar: React.FC = () => {
               title="Open alerts"
             >
               <div className="notif-toast-top">
-                <div className="notif-toast-title">New message</div>
+                <div className="notif-toast-title">{t.title || 'New message'}</div>
                 <div className="notif-toast-cta">View</div>
               </div>
               <div className="notif-toast-msg">{t.message}</div>
@@ -503,13 +625,7 @@ const FarmerInfoBar: React.FC = () => {
               className="notif-btn"
               title="Notifications"
               onClick={async () => {
-                if ('Notification' in window && Notification.permission === 'default') {
-                  try {
-                    await Notification.requestPermission();
-                  } catch {
-                    // ignore
-                  }
-                }
+                await ensureNotificationPermission();
                 setOpen((p) => !p);
               }}
               aria-haspopup="dialog"
@@ -582,18 +698,20 @@ const FarmerInfoBar: React.FC = () => {
                           </div>
                           <ForecastPeriodRows title="24 hrs prediction" prediction={forecast.next_24h_prediction} />
                           <ForecastPeriodRows title="48 hrs prediction" prediction={forecast.next_48h_prediction} />
-                          {typeof forecast.humidity === 'number' && forecast.humidity > 80 ? (
-                            <div className="notif-weather-pill notif-weather-pill-warn">
+                          {typeof forecast.humidity === 'number' ? (
+                            <div className={`notif-weather-pill ${forecast.humidity > 80 ? 'notif-weather-pill-warn' : ''}`}>
                               <span className="notif-weather-pill-label">Humidity</span>
-                              <span className="notif-weather-pill-value">High humidity</span>
+                              <span className="notif-weather-pill-value">{forecast.humidity}% {forecast.humidity > 80 ? '(High)' : ''}</span>
                             </div>
                           ) : null}
-                          <div className="notif-weather-pill notif-weather-pill-temp">
-                            <span className="notif-weather-pill-label">Temperature</span>
-                            <span className="notif-weather-pill-value">
-                              {temperatureStressLabel(forecast.temperature_c)}
-                            </span>
-                          </div>
+                          {typeof forecast.temperature_c === 'number' ? (
+                            <div className={temperatureStressLabel(forecast.temperature_c) === 'No heat or frost stress' ? "notif-weather-pill notif-weather-pill-temp" : "notif-weather-pill notif-weather-pill-warn"}>
+                              <span className="notif-weather-pill-label">Temperature</span>
+                              <span className="notif-weather-pill-value">
+                                {forecast.temperature_c}°C ({temperatureStressLabel(forecast.temperature_c)})
+                              </span>
+                            </div>
+                          ) : null}
                         </>
                       ) : (
                         <div className="notif-weather-alerts-muted">No alerts</div>
@@ -602,40 +720,29 @@ const FarmerInfoBar: React.FC = () => {
                   </div>
                 ) : null}
 
-                <div className="notif-list">
-                  {loading ? (
-                    <div className="notif-empty">Loading…</div>
-                  ) : displayItems.length === 0 ? (
-                    <div className="notif-empty">No notifications</div>
-                  ) : (
-                    displayItems.map((n) => {
-                      const shouldNavigate =
-                        isTaskLikeNotification(n) || isTaskFromFieldOfficer(n);
-                      return (
-                        <button
-                          key={n.id}
-                          type="button"
-                          className="notif-item notif-item-click"
-                          onClick={() => {
-                            if (!shouldNavigate) return;
-                            // Navigate to My Task Checklist
+                <div className="flex flex-col bg-white">
+                  <AlertFilterTabs currentFilter={alertFilter} onFilterChange={setAlertFilter} />
+                  <div className="relative">
+                    {loading ? (
+                      <div className="notif-empty">Loading…</div>
+                    ) : (
+                      <AlertList
+                        alerts={mappedAlerts}
+                        filter={alertFilter}
+                        onRead={(id) => {
+                          const item = items.find(i => i.id === id);
+                          if (item && (isTaskLikeNotification(item) || isTaskFromFieldOfficer(item))) {
                             window.dispatchEvent(
                               new CustomEvent("cropeye:navigate", {
                                 detail: { menu: "ViewList" },
                               })
                             );
                             setOpen(false);
-                          }}
-                          title={shouldNavigate ? "Open My Task Checklist" : undefined}
-                        >
-                          <div className="notif-item-msg">{n.message}</div>
-                          <div className="notif-item-meta">
-                            {new Date(n.created_at).toLocaleString()}
-                          </div>
-                        </button>
-                      );
-                    })
-                  )}
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             ) : null}

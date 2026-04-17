@@ -959,7 +959,7 @@ const OwnerFarmDash: React.FC = () => {
         fieldOfficersTmp.length === 0
       ) {
         const response = await api.get(
-          `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backend.up.railway.app/api"}/users/owner-hierarchy/`,
+          `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backendd.up.railway.app/api"}/users/owner-hierarchy/`,
         );
         const responseData = response.data;
 
@@ -1024,7 +1024,7 @@ const OwnerFarmDash: React.FC = () => {
         void (async () => {
           try {
             const response = await api.get(
-              `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backend.up.railway.app/api"}/users/owner-hierarchy/`,
+              `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backendd.up.railway.app/api"}/users/owner-hierarchy/`,
             );
             if (hierarchyRequestIdRef.current !== requestId) return;
 
@@ -1609,7 +1609,7 @@ const OwnerFarmDash: React.FC = () => {
               <pre className="text-xs text-green-300 font-mono">
                 {JSON.stringify(
                   {
-                    endpoint: `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backend.up.railway.app/api"}/farms/recent-farmers/`,
+                    endpoint: `${import.meta.env.VITE_API_BASE_URL || "https://cropeye-backendd.up.railway.app/api"}/farms/recent-farmers/`,
                     method: "GET",
                     bearerToken: localStorage.getItem("token")
                       ? "✅ Present"

@@ -24,7 +24,7 @@ const ParentComponent: React.FC = () => {
 
   // Fetch initial stocks from the API (you can modify this if your API supports it)
   useEffect(() => {
-    fetch("https://cropeye-backend.up.railway.app/api/Stocklist")
+    fetch("https://cropeye-backendd.up.railway.app/api/Stocklist")
       .then((response) => response.json())
       .then((data) => setStocks(data))
       .catch((error) => console.error("Error fetching stock data:", error));

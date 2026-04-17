@@ -13,7 +13,7 @@ import { gatewayLogout } from "./utils/gatewayAuth";
 // Set base URL for backend (use .env VITE_API_BASE_URL or new Render backend)
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://cropeye-backend.up.railway.app/api";
+  "https://cropeye-backendd.up.railway.app/api";
 
 // KML/GeoJSON API URL
 const KML_API_URL = "http://192.168.41.51";

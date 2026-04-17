@@ -11,12 +11,12 @@ import { checkAndRefreshToken, isTokenExpired, decodeToken } from "./utils/token
 import { navigateToLogin } from "./utils/navigation";
 
 // Use direct API URL - CORS is handled on the backend
-// API Base URL: https://cropeye-backend.up.railway.app/
+// API Base URL: https://cropeye-backendd.up.railway.app/
 const getBaseURL = () => {
   const raw = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
   // In production we must call the backend API host (NOT the Render frontend host),
   // otherwise you'll get CORS / 404 issues.
-  const fallbackHost = "https://cropeye-backend.up.railway.app";
+  const fallbackHost = "https://cropeye-backendd.up.railway.app";
 
   // If someone accidentally sets VITE_API_BASE_URL to the frontend host (onrender),
   // ignore it in production.
@@ -37,15 +37,15 @@ const getBaseURL = () => {
 
 const BASE_URLS = [
   getBaseURL(), // Primary: direct API URL
-  "https://cropeye-backend.up.railway.app/api/", // Fallback 1
-  "https://cropeye-backend.up.railway.app/api", // Fallback 2
+  "https://cropeye-backendd.up.railway.app/api/", // Fallback 1
+  "https://cropeye-backendd.up.railway.app/api", // Fallback 2
   "http://192.168.41.67:8002/api/", // Fallback 3
 ];
 let BASE_INDEX = 0;
 const API_BASE_URL = BASE_URLS[BASE_INDEX];
 
 // KML/GeoJSON API URL
-const KML_API_URL = "https://cropeye-backend.up.railway.app";
+const KML_API_URL = "https://cropeye-backendd.up.railway.app";
 
 // Create axios instance with increased timeout to prevent session timeouts
 // 5 minutes (300000ms) timeout for slow APIs
@@ -1236,7 +1236,7 @@ export const registerFarmerAllInOne = async (data: {
     }
 
     // Use authenticated API for registration
-    // MUST hit: /api/farms/register-farmer/grapes/ on https://cropeye-backend.up.railway.app
+    // MUST hit: /api/farms/register-farmer/grapes/ on https://cropeye-backendd.up.railway.app
     const response = await api.post("/farms/register-farmer/grapes/", data);
     return response;
   } catch (error: any) {
@@ -1264,7 +1264,7 @@ export const registerFarmerAllInOne = async (data: {
 };
 
 // Upload Grapes Report (Photos/Residue)
-// POST https://cropeye-backend.up.railway.app
+// POST https://cropeye-backendd.up.railway.app
 // api/grapse-reports/
 // Returns: { id, plot, file_type, file (URL), uploaded_by, field_officer, notes, uploaded_at }
 export const uploadGrapesReport = async (

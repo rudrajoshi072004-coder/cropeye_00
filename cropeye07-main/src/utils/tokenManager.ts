@@ -11,7 +11,7 @@ import { gatewayLogout } from "./gatewayAuth";
 // Get API base URL from environment or use default
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://cropeye-backend.up.railway.app/api";
+  "https://cropeye-backendd.up.railway.app/api";
 
 interface DecodedToken {
   exp: number;

@@ -22,7 +22,7 @@ This document provides a comprehensive list of all API endpoints used in the Cro
 
 ## Main Backend API
 
-**Base URL:** `https://cropeye-backend.up.railway.app/api`  
+**Base URL:** `https://cropeye-backendd.up.railway.app/api`  
 **Alternative:** Configured via `VITE_API_BASE_URL` environment variable
 
 ### Authentication Endpoints
@@ -411,7 +411,7 @@ Some components reference local endpoints for testing:
 
 ## Notes
 
-1. **Base URL Configuration:** The main API base URL can be configured via `VITE_API_BASE_URL` environment variable. Default is `https://cropeye-backend.up.railway.app/api`.
+1. **Base URL Configuration:** The main API base URL can be configured via `VITE_API_BASE_URL` environment variable. Default is `https://cropeye-backendd.up.railway.app/api`.
 
 2. **Token Refresh:** The application implements automatic token refresh. If a token expires, it attempts to refresh using the refresh token before retrying the request.
 

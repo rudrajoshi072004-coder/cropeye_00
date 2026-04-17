@@ -22,7 +22,7 @@ export const FarmerList: React.FC = () => {
 
   // Fetch all farmer tasks from API
   useEffect(() => {
-    fetch("https://cropeye-backend.up.railway.app/api/fieldofficertasks")
+    fetch("https://cropeye-backendd.up.railway.app/api/fieldofficertasks")
       .then((res) => res.json())
       .then((data) => {
         const mappedTasks = data.map((task: any) => ({
@@ -74,7 +74,7 @@ export const FarmerList: React.FC = () => {
 
     // Update status in API
     fetch(
-      `https://cropeye-backend.up.railway.app/api/fieldofficertasks/${taskId}`,
+      `https://cropeye-backendd.up.railway.app/api/fieldofficertasks/${taskId}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

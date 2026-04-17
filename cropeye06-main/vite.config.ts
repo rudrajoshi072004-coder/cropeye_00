@@ -198,19 +198,19 @@ export default defineConfig(({ mode }) => ({
       },
       // Proxy for backend API (main API server)
       '/api/backend/ws': {
-        target: 'https://cropeye-backend.up.railway.app',
+        target: 'https://cropeye-backendd.up.railway.app',
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/api\/backend\/ws/, '/ws'),
       },
       // Proxy for backend REST API (main API server)
       '/api/backend': {
-        target: 'https://cropeye-backend.up.railway.app',
+        target: 'https://cropeye-backendd.up.railway.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/backend/, '/api'),
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            proxyReq.setHeader('Origin', 'https://cropeye-backend.up.railway.app');
+            proxyReq.setHeader('Origin', 'https://cropeye-backendd.up.railway.app');
           });
 
           proxy.on('proxyRes', (proxyRes, req, _res) => {

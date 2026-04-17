@@ -12,7 +12,7 @@ import axios from "axios";
 // Get API base URL from environment or use default
 const getApiBaseUrl = () => {
   const raw = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
-  const base = raw && raw.length ? raw : "https://cropeye-backend.up.railway.app";
+  const base = raw && raw.length ? raw : "https://cropeye-backendd.up.railway.app";
   const withoutTrailing = base.replace(/\/+$/, "");
   const withApi = /\/api$/i.test(withoutTrailing) ? withoutTrailing : `${withoutTrailing}/api`;
   return withApi;

@@ -74,7 +74,7 @@ server {
     proxy_ssl_name cropeye-backend.up.railway.app;
     proxy_read_timeout 3600s;
     proxy_send_timeout 3600s;
-    proxy_pass https://cropeye-backend.up.railway.app/ws/;
+    proxy_pass https://cropeye-backendd.up.railway.app/ws/;
   }
 
   # Backend REST API (same-origin) — notifications, mark-all-read, etc.
@@ -86,7 +86,7 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_ssl_server_name on;
     proxy_ssl_name cropeye-backend.up.railway.app;
-    proxy_pass https://cropeye-backend.up.railway.app/api/;
+    proxy_pass https://cropeye-backendd.up.railway.app/api/;
   }
 
   # Weather APIs (same-origin) — avoids hosted CORS for alerts panel.

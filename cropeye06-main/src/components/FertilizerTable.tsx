@@ -617,10 +617,26 @@ const FertilizerTable: React.FC = () => {
         throw new Error("No farms found for the current plot");
       }
 
-      // Get the first farm from the selected plot
-      const firstFarm = selectedPlot.farms?.[0];
+      const getFarmPlantingMethod = (farm: any): string | undefined => {
+        return (
+          farm?.crop_type?.planting_method ||
+          farm?.crop_type?.planting_method_display ||
+          farm?.planting_method ||
+          farm?.planting_method_display
+        );
+      };
 
-      if (!firstFarm) {
+      // Prefer a farm that has both plantation date and planting method.
+      // Some plots can have multiple farms and the first one may be incomplete.
+      const firstFarm = selectedPlot.farms?.[0];
+      const farmForSchedule =
+        selectedPlot.farms.find(
+          (farm: any) => farm?.plantation_date && getFarmPlantingMethod(farm)
+        ) ||
+        selectedPlot.farms.find((farm: any) => farm?.plantation_date) ||
+        firstFarm;
+
+      if (!farmForSchedule) {
         throw new Error("No farm data found for the selected plot");
       }
 
@@ -631,32 +647,34 @@ const FertilizerTable: React.FC = () => {
 
       // Extract plantation_date - primary location from API response
       // No fallback - must have actual plantation_date from API
-      const plantationDate = firstFarm.plantation_date; // Primary: farms[].plantation_date
+      const plantationDate = farmForSchedule.plantation_date; // Primary: farms[].plantation_date
 
       // Extract plantation_type from crop_type - primary location from API response
       const plantationTypeValue =
-        firstFarm.crop_type?.plantation_type || // Primary: farms[].crop_type.plantation_type (e.g., "ratoon")
-        firstFarm.crop_type?.plantation_type_display; // Alternative: farms[].crop_type.plantation_type_display (e.g., "Ratoon")
+        farmForSchedule.crop_type?.plantation_type || // Primary: farms[].crop_type.plantation_type (e.g., "ratoon")
+        farmForSchedule.crop_type?.plantation_type_display; // Alternative: farms[].crop_type.plantation_type_display (e.g., "Ratoon")
 
       console.log("FertilizerTable: Extracted farm data from API response", {
         fastapi_plot_id: selectedPlot.fastapi_plot_id,
-        plantation_date: firstFarm.plantation_date,
+        selected_farm_id: farmForSchedule.id,
+        selected_farm_uid: farmForSchedule.farm_uid,
+        plantation_date: farmForSchedule.plantation_date,
         plantationDate: plantationDate,
-        plantation_type: firstFarm.crop_type?.plantation_type,
-        plantation_type_display: firstFarm.crop_type?.plantation_type_display,
+        plantation_type: farmForSchedule.crop_type?.plantation_type,
+        plantation_type_display: farmForSchedule.crop_type?.plantation_type_display,
         plantationTypeValue: plantationTypeValue,
-        planting_method: firstFarm.crop_type?.planting_method,
-        planting_method_display: firstFarm.crop_type?.planting_method_display,
-        crop_type_object: firstFarm.crop_type,
-        fullFarmData: firstFarm,
+        planting_method: farmForSchedule.crop_type?.planting_method,
+        planting_method_display: farmForSchedule.crop_type?.planting_method_display,
+        crop_type_object: farmForSchedule.crop_type,
+        fullFarmData: farmForSchedule,
       });
 
       setPlantationType(plantationTypeValue || null);
 
       if (!plantationDate) {
         console.error("FertilizerTable: Plantation date not found", {
-          farmData: firstFarm,
-          availableFields: Object.keys(firstFarm),
+          farmData: farmForSchedule,
+          availableFields: Object.keys(farmForSchedule),
         });
         throw new Error(
           "Plantation date not found in farm data. Please ensure plantation date is set for this farm."
@@ -744,21 +762,23 @@ const FertilizerTable: React.FC = () => {
 
       // Extract planting_method from crop_type (only needed if fertilizer is still required)
       // API path: plots[].farms[].crop_type.planting_method (e.g., "2_bud")
-      const plantingMethod =
-        firstFarm.crop_type?.planting_method || // Primary: farms[].crop_type.planting_method (e.g., "2_bud")
-        firstFarm.crop_type?.planting_method_display || // Alternative: farms[].crop_type.planting_method_display (e.g., "2 Bud Method")
-        (firstFarm as any).planting_method || // Some backends send at farm root
-        (firstFarm as any).planting_method_display; // Some backends send at farm root
+      const plantingMethod = getFarmPlantingMethod(farmForSchedule);
 
       if (!plantingMethod) {
         console.error(
           "FertilizerTable: Planting method not found in API response",
           {
             fastapi_plot_id: selectedPlot.fastapi_plot_id,
-            farm_id: firstFarm.id,
-            farm_uid: firstFarm.farm_uid,
-            crop_type: firstFarm.crop_type,
-            availableFields: Object.keys(firstFarm),
+            farm_id: farmForSchedule.id,
+            farm_uid: farmForSchedule.farm_uid,
+            crop_type: farmForSchedule.crop_type,
+            availableFields: Object.keys(farmForSchedule),
+            farms_inspected: selectedPlot.farms.map((farm: any) => ({
+              farm_id: farm?.id,
+              farm_uid: farm?.farm_uid,
+              has_plantation_date: Boolean(farm?.plantation_date),
+              has_planting_method: Boolean(getFarmPlantingMethod(farm)),
+            })),
           }
         );
         throw new Error(
@@ -767,8 +787,8 @@ const FertilizerTable: React.FC = () => {
       }
 
       console.log("FertilizerTable: Extracted planting method", {
-        planting_method: firstFarm.crop_type?.planting_method,
-        planting_method_display: firstFarm.crop_type?.planting_method_display,
+        planting_method: farmForSchedule.crop_type?.planting_method,
+        planting_method_display: farmForSchedule.crop_type?.planting_method_display,
         extractedMethod: plantingMethod,
       });
 
@@ -780,10 +800,10 @@ const FertilizerTable: React.FC = () => {
         plantationType: plantationTypeValue,
         monthsCompleted: monthsSincePlantation,
         farmData: {
-          farm_id: firstFarm.id,
-          farm_uid: firstFarm.farm_uid,
-          plantation_date: firstFarm.plantation_date,
-          crop_type: firstFarm.crop_type,
+          farm_id: farmForSchedule.id,
+          farm_uid: farmForSchedule.farm_uid,
+          plantation_date: farmForSchedule.plantation_date,
+          crop_type: farmForSchedule.crop_type,
         },
       });
 

@@ -2,14 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100vh;
+  height: auto;
+  min-height: 100dvh;
   min-height: 600px;
   width: 100% !important;
   max-width: 100% !important;
   padding: 10px;
   box-sizing: border-box;
   overflow-x: hidden !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
 }
 
 .controls-header {
@@ -52,6 +53,7 @@
 .layer-buttons {
   display: flex !important;
   gap: 10px;
+  flex-wrap: wrap;
   visibility: visible !important;
   width: 100%;
   max-width: 100%;
@@ -78,6 +80,14 @@
   display: inline-block !important;
 }
 
+@media (max-width: 768px) {
+  .layer-buttons button {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 120px;
+    text-align: center;
+  }
+}
+
 .layer-buttons button:hover:not(:disabled) {
   background: #ddd;
 }
@@ -99,7 +109,7 @@
   width: 100%;
   max-width: 100%;
   height: 100%;
-  min-height: 600px;
+  min-height: 420px;
   min-width: 0;
   background: transparent;
   box-sizing: border-box;
@@ -114,6 +124,12 @@
   margin: 0 auto;
   padding: 0 1rem;
   box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .map-content-container {
+    padding: 0 0.5rem;
+  }
 }
 
 /* Map section aligned with Crop Health Analysis card (2/3 of grid + 1 gap - 10px) */

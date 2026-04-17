@@ -1826,7 +1826,7 @@ const FarmerDashboard: React.FC = () => {
       <div className="max-w-7xl space-y-4" style={{
         width: '100%',
         maxWidth: '1280px',
-        minWidth: '320px',
+        minWidth: 0,
         boxSizing: 'border-box',
         margin: '0 auto',
         padding: '0'
@@ -1834,14 +1834,14 @@ const FarmerDashboard: React.FC = () => {
         {/* Plot Selector */}
         {profile && !profileLoading && (
           <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <label className="font-semibold text-gray-700 whitespace-nowrap">Select Plot:</label>
               <select
                 value={selectedPlotName || ""}
                 onChange={(e) => {
                   setSelectedPlotName(e.target.value);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px] w-auto max-w-xs"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto min-w-0 sm:min-w-[200px] max-w-full sm:max-w-xs"
               >
                 {profile.plots?.map(plot => {
                   let displayName = '';
@@ -2384,67 +2384,75 @@ const FarmerDashboard: React.FC = () => {
           />
         </div>
 
-        {/* Secondary Metrics Grid */}
+        {/* Secondary Metrics Grid — shared icon slot keeps illustrations aligned */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-emerald-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" />
-            <div className="flex items-start justify-end mb-2 relative z-10">
-              <div className="text-right">
-                <div className="text-lg font-bold text-gray-800">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 pt-0.5 pb-3 sm:px-5 sm:pt-1 sm:pb-4 border border-emerald-200 hover:shadow-xl transition-all duration-300 flex flex-col h-[140px] overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div className="flex flex-1 items-center justify-between gap-3 min-h-0">
+              <div className="-ml-1 mt-1 sm:-ml-1.5 sm:mt-1.5 flex h-[6.75rem] w-[6.75rem] shrink-0 items-center justify-start sm:h-[7.75rem] sm:w-[7.75rem]">
+                <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="max-h-full max-w-full object-contain object-left pointer-events-none select-none" />
+              </div>
+              <div className="flex w-[88px] sm:w-[96px] shrink-0 flex-col items-end justify-center text-right">
+                <div className="text-[30px] font-bold tabular-nums leading-none text-gray-800 sm:text-[34px]">
                   {metrics.organicCarbonDensity != null &&
                   Number.isFinite(Number(metrics.organicCarbonDensity))
                     ? Number(metrics.organicCarbonDensity).toFixed(2)
                     : "-"}
                 </div>
-                <div className="text-xs font-semibold text-emerald-600">
+                <div className="mt-1 text-base font-semibold leading-none text-emerald-600 sm:text-lg">
                   g/cm{"\u00B3"}
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto relative z-10">Organic Carbon Density</p>
+            <p className="text-xs text-gray-600 mt-auto pt-1">Organic Carbon Density</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <img src="/Image/crop images/Biomass.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
-            <div className="flex items-start justify-end mb-2 relative z-10">
-              <div className="text-right">
-                <div className="text-lg font-bold text-gray-800">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 pt-0.5 pb-3 sm:px-5 sm:pt-1 sm:pb-4 border border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col h-[140px] overflow-hidden relative" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div className="flex flex-1 items-center justify-between gap-3 min-h-0">
+              <div className="-ml-1 mt-0.5 sm:-ml-1.5 sm:mt-1 flex h-full w-[6.75rem] shrink-0 items-stretch justify-start sm:w-[7.75rem] absolute left-3 top-0 z-0">
+                <img src="/Image/crop images/Biomass.png" alt="" aria-hidden className="h-full w-auto object-fill object-left pointer-events-none select-none" />
+              </div>
+              <div className="flex w-[88px] sm:w-[96px] shrink-0 flex-col items-end justify-center text-right relative z-10 ml-auto">
+                <div className="text-[30px] font-bold tabular-nums leading-none text-gray-800 sm:text-[34px]">
                   {totalBiomass?.toFixed(1) || "-"}
                 </div>
-                <div className="text-xs font-semibold text-purple-600">
+                <div className="mt-1 text-base font-semibold leading-none text-purple-600 sm:text-lg">
                   T/acre
                 </div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto relative z-10">Total Biomass</p>
+            <p className="text-xs text-gray-600 mt-auto pt-1">Total Biomass</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-yellow-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
-            <div className="flex items-start justify-end mb-2 relative z-10">
-              <div className="text-right">
-                <div className="text-lg font-bold text-gray-800">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 pt-0.5 pb-3 sm:px-5 sm:pt-1 sm:pb-4 border border-yellow-200 hover:shadow-xl transition-all duration-300 flex flex-col h-[140px] overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div className="flex flex-1 items-center justify-between gap-3 min-h-0">
+              <div className="-ml-1 mt-1 sm:-ml-1.5 sm:mt-1.5 flex h-[6.75rem] w-[6.75rem] shrink-0 items-center justify-start sm:h-[7.75rem] sm:w-[7.75rem]">
+                <img src="/Image/crop images/Organic Carbon.png" alt="" aria-hidden className="max-h-full max-w-full object-contain object-left pointer-events-none select-none" />
+              </div>
+              <div className="flex w-[88px] sm:w-[96px] shrink-0 flex-col items-end justify-center text-right">
+                <div className="text-[30px] font-bold tabular-nums leading-none text-gray-800 sm:text-[34px]">
                   {metrics.soilPH != null && Number.isFinite(Number(metrics.soilPH))
                     ? Number(metrics.soilPH).toFixed(2)
                     : "-"}
                 </div>
-                <div className="text-xs font-semibold text-yellow-600">pH</div>
+                <div className="mt-1 text-base font-semibold leading-none text-yellow-600 sm:text-lg">pH</div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto relative z-10">Soil pH Level</p>
+            <p className="text-xs text-gray-600 mt-auto pt-1">Soil pH Level</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-5 border border-green-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', minHeight: '140px', height: '100%' }}>
-            <img src="/Image/crop images/yield.png" alt="" aria-hidden className="absolute left-4 top-4 w-24 h-24 sm:w-28 sm:h-28 object-contain z-0 pointer-events-none select-none" style={{ maxWidth: '100%', height: 'auto' }} />
-            <div className="flex items-start justify-end mb-2 relative z-10">
-              <div className="text-right">
-                <div className="text-lg font-bold text-gray-800">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 pt-0.5 pb-3 sm:px-5 sm:pt-1 sm:pb-4 border border-green-200 hover:shadow-xl transition-all duration-300 flex flex-col h-[140px] overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div className="flex flex-1 items-center justify-between gap-3 min-h-0">
+              <div className="-ml-1 mt-1 sm:-ml-1.5 sm:mt-1.5 flex h-[6.75rem] w-[6.75rem] shrink-0 items-center justify-start sm:h-[7.75rem] sm:w-[7.75rem]">
+                <img src="/Image/crop images/yield.png" alt="" aria-hidden className="max-h-full max-w-full object-contain object-left pointer-events-none select-none" />
+              </div>
+              <div className="flex w-[88px] sm:w-[96px] shrink-0 flex-col items-end justify-center text-right">
+                <div className="text-[30px] font-bold tabular-nums leading-none text-gray-800 sm:text-[34px]">
                   {metrics.recovery?.toFixed(1) || "-"}
                 </div>
-                <div className="text-xs font-semibold text-green-600">%</div>
+                <div className="mt-1 text-base font-semibold leading-none text-green-600 sm:text-lg">%</div>
               </div>
             </div>
-            <p className="text-xs text-gray-600 mt-auto relative z-10">Stress Events</p>
+            <p className="text-xs text-gray-600 mt-auto pt-1">Stress Events</p>
           </div>
         </div>
 

@@ -1,8 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFarmerProfile } from '../hooks/useFarmerProfile';
+import { useAppContext } from '../context/AppContext';
 import './FarmerInfoBar.css';
 import { getAuthToken } from '../utils/auth';
 import { getNotificationsBaseUrl } from '../utils/serviceUrls';
+import { getCache } from './utils/cache';
+import {
+  resolveWeedRecord,
+  resolvePestRecord,
+  resolveDiseaseRecord,
+  type RiskAssessmentResult,
+} from './pestt/meter/riskAssessmentService';
 import {
   fetchForecastCurrentWeather,
   type ForecastCurrentWeather,
@@ -109,6 +117,40 @@ function temperatureStressLabel(temp: number | undefined): string {
   return 'No heat or frost stress';
 }
 
+function hasMeaningfulRainSignal(period?: ForecastPeriodPrediction): boolean {
+  if (!period) return false;
+
+  const rainAlert = String(period.rain_alert || '').toLowerCase();
+  const rainProbability = String(period.rain_probability || '').toLowerCase();
+  const combined = `${rainAlert} ${rainProbability}`.trim();
+
+  // Treat explicit "very low/no rain" labels as not worthy of alert display.
+  if (
+    combined.includes('very low chance') ||
+    combined.includes('no rain') ||
+    combined.includes('unlikely')
+  ) {
+    return false;
+  }
+
+  // If backend provides numeric range like 0-20%, require upper bound > 20.
+  const rangeMatch = combined.match(/(\d+)\s*-\s*(\d+)\s*%?/);
+  if (rangeMatch) {
+    const upper = Number(rangeMatch[2]);
+    return Number.isFinite(upper) && upper > 20;
+  }
+
+  // If single numeric probability exists, require > 20.
+  const singleMatch = combined.match(/(\d+)\s*%/);
+  if (singleMatch) {
+    const value = Number(singleMatch[1]);
+    return Number.isFinite(value) && value > 20;
+  }
+
+  // If it mentions rain and is not explicitly low/unlikely, treat as meaningful.
+  return combined.includes('rain');
+}
+
 function playNotificationSound(audioCtxRef: React.MutableRefObject<AudioContext | null>) {
   try {
     const Ctx = (window.AudioContext || (window as any).webkitAudioContext) as
@@ -177,7 +219,7 @@ function ForecastPeriodRows({
   const rows = periods
     .map(({ key, label }) => {
       const p = prediction[key] as ForecastPeriodPrediction | undefined;
-      if (!p?.rain_alert && !p?.rain_probability) return null;
+      if (!hasMeaningfulRainSignal(p)) return null;
       return (
         <div key={key} className="notif-forecast-period">
           <span className="notif-forecast-period-label">{label}</span>
@@ -199,6 +241,7 @@ function ForecastPeriodRows({
 }
 
 const FarmerInfoBar: React.FC = () => {
+  const { appState } = useAppContext();
   const { profile, getFarmerName, getTotalPlots } = useFarmerProfile();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<NotificationRow[]>([]);
@@ -208,6 +251,8 @@ const FarmerInfoBar: React.FC = () => {
   const [forecastLoading, setForecastLoading] = useState(false);
   const [forecastError, setForecastError] = useState<string | null>(null);
   const [showAlerts, setShowAlerts] = useState(false);
+  const [alertsReady, setAlertsReady] = useState(false);
+  const [pendingLoginAlert, setPendingLoginAlert] = useState<{ title: string; message: string } | null>(null);
   const panelWrapRef = useRef<HTMLDivElement | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<number | null>(null);
@@ -252,11 +297,136 @@ const FarmerInfoBar: React.FC = () => {
     [profile?.plots]
   );
 
+  const selectedPlotForAlerts = useMemo(() => {
+    const candidates = [
+      (appState as any)?.selectedPlotName as string | null,
+      (appState as any)?.plotName as string | null,
+      typeof window !== 'undefined' ? localStorage.getItem('selectedPlot') : null,
+      profile?.plots?.[0]?.fastapi_plot_id ?? null,
+    ].filter((v): v is string => !!v && String(v).trim().length > 0);
+
+    return candidates[0] || null;
+  }, [appState, profile?.plots]);
+
+  const cachedRiskAssessment = useMemo(() => {
+    const candidateKeys = new Set<string>();
+
+    const addCandidate = (value?: string | null) => {
+      if (!value) return;
+      const trimmed = value.trim();
+      if (!trimmed) return;
+      candidateKeys.add(trimmed);
+    };
+
+    addCandidate((appState as any)?.selectedPlotName as string | null);
+    addCandidate((appState as any)?.plotName as string | null);
+    addCandidate(typeof window !== 'undefined' ? localStorage.getItem('selectedPlot') : null);
+    addCandidate(selectedPlotForAlerts);
+
+    (profile?.plots || []).forEach((p: any) => {
+      addCandidate(p?.fastapi_plot_id);
+      if (p?.gat_number && p?.plot_number) {
+        addCandidate(`${p.gat_number}_${p.plot_number}`);
+      }
+    });
+
+    for (const key of candidateKeys) {
+      const hit = getCache(`riskAssessment_${key}`, 30 * 60 * 1000) as RiskAssessmentResult | null;
+      if (hit) return hit;
+    }
+    return null;
+  }, [appState, profile?.plots, selectedPlotForAlerts]);
+
+  const todayIrrigationAlert = useMemo(() => {
+    const scheduleRows = Array.isArray((appState as any)?.irrigationScheduleData)
+      ? (appState as any).irrigationScheduleData
+      : [];
+    const todayRow = scheduleRows.find((row: any) => row?.isToday);
+    if (!todayRow || String(todayRow.etRange || '').toLowerCase() !== 'high') return null;
+
+    const temp = typeof forecast?.temperature_c === 'number' ? forecast.temperature_c : null;
+    const tempLabel = temp !== null && temp >= 35 ? 'Hot' : 'Warm';
+    const irrigationTime = String(todayRow.time || '0 hrs 0 mins')
+      .replace(/\s*hrs?\s*/gi, 'h ')
+      .replace(/\s*mins?\s*/gi, 'm')
+      .trim();
+
+    let weedName = 'weeds';
+    let chemical = 'recommended herbicide';
+    const highWeedName = cachedRiskAssessment?.weeds?.High?.[0];
+    if (highWeedName) {
+      const weed = resolveWeedRecord(highWeedName);
+      weedName = (weed.name || highWeedName).split('(')[0].trim();
+      const chemicalRaw = Array.isArray(weed.chemical) && weed.chemical[0] ? weed.chemical[0] : '';
+      if (chemicalRaw) {
+        chemical = chemicalRaw.split(' OR ')[0].trim();
+      }
+    }
+
+    const tempText = temp !== null ? `${temp.toFixed(1)}°C` : '--';
+    return `Today is ${tempLabel} (${tempText}). You need to irrigate for ${irrigationTime}. High risk of ${weedName} detected—consider applying ${chemical} today.`;
+  }, [appState, cachedRiskAssessment, forecast?.temperature_c, profile?.plots]);
+
+  const cropHealthHighAlerts = useMemo(() => {
+    if (!cachedRiskAssessment) return [];
+    const temp = typeof forecast?.temperature_c === 'number' ? `${forecast.temperature_c.toFixed(1)}°C` : '--';
+
+    const weedAlerts = (cachedRiskAssessment.weeds?.High || []).map((weedName) => {
+      const weed = resolveWeedRecord(weedName);
+      const displayName = (weed.name || weedName).split('(')[0].trim();
+      const solutionRaw = Array.isArray(weed.chemical) && weed.chemical[0] ? weed.chemical[0] : '';
+      const solution = solutionRaw ? solutionRaw.split(' OR ')[0].trim() : 'recommended herbicide';
+      return `High weed alert: ${displayName} risk is high today (Temp ${temp}). Solution: apply ${solution} today.`;
+    });
+
+    const pestAlerts = (cachedRiskAssessment.pests?.High || []).map((pestName) => {
+      const pest = resolvePestRecord(pestName);
+      const displayName = (pest.name || pestName).split('(')[0].trim();
+      const solutionRaw = Array.isArray(pest.chemical) && pest.chemical[0] ? pest.chemical[0] : '';
+      const solution = solutionRaw ? solutionRaw.split(' OR ')[0].trim() : 'recommended control spray';
+      return `High pest alert: ${displayName} risk is high today (Temp ${temp}). Solution: apply ${solution} today.`;
+    });
+
+    const diseaseAlerts = (cachedRiskAssessment.diseases?.High || []).map((diseaseName) => {
+      const disease = resolveDiseaseRecord(diseaseName);
+      const displayName = (disease.name || diseaseName).split('(')[0].trim();
+      const solutionRaw = Array.isArray(disease.chemical) && disease.chemical[0] ? disease.chemical[0] : '';
+      const solution = solutionRaw ? solutionRaw.split(' OR ')[0].trim() : 'recommended disease control spray';
+      return `High disease alert: ${displayName} risk is high today (Temp ${temp}). Solution: apply ${solution} today.`;
+    });
+
+    return [...weedAlerts, ...pestAlerts, ...diseaseAlerts];
+  }, [cachedRiskAssessment, forecast?.temperature_c]);
+
+  const isTemperatureHighAlert =
+    typeof forecast?.temperature_c === 'number' &&
+    temperatureStressLabel(forecast.temperature_c) !== 'No heat or frost stress';
+
+  useEffect(() => {
+    if (!open || !showAlerts) {
+      setAlertsReady(false);
+      return;
+    }
+
+    // Wait for all alert data to settle before showing cards.
+    if (forecastLoading || appState?.apiData?.isPreloading) {
+      setAlertsReady(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setAlertsReady(true);
+    }, 450);
+
+    return () => window.clearTimeout(timer);
+  }, [open, showAlerts, forecastLoading, appState?.apiData?.isPreloading, forecast, cachedRiskAssessment, todayIrrigationAlert, cropHealthHighAlerts]);
+
   // Initial alert notification on login
   const alertTriggeredRef = useRef(false);
   const permissionPromptAttachedRef = useRef(false);
 
   const showLoginAlert = (title: string, message: string) => {
+    alertTriggeredRef.current = true;
     const alertId = Date.now();
     playNotificationSound(audioCtxRef);
 
@@ -279,10 +449,6 @@ const FarmerInfoBar: React.FC = () => {
       ].slice(0, 3);
       return next;
     });
-
-    window.setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== alertId));
-    }, 8000);
   };
 
   // Ask notification permission on first user interaction (works better in deployed browsers).
@@ -317,7 +483,6 @@ const FarmerInfoBar: React.FC = () => {
     fetchForecastCurrentWeather(forecastLatLon.lat, forecastLatLon.lon)
       .then((data) => {
         if (cancelled) return;
-        alertTriggeredRef.current = true;
         
         let alertMsg = `Today's Weather: ${data.temperature_c ?? '--'}°C, Humidity: ${data.humidity ?? '--'}%. Click to view.`;
         
@@ -327,21 +492,34 @@ const FarmerInfoBar: React.FC = () => {
           alertMsg = `Extreme Weather (${data.temperature_c ?? '--'}°C, ${data.humidity ?? '--'}%). Click to view.`;
         }
         
-        showLoginAlert("Weather Alert", alertMsg);
+        setPendingLoginAlert({ title: "Weather Alert", message: alertMsg });
       })
       .catch(() => {
         if (cancelled) return;
-        alertTriggeredRef.current = true;
-        showLoginAlert(
-          "Weather Alert",
-          "Weather update is temporarily unavailable. Open alerts to view latest notifications."
-        );
+        setPendingLoginAlert({
+          title: "Weather Alert",
+          message: "Weather update is temporarily unavailable. Open alerts to view latest notifications.",
+        });
       });
       
     return () => {
       cancelled = true;
     };
   }, [forecastLatLon.lat, forecastLatLon.lon]);
+
+  useEffect(() => {
+    if (!pendingLoginAlert) return;
+    if (alertTriggeredRef.current) return;
+    if (forecastLoading || appState?.apiData?.isPreloading) return;
+
+    const timer = window.setTimeout(() => {
+      if (alertTriggeredRef.current) return;
+      showLoginAlert(pendingLoginAlert.title, pendingLoginAlert.message);
+      setPendingLoginAlert(null);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [pendingLoginAlert, forecastLoading, appState?.apiData?.isPreloading]);
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -430,10 +608,6 @@ const FarmerInfoBar: React.FC = () => {
       ].slice(0, 3);
       return next;
     });
-
-    window.setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== notif.id));
-    }, 5000);
   };
 
   useEffect(() => {
@@ -564,6 +738,18 @@ const FarmerInfoBar: React.FC = () => {
     return () => document.removeEventListener('mousedown', onDocDown);
   }, [open]);
 
+  useEffect(() => {
+    if (toasts.length > 0) {
+      document.body.classList.add('notif-modal-open');
+    } else {
+      document.body.classList.remove('notif-modal-open');
+    }
+
+    return () => {
+      document.body.classList.remove('notif-modal-open');
+    };
+  }, [toasts.length]);
+
   // Don't render until profile is available (keep hooks above to avoid order issues)
   if (!profile) {
     return null;
@@ -572,26 +758,35 @@ const FarmerInfoBar: React.FC = () => {
   return (
     <div className="farmer-info-bar">
       {toasts.length > 0 ? (
-        <div className="notif-toasts" aria-live="polite" aria-atomic="true">
-          {toasts.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              className="notif-toast notif-toast-click"
-              onClick={() => {
-                setOpen(true);
-                setShowAlerts(true);
-              }}
-              title="Open alerts"
-            >
-              <div className="notif-toast-top">
-                <div className="notif-toast-title">{t.title || 'New message'}</div>
-                <div className="notif-toast-cta">View</div>
+        <div className="notif-toast-overlay" aria-live="polite" aria-atomic="true">
+          <div className="notif-toasts">
+            {toasts.map((t) => (
+              <div
+                key={t.id}
+                className="notif-toast"
+                role="alert"
+                aria-live="assertive"
+              >
+                <div className="notif-toast-top">
+                  <div className="notif-toast-symbol" aria-hidden="true">⚠</div>
+                  <div className="notif-toast-title">{t.title || 'New message'}</div>
+                </div>
+                <div className="notif-toast-msg">{t.message}</div>
+                <div className="notif-toast-meta">{new Date(t.created_at).toLocaleString()}</div>
+                <button
+                  type="button"
+                  className="notif-toast-view-btn"
+                  onClick={() => {
+                    setToasts([]);
+                    setOpen(true);
+                    setShowAlerts(true);
+                  }}
+                >
+                  View Alert
+                </button>
               </div>
-              <div className="notif-toast-msg">{t.message}</div>
-              <div className="notif-toast-meta">{new Date(t.created_at).toLocaleString()}</div>
-            </button>
-          ))}
+            ))}
+          </div>
         </div>
       ) : null}
       <div className="farmer-info-container">
@@ -632,6 +827,73 @@ const FarmerInfoBar: React.FC = () => {
 
             {open ? (
               <div className="notif-panel" role="dialog" aria-label="Notifications">
+                {showAlerts ? (
+                  <div id="notif-alerts" className="notif-alerts-panel" aria-label="Alerts">
+                    <div className="notif-weather-alerts" aria-label="Weather alerts">
+                      {!alertsReady ? (
+                        <div className="notif-weather-alerts-muted">Loading alerts…</div>
+                      ) : forecastError ? (
+                        <div className="notif-weather-alerts-muted">{forecastError}</div>
+                      ) : forecast ? (
+                        <>
+                          {todayIrrigationAlert ? (
+                            <div className="notif-weather-pill notif-weather-pill-warn">
+                              <span className="notif-weather-pill-label">Today Alert</span>
+                              <span className="notif-weather-pill-value">{todayIrrigationAlert}</span>
+                            </div>
+                          ) : null}
+                          {cropHealthHighAlerts.length > 0 ? (
+                            <div className="notif-weather-pill notif-weather-pill-warn">
+                              <span className="notif-weather-pill-label">High Pest & Disease Risk</span>
+                              <div className="notif-weather-pill-value">
+                                <ul className="list-disc ml-4 space-y-1">
+                                  {cropHealthHighAlerts.map((msg, idx) => (
+                                    <li key={`crop-health-high-${idx}`}>{msg}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          ) : null}
+                          {typeof forecast.temperature_c === 'number' && isTemperatureHighAlert ? (
+                            <div className="notif-weather-pill notif-weather-pill-warn">
+                              <span className="notif-weather-pill-label">Temperature Alert</span>
+                              <span className="notif-weather-pill-value">
+                                {forecast.temperature_c}°C ({temperatureStressLabel(forecast.temperature_c)})
+                              </span>
+                            </div>
+                          ) : null}
+
+                          <div className="notif-weather-pill notif-weather-pill-rain">
+                            <span className="notif-weather-pill-label">Rain</span>
+                            <span className="notif-weather-pill-value">
+                              {forecast.rain_alert ?? '—'}
+                              {forecast.rain_probability ? ` (${forecast.rain_probability})` : ''}
+                            </span>
+                          </div>
+                          <ForecastPeriodRows title="24 hrs prediction" prediction={forecast.next_24h_prediction} />
+                          <ForecastPeriodRows title="48 hrs prediction" prediction={forecast.next_48h_prediction} />
+                          {typeof forecast.humidity === 'number' ? (
+                            <div className="notif-weather-pill">
+                              <span className="notif-weather-pill-label">Humidity</span>
+                              <span className="notif-weather-pill-value">{forecast.humidity}%</span>
+                            </div>
+                          ) : null}
+                          {typeof forecast.temperature_c === 'number' && !isTemperatureHighAlert ? (
+                            <div className="notif-weather-pill notif-weather-pill-temp">
+                              <span className="notif-weather-pill-label">Temperature</span>
+                              <span className="notif-weather-pill-value">
+                                {forecast.temperature_c}°C ({temperatureStressLabel(forecast.temperature_c)})
+                              </span>
+                            </div>
+                          ) : null}
+                        </>
+                      ) : (
+                        <div className="notif-weather-alerts-muted">No alerts</div>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="notif-panel-header">
                   <div className="notif-panel-header-main">
                     <div className="notif-panel-header-title-row">
@@ -668,46 +930,6 @@ const FarmerInfoBar: React.FC = () => {
                     </button>
                   </div>
                 </div>
-
-                {showAlerts ? (
-                  <div id="notif-alerts" className="notif-alerts-panel" aria-label="Alerts">
-                    <div className="notif-weather-alerts" aria-label="Weather alerts">
-                      {forecastLoading ? (
-                        <div className="notif-weather-alerts-muted">Loading alerts…</div>
-                      ) : forecastError ? (
-                        <div className="notif-weather-alerts-muted">{forecastError}</div>
-                      ) : forecast ? (
-                        <>
-                          <div className="notif-weather-pill notif-weather-pill-rain">
-                            <span className="notif-weather-pill-label">Rain</span>
-                            <span className="notif-weather-pill-value">
-                              {forecast.rain_alert ?? '—'}
-                              {forecast.rain_probability ? ` (${forecast.rain_probability})` : ''}
-                            </span>
-                          </div>
-                          <ForecastPeriodRows title="24 hrs prediction" prediction={forecast.next_24h_prediction} />
-                          <ForecastPeriodRows title="48 hrs prediction" prediction={forecast.next_48h_prediction} />
-                          {typeof forecast.humidity === 'number' ? (
-                            <div className={`notif-weather-pill ${forecast.humidity > 80 ? 'notif-weather-pill-warn' : ''}`}>
-                              <span className="notif-weather-pill-label">Humidity</span>
-                              <span className="notif-weather-pill-value">{forecast.humidity}% {forecast.humidity > 80 ? '(High)' : ''}</span>
-                            </div>
-                          ) : null}
-                          {typeof forecast.temperature_c === 'number' ? (
-                            <div className={temperatureStressLabel(forecast.temperature_c) === 'No heat or frost stress' ? "notif-weather-pill notif-weather-pill-temp" : "notif-weather-pill notif-weather-pill-warn"}>
-                              <span className="notif-weather-pill-label">Temperature</span>
-                              <span className="notif-weather-pill-value">
-                                {forecast.temperature_c}°C ({temperatureStressLabel(forecast.temperature_c)})
-                              </span>
-                            </div>
-                          ) : null}
-                        </>
-                      ) : (
-                        <div className="notif-weather-alerts-muted">No alerts</div>
-                      )}
-                    </div>
-                  </div>
-                ) : null}
 
                 <div className="notif-list">
                   {loading ? (

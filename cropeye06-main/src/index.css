@@ -202,53 +202,35 @@ tbody tr:hover {
   background: var(--bg-main);
 }
 
-/* Responsive Tables */
+/* Global responsive guards */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+canvas,
+video,
+iframe {
+  max-width: 100%;
+}
+
+/* Responsive tables: keep native table layout and allow horizontal scroll */
 @media (max-width: 768px) {
-  /* Make tables horizontally scrollable on mobile */
   .table-container,
-  table {
-    display: block;
+  .table-wrapper {
+    width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
   }
-  
-  table thead,
-  table tbody,
-  table tr,
-  table td,
-  table th {
-    display: block;
-  }
-  
-  table thead {
-    display: none; /* Hide header on mobile, show in first cell */
-  }
-  
-  table tr {
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    display: block;
-    border-radius: 8px;
-  }
-  
-  table td {
-    border: none;
-    position: relative;
-    padding-left: 50% !important;
-    text-align: left;
-    white-space: normal;
-  }
-  
-  table td:before {
-    content: attr(data-label);
-    position: absolute;
-    left: 6px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    font-weight: bold;
-    color: var(--text-primary);
+
+  .table-container table,
+  .table-wrapper table {
+    min-width: 640px;
   }
 }
 

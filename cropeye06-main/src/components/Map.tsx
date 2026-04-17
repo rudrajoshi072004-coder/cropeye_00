@@ -2611,7 +2611,7 @@ const Map: React.FC<MapProps> = ({
   };
 
   return (
-    <div className="map-wrapper" style={{ minHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'hidden' }}>
+    <div className="map-wrapper" style={{ minHeight: '100dvh', width: '100%', display: 'flex', justifyContent: 'center', overflowX: 'hidden' }}>
       <div className="map-content-container" style={{ width: '100%', maxWidth: '1920px', margin: '0 auto', padding: '0 1rem', boxSizing: 'border-box' }}>
       <div className="layer-controls">
         <div className="layer-buttons">
@@ -2827,7 +2827,7 @@ const Map: React.FC<MapProps> = ({
         <MapContainer
           center={mapCenter}
           zoom={18}
-          style={{ height: "90%", width: "100%", maxWidth: "100%", overflow: "hidden" }}
+          style={{ height: "100%", width: "100%", maxWidth: "100%", overflow: "hidden" }}
           zoomControl={true}
           maxZoom={22}
           minZoom={10}
@@ -2912,7 +2912,7 @@ const Map: React.FC<MapProps> = ({
         </div>
 
         {/* Soil Analysis Section */}
-        <div className="soil-section-adjusted" style={{ minWidth: '300px', flexShrink: 0 }}>
+        <div className="soil-section-adjusted" style={{ minWidth: 0, width: '100%', flexShrink: 1 }}>
           <div className="bg-white rounded-lg shadow-lg p-0 h-full overflow-hidden">
             <div className="p-4">
               <SoilAnalysis

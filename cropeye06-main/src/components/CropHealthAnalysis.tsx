@@ -402,7 +402,7 @@ const CropHealthAnalysis: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="card h-full flex flex-col min-h-[520px] rounded-2xl" style={{ backgroundColor: 'white', background: 'white', borderRadius: '1rem', paddingLeft: '1rem', paddingTop: '1rem' }}>
+      <div className="h-full flex flex-col min-h-[520px] rounded-2xl shadow-md w-full max-w-full min-w-0 p-4 bg-white" style={{ borderRadius: '1rem' }}>
         <div className="card-header">
           <h2 className="text-xl font-bold text-green-700">Crop Health Analysis</h2>
         </div>
@@ -420,64 +420,64 @@ const CropHealthAnalysis: React.FC = () => {
 
   return (
     <div 
-      className="card h-full flex flex-col min-h-[520px] rounded-2xl relative overflow-hidden" 
-      style={{ 
+      className="h-full flex flex-col min-h-[520px] rounded-2xl relative overflow-hidden shadow-md w-full max-w-full min-w-0" 
+      style={{
         backgroundImage: "url('/Image/crophealth card.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         borderRadius: '1rem', 
-        paddingLeft: '1rem', 
-        paddingTop: '1rem',
         position: 'relative'
       }}
     >
       {/* Background overlay for better text readability */}
       <div className="absolute inset-0 bg-white/20 z-0"></div>
       
-      <div className="relative z-10">
-        <div className="card-header flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-          <h2 className="text-lg md:text-xl font-bold" style={{ color: '#ffffff', textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5)' }}>Crop Health Analysis</h2>
-        {activeTab === 'pests' && (
-          <button
-            onClick={handleDownloadPestsPDF}
-            className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm w-full md:w-auto justify-center"
-          >
-            <Download className="w-4 h-4" />
-          </button>
-        )}
-        {activeTab === 'diseases' && (
-          <button
-            onClick={handleDownloadDiseasesPDF}
-            className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm w-full md:w-auto justify-center"
-          >
-            <Download className="w-4 h-4" />
-            Download
-          </button>
-        )}
-      </div>
+      <div className="relative z-10 flex flex-col flex-1 min-h-0 w-full">
+        <div className="px-4 pt-4 shrink-0">
+          <div className="card-header flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+            <h2 className="text-lg md:text-xl font-bold" style={{ color: '#ffffff', textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5)' }}>Crop Health Analysis</h2>
+          {activeTab === 'pests' && (
+            <button
+              onClick={handleDownloadPestsPDF}
+              className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm w-full md:w-auto justify-center"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          )}
+          {activeTab === 'diseases' && (
+            <button
+              onClick={handleDownloadDiseasesPDF}
+              className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm w-full md:w-auto justify-center"
+            >
+              <Download className="w-4 h-4" />
+              Download
+            </button>
+          )}
+        </div>
 
-        <div className="flex border-b mt-2 overflow-x-auto" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>
-        {(['weeds', 'pests', 'diseases'] as const).map(tab => (
-          <div
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`cursor-pointer px-3 md:px-4 py-2 text-sm md:text-base whitespace-nowrap font-bold ${
-              activeTab === tab
-                ? 'border-b-2 border-white'
-                : ''
-            }`}
-            style={activeTab === tab 
-              ? { color: '#ffffff', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }
-              : { color: 'rgba(255,255,255,0.8)', textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }
-            }
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </div>
-        ))}
-      </div>
+          <div className="flex border-b mt-2 overflow-x-auto" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>
+          {(['weeds', 'pests', 'diseases'] as const).map(tab => (
+            <div
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`cursor-pointer px-3 md:px-4 py-2 text-sm md:text-base whitespace-nowrap font-bold ${
+                activeTab === tab
+                  ? 'border-b-2 border-white'
+                  : ''
+              }`}
+              style={activeTab === tab 
+                ? { color: '#ffffff', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }
+                : { color: 'rgba(255,255,255,0.8)', textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }
+              }
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </div>
+          ))}
+        </div>
+        </div>
 
-        <div className="p-2 md:p-4 flex-1 overflow-hidden mx-auto" style={{ backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: '0.5rem', marginTop: '0.5rem', width: 'calc(100% - 1rem)', maxWidth: '100%' }}>
+        <div className="p-2 md:p-4 flex-1 overflow-hidden w-full min-h-0 flex flex-col mt-2 rounded-t-lg" style={{ backgroundColor: 'rgba(255,255,255,0.95)' }}>
           {activeTab === 'pests' && (
           <div className="overflow-x-auto w-full scroll-hide pest-tab-scroll">
             {pestControls.length === 0 ? (

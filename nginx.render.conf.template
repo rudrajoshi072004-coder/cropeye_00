@@ -66,12 +66,12 @@ server {
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
-    proxy_set_header Host cropeye-backend.up.railway.app;
+    proxy_set_header Host cropeye-backendd.up.railway.app;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_ssl_server_name on;
-    proxy_ssl_name cropeye-backend.up.railway.app;
+    proxy_ssl_name cropeye-backendd.up.railway.app;
     proxy_read_timeout 3600s;
     proxy_send_timeout 3600s;
     proxy_pass https://cropeye-backendd.up.railway.app/ws/;
@@ -80,12 +80,12 @@ server {
   # Backend REST API (same-origin) — notifications, mark-all-read, etc.
   location /api/backend/ {
     proxy_http_version 1.1;
-    proxy_set_header Host cropeye-backend.up.railway.app;
+    proxy_set_header Host cropeye-backendd.up.railway.app;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_ssl_server_name on;
-    proxy_ssl_name cropeye-backend.up.railway.app;
+    proxy_ssl_name cropeye-backendd.up.railway.app;
     proxy_pass https://cropeye-backendd.up.railway.app/api/;
   }
 
@@ -110,6 +110,61 @@ server {
     proxy_ssl_server_name on;
     proxy_ssl_name currentforecast-production.up.railway.app;
     proxy_pass https://currentforecast-production.up.railway.app/;
+  }
+
+  # Grapes Admin API (same-origin) — Brix, Canopy Vigour, analyze_Growth, plot boundaries, pest detection.
+  # Mirrors Vite dev proxy: /api/dev-plot/* -> strip prefix -> cropeye-grapes-admin-production.
+  location /api/dev-plot/ {
+    proxy_http_version 1.1;
+    proxy_set_header Host cropeye-grapes-admin-production.up.railway.app;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
+    proxy_ssl_name cropeye-grapes-admin-production.up.railway.app;
+    proxy_connect_timeout 180s;
+    proxy_read_timeout 180s;
+    proxy_send_timeout 180s;
+    proxy_pass https://cropeye-grapes-admin-production.up.railway.app/;
+  }
+
+  # Grapes AgroStats API (same-origin) — Growth, Water Uptake, Soil Moisture, Pest layers.
+  # Mirrors Vite dev proxy: /api/agroStats* -> /plots/agroStats* on cropeye-grapes-events-production.
+  location /api/agroStats {
+    proxy_http_version 1.1;
+    proxy_set_header Host cropeye-grapes-events-production.up.railway.app;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
+    proxy_ssl_name cropeye-grapes-events-production.up.railway.app;
+    proxy_pass https://cropeye-grapes-events-production.up.railway.app/plots/agroStats;
+  }
+
+  # Grapes Main API (same-origin) — Soil NPK / required-n / analyze-npk.
+  # Mirrors Vite dev proxy: /api/grapes-main/* -> strip prefix -> cropeye-grapes-main-production.
+  location /api/grapes-main/ {
+    proxy_http_version 1.1;
+    proxy_set_header Host cropeye-grapes-main-production.up.railway.app;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
+    proxy_ssl_name cropeye-grapes-main-production.up.railway.app;
+    proxy_pass https://cropeye-grapes-main-production.up.railway.app/;
+  }
+
+  # Grapes SEF API (same-origin) — compute-et, soil-moisture, wateruptake, field analysis.
+  # Mirrors Vite dev proxy: /api/field-analysis/* -> strip prefix -> cropeye-grapes-sef-production.
+  location /api/field-analysis/ {
+    proxy_http_version 1.1;
+    proxy_set_header Host cropeye-grapes-sef-production.up.railway.app;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
+    proxy_ssl_name cropeye-grapes-sef-production.up.railway.app;
+    proxy_pass https://cropeye-grapes-sef-production.up.railway.app/;
   }
 
   # --- Gateway SPA (served at /login/) ---

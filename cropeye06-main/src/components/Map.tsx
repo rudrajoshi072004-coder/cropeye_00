@@ -308,6 +308,9 @@ const Map: React.FC<MapProps> = ({
   
   // Use context selectedPlotName if available, otherwise use local state
   const activePlotName = contextSelectedPlotName || selectedPlotName;
+  // IMPORTANT: In this component, most fetches are keyed off local `selectedPlotName`.
+  // Use the same precedence here so harvested detection matches the plot being displayed.
+  const plotNameForStatus = selectedPlotName || contextSelectedPlotName || "";
 
   // New state for different layer data
   const [growthData, setGrowthData] = useState<any>(null);
@@ -317,6 +320,7 @@ const Map: React.FC<MapProps> = ({
   const [brixData, setBrixData] = useState<any>(null);
   const [canopyVigourData, setCanopyVigourData] = useState<any>(null);
   const [brixQualityData, setBrixQualityData] = useState<any>(null);
+  const [cropStatus, setCropStatus] = useState<string | null>(null);
   const [fieldAnalysisData, setFieldAnalysisData] = useState<{
     plotName: string;
     overallHealth: number;
@@ -345,6 +349,88 @@ const Map: React.FC<MapProps> = ({
   const [showDatePopup, setShowDatePopup] = useState(false);
   const [popupSide, setPopupSide] = useState<'left' | 'right' | null>(null);
   const DAYS_STEP = 15;
+
+  const isHarvested = useMemo(() => {
+    const s = (cropStatus || "").toString().toLowerCase();
+    // Treat "harvested" and "partially harvested" as harvested for UI brix display.
+    return s.includes("harvested");
+  }, [cropStatus]);
+
+  const fetchHarvestStatus = useCallback(
+    async (plotName: string): Promise<string | null> => {
+      const cacheKey = `harvest_${plotName}_${currentEndDate}`;
+      const cached = getCache(cacheKey, 30 * 60 * 1000); // 30 min
+      if (cached) {
+        const props = cached?.features?.[0]?.properties || cached?.harvest_summary || cached;
+        const s = props?.harvest_status ?? props?.status ?? null;
+        return s != null ? String(s) : null;
+      }
+      try {
+        const url = `${getEventsBaseUrl()}/grapes-harvest?plot_name=${encodeURIComponent(
+          plotName
+        )}&end_date=${currentEndDate}`;
+        const resp = await fetchWithRetry(url, {
+          method: "POST",
+          mode: "cors",
+          cache: "default",
+          credentials: "omit",
+          headers: { Accept: "application/json" },
+        });
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        setCache(cacheKey, data);
+        const props = data?.features?.[0]?.properties || data?.harvest_summary || data;
+        const s = props?.harvest_status ?? props?.status ?? null;
+        return s != null ? String(s) : null;
+      } catch {
+        return null;
+      }
+    },
+    [currentEndDate]
+  );
+
+  // Keep crop status in sync (used to force Brix=0 after harvested).
+  useEffect(() => {
+    if (!plotNameForStatus) {
+      setCropStatus(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        // 1) Prefer FarmerDashboard-provided status (single source of truth for farmer UI).
+        const dash = getApiData("farmerDashboard", plotNameForStatus);
+        const dashStage = dash?.growthStage ?? dash?.cropStatus ?? null;
+        if (dashStage) {
+          setCropStatus(String(dashStage));
+          return;
+        }
+
+        // Prefer explicit harvest status endpoint; fallback to agroStats if unavailable.
+        const harvest = await fetchHarvestStatus(plotNameForStatus);
+        if (cancelled) return;
+        if (harvest) {
+          setCropStatus(harvest);
+          return;
+        }
+        const agro = await fetchAgroStatsData(plotNameForStatus);
+        if (cancelled) return;
+        const status =
+          agro?.harvest_status ??
+          agro?.Sugarcane_Status ??
+          agro?.growth_stage ??
+          agro?.crop_status ??
+          null;
+        setCropStatus(status != null ? String(status) : null);
+      } catch {
+        // Non-fatal: if status can't be fetched, just don't override brix.
+        if (!cancelled) setCropStatus(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [plotNameForStatus, currentEndDate, fetchHarvestStatus, getApiData]);
 
   useEffect(() => {
     setLayerChangeKey(prev => prev + 1);
@@ -1731,7 +1817,7 @@ const Map: React.FC<MapProps> = ({
         
         throw new Error(`Brix API failed: ${resp.status} ${resp.statusText}`);
       }
-
+      
       const data = await resp.json();
       console.log(`✅ Brix data fetched successfully:`, {
         hasFeatures: !!data?.features,
@@ -1967,7 +2053,8 @@ const Map: React.FC<MapProps> = ({
         // Try to get Brix value from brixQualityData first, fallback to gridPoint.brix
         const key = `${latitude.toFixed(6)}_${longitude.toFixed(6)}`;
         const brixValue = key in brixValueMap ? brixValueMap[key] : (typeof brix === 'number' ? brix : null);
-        const displayValue = brixValue !== null ? brixValue.toFixed(1) : 'N/A';
+        const finalBrixValue = isHarvested ? 0 : brixValue;
+        const displayValue = finalBrixValue !== null ? finalBrixValue.toFixed(1) : 'N/A';
 
         return (
           <React.Fragment key={`brix-grid-${index}-${latitude}-${longitude}`}>
@@ -2018,7 +2105,7 @@ const Map: React.FC<MapProps> = ({
               }}
             />
             {/* Brix value as white text in the center of grid box */}
-            {brixValue !== null && (
+            {finalBrixValue !== null && (
               <BrixValueMarker 
                 position={[latitude, longitude]} 
                 value={displayValue}

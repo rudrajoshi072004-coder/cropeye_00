@@ -628,12 +628,34 @@ interface BrixTimeSeriesChartProps {
   }>;
   isLoading?: boolean;
   error?: string | null;
+  /** If true, renders a floating pill with latest values inside the chart area. */
+  showLatestValuesInChart?: boolean;
 }
 
-const BrixTimeSeriesChart: React.FC<BrixTimeSeriesChartProps> = ({ data, isLoading, error }) => {
+const BrixTimeSeriesChart: React.FC<BrixTimeSeriesChartProps> = ({
+  data,
+  isLoading,
+  error,
+  showLatestValuesInChart = false,
+}) => {
+  const latest = useMemo(() => {
+    if (!data || data.length === 0) return null;
+    // Latest point = last item (API is expected to be chronological)
+    const last = data[data.length - 1];
+    const toNum = (v: any) => {
+      const n = typeof v === "number" ? v : Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    return {
+      ph: toNum(last?.ph),
+      brix: toNum(last?.brix),
+      ta: toNum(last?.ta),
+    };
+  }, [data]);
+
   const chartData = useMemo(() => {
     // Use fallback data if no real data available
-    if (!data || data.length === 0) {
+    if (!data || data.length === 0 ) {
       return {
         labels: fallbackLabels,
         datasets: fallbackDatasets,
@@ -752,6 +774,65 @@ const BrixTimeSeriesChart: React.FC<BrixTimeSeriesChartProps> = ({ data, isLoadi
 
   return (
     <div style={{ height: '320px', position: 'relative' }}>
+      {/* Latest values (top-center) */}
+      {showLatestValuesInChart && latest && !isLoading && !error && (
+        <div
+          style={{
+            position: "absolute",
+            // Keep clear of Chart.js legend (which sits at the very top)
+            top: 34,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 6,
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 8,
+            padding: "6px 10px",
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.92)",
+            border: "1px solid rgba(15,23,42,0.10)",
+            boxShadow: "0 4px 16px rgba(15,23,42,0.10)",
+            fontSize: 12,
+            fontWeight: 700,
+            color: "#0f172a",
+            alignItems: "center",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            maxWidth: "calc(100% - 24px)",
+          }}
+          aria-label="Latest pH, Brix and TA values"
+        >
+          {([
+            { k: "pH", c: "#4CAF50", v: latest.ph, dp: 2 },
+            { k: "Brix", c: "#FF9800", v: latest.brix, dp: 2 },
+            { k: "TA", c: "#2196F3", v: latest.ta, dp: 2 },
+          ] as const).map((m, idx) => (
+            <React.Fragment key={m.k}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 999,
+                    background: m.c,
+                    boxShadow: `0 0 0 3px ${m.c}22`,
+                  }}
+                />
+                <span style={{ fontWeight: 800 }}>{m.k}:</span>{" "}
+                <span style={{ fontWeight: 800 }}>
+                  {m.v != null ? m.v.toFixed(m.dp) : "—"}
+                </span>
+              </span>
+              {idx < 2 && (
+                <span style={{ opacity: 0.25, fontWeight: 900 }} aria-hidden>
+                  •
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
       <ChartLine data={chartData} options={options} />
 
       {isLoading && <Overlay message="Loading data..." />}
@@ -837,6 +918,20 @@ const FarmerDashboard: React.FC = () => {
   const [brixTimeSeriesData, setBrixTimeSeriesData] = useState<any[]>([]);
   const [brixTimeSeriesLoading, setBrixTimeSeriesLoading] = useState<boolean>(false);
   const [brixTimeSeriesError, setBrixTimeSeriesError] = useState<string | null>(null);
+
+  const latestAciditySugar = useMemo(() => {
+    if (!brixTimeSeriesData || brixTimeSeriesData.length === 0) return null;
+    const last = brixTimeSeriesData[brixTimeSeriesData.length - 1];
+    const toNum = (v: any) => {
+      const n = typeof v === "number" ? v : Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    return {
+      ph: toNum(last?.ph),
+      brix: toNum(last?.brix),
+      ta: toNum(last?.ta),
+    };
+  }, [brixTimeSeriesData]);
   /** Ripening / Harvest milestones card only (isolated from main dashboard bundle). */
   const [milestoneState, setMilestoneState] = useState<{
     ripeningStartDate: string | null;
@@ -1425,6 +1520,11 @@ const FarmerDashboard: React.FC = () => {
       });
 
       setMetrics(newMetrics);
+      // Share crop status with other screens (e.g., Map Brix overlay)
+      // so "Harvested" logic is consistent across the farmer UI.
+      setApiDataRef.current("farmerDashboard", currentPlotId, {
+        growthStage: newMetrics.growthStage,
+      });
 
       // Mark data as loaded to prevent re-fetching
       dataLoadedRef.current[currentPlotId] = true;
@@ -1982,18 +2082,22 @@ const FarmerDashboard: React.FC = () => {
             <p className="text-sm font-medium mt-auto pt-0 -mt-2 relative z-10" style={{ color: '#616161', lineHeight: '1.2' }}>Ripening/Harvest</p>
           </div>
 
-          <div className="rounded-xl p-4 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', width: '100%', maxWidth: '100%', boxSizing: 'border-box', backgroundColor: '#f5f1e1' }}>
+              <div 
+  className="relative flex-1 h-full min-h-[160px] bg-[#f8f9f1] rounded-[1rem] p-6 shadow-sm border border-white/50 overflow-hidden hover:shadow-md transition-all"
+>
             <img
               src="/Image/crop images/yield.png"
               alt=""
               aria-hidden
-              className="absolute left-1 top-5 w-24 h-24 sm:w-28 sm:h-28 object-contain opacity-100 z-0 pointer-events-none select-none"
-              style={{ maxWidth: '100%', height: 'auto' }}
+              className="absolute left-7 top-5 w-20 h-24 sm:w-28 sm:h-28 object-contain opacity-100 z-0 pointer-events-none select-none"
+              style={{ maxWidth: '15%', height: 'auto' }}
             />
             <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">
                 <div className="text-3xl font-bold" style={{ color: '#212121', fontFamily: 'Inter, Poppins, sans-serif' }}>
-                  {metrics.brix !== null && metrics.brix !== undefined ? (metrics.brix === 0 ? "0" : metrics.brix) : "-"}
+                  {(metrics.growthStage || "").toLowerCase().includes("harvested")
+                    ? "0"
+                    : (metrics.brix !== null && metrics.brix !== undefined ? (metrics.brix === 0 ? "0" : metrics.brix) : "-")}
                 </div>
                 <div className="text-base font-semibold" style={{ color: '#6bb043' }}>
                   °Brix
@@ -2006,13 +2110,17 @@ const FarmerDashboard: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-semibold" style={{ color: '#ef4444' }}>Min:</span>
                   <span className="text-xs font-bold" style={{ color: '#212121' }}>
-                    {metrics.brixMin !== null && metrics.brixMin !== undefined ? (metrics.brixMin === 0 ? "0" : metrics.brixMin) : "-"}
+                    {(metrics.growthStage || "").toLowerCase().includes("harvested")
+                      ? "0"
+                      : (metrics.brixMin !== null && metrics.brixMin !== undefined ? (metrics.brixMin === 0 ? "0" : metrics.brixMin) : "-")}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-semibold" style={{ color: '#22c55e' }}>Max:</span>
                   <span className="text-xs font-bold" style={{ color: '#212121' }}>
-                    {metrics.brixMax !== null && metrics.brixMax !== undefined ? (metrics.brixMax === 0 ? "0" : metrics.brixMax) : "-"}
+                    {(metrics.growthStage || "").toLowerCase().includes("harvested")
+                      ? "0"
+                      : (metrics.brixMax !== null && metrics.brixMax !== undefined ? (metrics.brixMax === 0 ? "0" : metrics.brixMax) : "-")}
                   </span>
                 </div>
               </div>
@@ -2368,8 +2476,67 @@ const FarmerDashboard: React.FC = () => {
         </div>
 
         {/* Acidity & Sugar Analysis Chart */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-2 sm:p-4 mt-4" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-          <div className="flex items-center gap-2 mb-3">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-2 sm:p-4 mt-4 relative" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+          {/* Latest values pinned to the top-center of this container */}
+          {latestAciditySugar && !brixTimeSeriesLoading && !brixTimeSeriesError && (
+            <div
+              style={{
+                position: "absolute",
+                top: 18,
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 10,
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.92)",
+                border: "1px solid rgba(15,23,42,0.10)",
+                boxShadow: "0 4px 16px rgba(15,23,42,0.10)",
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#0f172a",
+                alignItems: "center",
+                pointerEvents: "none",
+                whiteSpace: "nowrap",
+                maxWidth: "calc(100% - 24px)",
+              }}
+              aria-label="Latest pH, Brix and TA values"
+            >
+              {([
+                { k: "pH", c: "#4CAF50", v: latestAciditySugar.ph, dp: 2 },
+                { k: "Brix", c: "#FF9800", v: latestAciditySugar.brix, dp: 2 },
+                { k: "TA", c: "#2196F3", v: latestAciditySugar.ta, dp: 2 },
+              ] as const).map((m, idx) => (
+                <React.Fragment key={m.k}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 999,
+                        background: m.c,
+                        boxShadow: `0 0 0 3px ${m.c}22`,
+                      }}
+                    />
+                    <span style={{ fontWeight: 800 }}>{m.k}:</span>{" "}
+                    <span style={{ fontWeight: 800 }}>
+                      {m.v != null ? m.v.toFixed(m.dp) : "—"}
+                    </span>
+                  </span>
+                  {idx < 2 && (
+                    <span style={{ opacity: 0.25, fontWeight: 900 }} aria-hidden>
+                      •
+                    </span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 mb-3 pt-8">
             <Beaker className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" />
             <h3 className="text-lg font-bold text-gray-800">
               Acidity & Sugar Analysis
@@ -2381,6 +2548,7 @@ const FarmerDashboard: React.FC = () => {
             data={brixTimeSeriesData}
             isLoading={brixTimeSeriesLoading}
             error={brixTimeSeriesError}
+            showLatestValuesInChart={false}
           />
         </div>
 
@@ -2441,11 +2609,11 @@ const FarmerDashboard: React.FC = () => {
           </div>
 
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 pt-0.5 pb-3 sm:px-5 sm:pt-1 sm:pb-4 border border-green-200 hover:shadow-xl transition-all duration-300 flex flex-col h-[140px] overflow-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-            <div className="flex flex-1 items-center justify-between gap-3 min-h-0">
-              <div className="-ml-1 mt-1 sm:-ml-1.5 sm:mt-1.5 flex h-[6.75rem] w-[6.75rem] shrink-0 items-center justify-start sm:h-[7.75rem] sm:w-[7.75rem]">
-                <img src="/Image/crop images/yield.png" alt="" aria-hidden className="max-h-full max-w-full object-contain object-left pointer-events-none select-none" />
+            <div className="flex flex-1 items-center justify-center gap-5 min-h-0">
+              <div className="-ml-1 mt-1 sm:-ml-1.5 sm:mt-1.5 flex h-[5.75rem] w-[5.75rem] shrink-0 items-center justify-start sm:h-[7.75rem] sm:w-[7.75rem]">
+                <img src="/Image/crop images/yield.png" alt="" aria-hidden className="max-h-20 max-w-20 object-contain object-center pointer-events-none select-none" />
               </div>
-              <div className="flex w-[88px] sm:w-[96px] shrink-0 flex-col items-end justify-center text-right">
+              <div className="flex w-[80px] sm:w-[90px] shrink-0 flex-col items-end justify-center text-right">
                 <div className="text-[30px] font-bold tabular-nums leading-none text-gray-800 sm:text-[34px]">
                   {metrics.recovery?.toFixed(1) || "-"}
                 </div>
@@ -2474,7 +2642,7 @@ const FarmerDashboard: React.FC = () => {
                   title="Grapes Yield Forecast"
                   unit=" T/acre"
                   width={Math.min(300, typeof window !== 'undefined' ? window.innerWidth * 0.8 : 300)}
-                  height={150}
+                  height={100}
                 />
               </div>
               <div className="mt-2 text-center">
@@ -2725,16 +2893,17 @@ const FarmerDashboard: React.FC = () => {
                         Good
                       </span>
                     </div>
-                    <div className="flex min-h-[3.25rem] flex-col items-center justify-end gap-1.5">
-                      <Star
-                        className="h-5 w-5 shrink-0 fill-yellow-400 text-yellow-500 sm:h-6 sm:w-6"
-                        strokeWidth={2}
-                        aria-hidden
-                      />
-                      <span className="w-full text-center text-[11px] font-semibold leading-tight text-[#57b86a] sm:text-xs">
-                        Excellent
-                      </span>
-                    </div>
+               <div className="flex flex-col items-center justify-between gap-1.5 h-full">
+  
+              <div className="flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7">
+                <span className="text-xl sm:text-2xl leading-none select-none">
+                🌱
+                </span>
+              </div>
+             <span className="text-[11px] font-bold uppercase tracking-wider text-[#57b86a] sm:text-xs text-center">
+           Excellent
+          </span>
+            </div>
                   </div>
                 </div>
               </div>

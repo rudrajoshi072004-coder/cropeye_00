@@ -2090,7 +2090,6 @@ const FarmerDashboard: React.FC = () => {
               alt=""
               aria-hidden
               className="absolute left-7 top-5 w-20 h-24 sm:w-28 sm:h-28 object-contain opacity-100 z-0 pointer-events-none select-none"
-              style={{ maxWidth: '15%', height: 'auto' }}
             />
             <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">

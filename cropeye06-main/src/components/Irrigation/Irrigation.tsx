@@ -250,15 +250,15 @@ const Irrigation: React.FC<IrrigationProps> = ({
               fetchWeatherData(latitude, longitude);
             }
           }}
-          className="refresh-button"
+          // className="refresh-button"
         >
-          Refresh Data
+          {/* Refresh Data */}
         </button>
         <span className="last-updated">
           Last updated: {lastUpdated.toLocaleTimeString()}
         </span>
       </div>
-    </div>
+    // </div>
   );
 };
 

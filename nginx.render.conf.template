@@ -30,9 +30,13 @@ server {
   # Static assets referenced with absolute paths in code (fix 404s):
   # Many components use /icons/... and /Image/... directly.
   location /icons/ {
+    # Public images are referenced by stable URLs; avoid long-lived browser caching
+    # so hosted deployments pick up updated assets without users hard-refreshing.
+    add_header Cache-Control "public, max-age=0, must-revalidate" always;
     try_files $uri /login$uri /grapes$uri /sugarcan$uri =404;
   }
   location /Image/ {
+    add_header Cache-Control "public, max-age=0, must-revalidate" always;
     try_files $uri /grapes$uri /sugarcan$uri =404;
   }
 

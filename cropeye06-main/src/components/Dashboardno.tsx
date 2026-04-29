@@ -9,6 +9,7 @@ interface DashboardStats {
   stock_items?: number;
   orders?: number;
   bookings?: number;
+  brix?: number;
 }
 
 export const DashboardNo: React.FC = () => {
@@ -16,22 +17,49 @@ export const DashboardNo: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [alerts, setAlerts] = useState<any[]>([]);
+
   useEffect(() => {
-    const fetchCounts = async () => {
+   const fetchCounts = async () => {
       try {
         setLoading(true);
         setError(null);
         const response = await getTotalCounts();
-        
-        // Handle different response formats
         const data = response.data;
-        setStats({
+
+        // 1. Properly Type the local variable to fix ts(7005)
+        const currentData: DashboardStats = {
           total_users: data.total_users || data.totalUsers || data.users || 0,
           vendors: data.vendors || 0,
           stock_items: data.stock_items || data.stockItems || data.stock || 0,
           orders: data.orders || 0,
           bookings: data.bookings || 0,
-        });
+          brix: data.brix || 17.5, // Fallback for testing
+        };
+
+        // 2. Update state with the typed object
+        setStats(currentData);
+
+        // 3. LOGIC: Use currentData.brix (NOT setStats.brix) to fix ts(2339)
+        if (currentData.brix !== undefined && currentData.brix > 0 && currentData.brix < 18) {
+          const alertId = "low-brix-warning";
+          
+          setAlerts(prev => {
+            if (prev.some(a => a.id === alertId && !a.is_read)) return prev;
+
+            const brixAlert = {
+              id: alertId,
+              title: "Critical: Low Sugar Content",
+              message: `Current Brix level is ${currentData.brix}°. This is below the required 18° threshold.`,
+              severity: "high",
+              type: "ripening",
+              timestamp: new Date().toISOString(),
+              is_read: false,
+            };
+            return [brixAlert, ...prev];
+          });
+        }
+
       } catch (err: any) {
         setError('Failed to load dashboard data');
         // Set default values on error
@@ -41,6 +69,7 @@ export const DashboardNo: React.FC = () => {
           stock_items: 0,
           orders: 0,
           bookings: 0,
+        
         });
       } finally {
         setLoading(false);

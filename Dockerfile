@@ -14,10 +14,10 @@
 ### Render: add Docker build arg `VITE_PUBLIC_ORIGIN` = `https://<your-service>.onrender.com`
 ### (Dashboard → Service → Settings → Build → Docker Build Args).
 
-# Pin base images to immutable digests to avoid Render BuildKit cache/registry issues
-# that can surface as: "failed to compute cache key ... content sha256 ... not found"
-# when mutable tags (e.g. alpine) move or cached layers go missing.
-FROM node:20-alpine@sha256:9d3576e0c3ed2538f103893876944d637a957e3775525e12d8e39c9ecb1df70e AS build
+# Pin base images to immutable digests (linux/amd64) so Render's BuildKit doesn't
+# accidentally select an SBOM/attestation manifest (`unknown/unknown`) which can fail with:
+# "no processor for media-type application/vnd.in-toto+json"
+FROM node:20-alpine@sha256:afdf98210b07b586eb71fa22ba2e432e058e4cd1304d31ed60888755b8c865fb AS build
 WORKDIR /build
 
 # Vite bakes VITE_* at build time — set before npm run build for gateway + both apps.
@@ -46,7 +46,7 @@ RUN cd cropeye07-main && npm ci
 COPY cropeye07-main ./cropeye07-main
 RUN cd cropeye07-main && npm run build
 
-FROM nginx:1.27-alpine@sha256:0f62d942d5e8dd98c5451270e23bb7411257d42b5fd8f5127100d763dc862d52
+FROM nginx:1.27-alpine@sha256:62223d644fa234c3a1cc785ee14242ec47a77364226f1c811d2f669f96dc2ac8
 RUN apk add --no-cache gettext
 
 # Copy built SPAs into path-based folders

@@ -2089,7 +2089,7 @@ const FarmerDashboard: React.FC = () => {
               src="/Image/crop images/yield.png"
               alt=""
               aria-hidden
-              className="absolute left-7 top-5 w-16 h-20 sm:w-24 sm:h-24 object-contain opacity-100 z-0 pointer-events-none select-none"
+              className="absolute left-7 top-5 w-12 h-16 sm:w-20 sm:h-20 object-contain opacity-100 z-0 pointer-events-none select-none"
             />
             <div className="flex items-center justify-end mb-2 pt-2 relative z-10">
               <div className="text-right">
